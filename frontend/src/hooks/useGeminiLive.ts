@@ -10,10 +10,31 @@ interface UseGeminiLiveProps {
   detectPose?: PoseDetector; // New optional prop
 }
 
+// --- HELPER: Vector Math for Angles ---
+function calculateAngle(a: any, b: any, c: any) {
+    const radians = Math.atan2(c.y - b.y, c.x - b.x) - Math.atan2(a.y - b.y, a.x - b.x);
+    let angle = Math.abs(radians * 180.0 / Math.PI);
+    if (angle > 180.0) angle = 360 - angle;
+    return angle;
+}
+
 export function useGeminiLive({ mode, detectPose }: UseGeminiLiveProps) {
   const [isConnected, setIsConnected] = useState(false);
   const [messages, setMessages] = useState<string[]>([]);
   const wsRef = useRef<WebSocket | null>(null);
+
+  // --- SESSION STATISTICS ---
+  const sessionStatsRef = useRef({
+      minRightElbowAngle: 180,
+      maxRightElbowAngle: 0,
+      avgShoulderStability: 0, 
+      frameCount: 0,
+      shoulderYSum: 0
+  });
+
+  const getSessionStats = useCallback(() => {
+     return sessionStatsRef.current;
+  }, []);
   const audioContextRef = useRef<AudioContext | null>(null); // For Microphone (16kHz)
   const playbackContextRef = useRef<AudioContext | null>(null); // For Speakers (24kHz)
   const mediaStreamRef = useRef<MediaStream | null>(null);
@@ -65,46 +86,10 @@ export function useGeminiLive({ mode, detectPose }: UseGeminiLiveProps) {
       }
   }, []);
 
-  const connect = useCallback(() => {
-    if (wsRef.current?.readyState === WebSocket.OPEN) return;
+  /* New State for Optimistic UI */
+  const [dataSentCount, setDataSentCount] = useState(0);
 
-    const ws = new WebSocket(`ws://localhost:8000/ws/stream/${mode}`);
 
-    ws.onopen = () => {
-      console.log('Connected to Gemini Tunnel');
-      setIsConnected(true);
-    };
-
-    ws.onmessage = (event) => {
-      // Handle server messages (JSON or Text)
-      try {
-        const msg = JSON.parse(event.data);
-        if (msg.text) {
-             setMessages((prev) => [...prev, `Gemini: ${msg.text}`]);
-        }
-        if (msg.audio) {
-            playAudioChunk(msg.audio);
-        }
-      } catch (e) {
-        // Fallback for plain text
-        setMessages((prev) => [...prev, `Gemini: ${event.data}`]);
-      }
-    };
-
-    ws.onclose = () => {
-      console.log('Disconnected');
-      setIsConnected(false);
-      wsRef.current = null;
-      stopAudioStream(); 
-      stopVideoStream();
-    };
-
-    ws.onerror = (error) => {
-      console.error('WebSocket Error:', error);
-    };
-
-    wsRef.current = ws;
-  }, [mode]); // Added playAudioChunk to dependency below or ignore if empty dependency is intentional
 
   const sendMessage = useCallback((msg: string) => {
     if (wsRef.current?.readyState === WebSocket.OPEN) {
@@ -188,7 +173,9 @@ export function useGeminiLive({ mode, detectPose }: UseGeminiLiveProps) {
      }
   }, []);
 
-  // --- VIDEO STREAMING ---
+  // --- VIDEO & POSE MULTIPLEXING ---
+  const poseIntervalRef = useRef<number | null>(null);
+
   const startVideoStream = useCallback(async () => {
     try {
         const stream = await navigator.mediaDevices.getUserMedia({ video: true });
@@ -214,33 +201,52 @@ export function useGeminiLive({ mode, detectPose }: UseGeminiLiveProps) {
         const ctx = canvasRef.current.getContext('2d');
         if (!ctx) return;
 
+        // Loop A: Video Stream (Low Frequency - 1 FPS)
         videoIntervalRef.current = window.setInterval(() => {
             if (wsRef.current?.readyState !== WebSocket.OPEN || !videoRef.current || !canvasRef.current) return;
             
             // Draw frame to canvas
             ctx.drawImage(videoRef.current, 0, 0, 640, 480);
 
-            // 1. Send Video Frame (Standard)
+            // Send Video Frame
             const base64Data = canvasRef.current.toDataURL('image/jpeg', 0.8).split(',')[1];
             wsRef.current.send(JSON.stringify({
                 mime_type: "image/jpeg",
                 data: base64Data
             }));
+        }, 1000); 
 
-            // 2. Optimization: Reconnect Pose Data 🦴
-            // If we are in RECONNECT mode and have a detector, send skeletons!
-            if (mode === 'RECONNECT' && detectPose) {
-                const landmarks = detectPose(videoRef.current);
-                if (landmarks) {
-                    // Send as TEXT for Gemini to read logic
-                    wsRef.current.send(JSON.stringify({
-                        text: `[POSE_DATA] ${JSON.stringify(landmarks)}`
-                    }));
-                }
-            }
-        }, 1000); // 1 FPS
+        // Loop B: Pose Tracking (High Frequency - 1 FPS)
+        if (detectPose) {
+             poseIntervalRef.current = window.setInterval(() => {
+                 if (wsRef.current?.readyState !== WebSocket.OPEN || !videoRef.current) return;
 
-        setMessages(prev => [...prev, "System: Camera Started 📷 (1 FPS)"]);
+                 const landmarks = detectPose(videoRef.current);
+                 if (landmarks) {
+                      // 1. Send Data
+                      wsRef.current.send(JSON.stringify({
+                          text: `[POSE_DATA] ${JSON.stringify(landmarks)}`
+                      }));
+                      setDataSentCount(c => c + 1);
+
+                      // 2. Calculate Stats (Right Arm Focus for Demo)
+                      // Landmarks: 12 (R_Shoulder), 14 (R_Elbow), 16 (R_Wrist)
+                      if (landmarks[12] && landmarks[14] && landmarks[16]) {
+                          const rightElbowAngle = calculateAngle(landmarks[12], landmarks[14], landmarks[16]);
+                          
+                          // Update Min/Max
+                          if (rightElbowAngle < sessionStatsRef.current.minRightElbowAngle) sessionStatsRef.current.minRightElbowAngle = rightElbowAngle;
+                          if (rightElbowAngle > sessionStatsRef.current.maxRightElbowAngle) sessionStatsRef.current.maxRightElbowAngle = rightElbowAngle;
+
+                          // Update Stability (Shoulder Y Variance)
+                          sessionStatsRef.current.shoulderYSum += landmarks[12].y;
+                          sessionStatsRef.current.frameCount++;
+                      }
+                 }
+             }, 1000); // 1 FPS (Matched to Video Heartbeat)
+        }
+
+        setMessages(prev => [...prev, "System: Dual-Stream Started (Video 1FPS + Pose 1FPS) 🚀"]);
     } catch (err: any) {
         console.error("Error accessing camera:", err);
         setMessages(prev => [...prev, `Error: Could not access camera (${err.name}: ${err.message})`]);
@@ -252,13 +258,17 @@ export function useGeminiLive({ mode, detectPose }: UseGeminiLiveProps) {
         clearInterval(videoIntervalRef.current);
         videoIntervalRef.current = null;
     }
+    if (poseIntervalRef.current) {
+        clearInterval(poseIntervalRef.current);
+        poseIntervalRef.current = null;
+    }
     if (videoRef.current) {
         const stream = videoRef.current.srcObject as MediaStream;
         if (stream) {
             stream.getTracks().forEach(track => track.stop());
         }
         videoRef.current.remove();
-        videoRef.current = null; // Clean up DOM element reference
+        videoRef.current = null; 
     }
   }, []);
 
@@ -275,11 +285,67 @@ export function useGeminiLive({ mode, detectPose }: UseGeminiLiveProps) {
     }
   }, [stopAudioStream, stopVideoStream]);
 
+  const connect = useCallback(() => {
+    if (wsRef.current?.readyState === WebSocket.OPEN) return;
+
+    const ws = new WebSocket(`ws://localhost:8000/ws/stream/${mode}`);
+
+    ws.onopen = () => {
+      console.log('Connected to Gemini Tunnel');
+      setIsConnected(true);
+    };
+
+    ws.onmessage = (event) => {
+      // Handle server messages (JSON or Text)
+      try {
+        const msg = JSON.parse(event.data);
+        
+        // --- 1. Audio Stream ---
+        if (msg.audio) {
+            playAudioChunk(msg.audio);
+        }
+
+        // --- 2. Text/JSON Stream ---
+        if (msg.text) {
+             // Try to parse nested JSON events (e.g. "event_type": "correction")
+             try {
+                 const content = JSON.parse(msg.text);
+                 if (content.event_type === "correction") {
+                     // Dispatch: Visual Feedback/Correction
+                     setMessages((prev) => [...prev, `[CORRECTION] ${content.content.text} (Reps: ${content.content.reps})`]);
+                     return; 
+                 }
+             } catch (e) {
+                 // Not JSON, just standard text
+             }
+             setMessages((prev) => [...prev, `Gemini: ${msg.text}`]);
+        }
+      } catch (e) {
+        // Fallback for plain text
+        setMessages((prev) => [...prev, `Gemini: ${event.data}`]);
+      }
+    };
+
+    ws.onclose = () => {
+      console.log('Disconnected');
+      setIsConnected(false);
+      wsRef.current = null;
+      stopAudioStream(); 
+      stopVideoStream();
+    };
+
+    ws.onerror = (error) => {
+      console.error('WebSocket Error:', error);
+    };
+
+    wsRef.current = ws;
+  }, [mode, playAudioChunk, stopAudioStream, stopVideoStream]); // Dependencies are now defined above
+
   useEffect(() => {
     return () => {
       disconnect();
     };
   }, [disconnect]);
 
-  return { isConnected, messages, connect, disconnect, sendMessage, startAudioStream, stopAudioStream, startVideoStream, stopVideoStream };
+  return { isConnected, messages, connect, disconnect, sendMessage, startAudioStream, stopAudioStream, startVideoStream, stopVideoStream, dataSentCount, getSessionStats };
 }
