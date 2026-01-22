@@ -19,3 +19,13 @@
 2026-01-22 12:45:35,329 - story_sign - INFO - Connecting to Gemini with model: gemini-2.0-flash-exp
 2026-01-22 12:45:36,084 - story_sign - INFO - Connected to Gemini API
 2026-01-22 12:47:48,995 - story_sign - INFO - Client disconnected
+2026-01-22 12:57:40,625 - story_sign - INFO - Loaded GEMINI_API_KEY: AIza...DBxE
+2026-01-22 12:57:44,812 - story_sign - INFO - Client connected in mode: RECONNECT
+2026-01-22 12:57:44,813 - story_sign - INFO - Connecting to Gemini with model: gemini-2.0-flash-exp
+2026-01-22 12:57:45,483 - story_sign - INFO - Connected to Gemini API
+2026-01-22 12:58:20,525 - story_sign - INFO - Client disconnected
+2026-01-22 12:58:29,811 - story_sign - INFO - Loaded GEMINI_API_KEY: AIza...DBxE
+2026-01-22 12:58:37,382 - story_sign - INFO - Client connected in mode: RECONNECT
+2026-01-22 12:58:37,382 - story_sign - INFO - Connecting to Gemini with model: gemini-2.0-flash-exp
+2026-01-22 12:58:38,095 - story_sign - INFO - Connected to Gemini API
+2026-01-22 13:00:14,646 - story_sign - INFO - Client disconnected

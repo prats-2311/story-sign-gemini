@@ -183,7 +183,12 @@ export function useGeminiLive({ mode, detectPose }: UseGeminiLiveProps) {
         
         if (!videoRef.current) {
             const vid = document.createElement('video');
-            vid.style.display = 'none';
+            vid.style.display = 'block'; // Make visible for debugging
+            vid.style.position = 'fixed';
+            vid.style.bottom = '10px';
+            vid.style.right = '10px';
+            vid.style.width = '240px'; 
+            vid.style.zIndex = '1000';
             vid.autoplay = true;
             vid.playsInline = true;
             document.body.appendChild(vid);
@@ -217,7 +222,7 @@ export function useGeminiLive({ mode, detectPose }: UseGeminiLiveProps) {
             }));
         }, 1000); 
 
-        // Loop B: Pose Tracking (High Frequency - 1 FPS)
+        // Loop B: Pose Tracking (High Frequency - 4 FPS)
         if (detectPose) {
              poseIntervalRef.current = window.setInterval(() => {
                  if (wsRef.current?.readyState !== WebSocket.OPEN || !videoRef.current) return;
@@ -259,10 +264,10 @@ export function useGeminiLive({ mode, detectPose }: UseGeminiLiveProps) {
                           sessionStatsRef.current.frameCount++;
                       }
                  }
-             }, 1000); // 1 FPS (Matched to Video Heartbeat)
+             }, 250); // 4 FPS (Higher resolution for accurate rep counting)
         }
 
-        setMessages(prev => [...prev, "System: Dual-Stream Started (Video 1FPS + Pose 1FPS) 🚀"]);
+        setMessages(prev => [...prev, "System: Dual-Stream Started (Video 1FPS + Pose 4FPS) 🚀"]);
     } catch (err: any) {
         console.error("Error accessing camera:", err);
         setMessages(prev => [...prev, `Error: Could not access camera (${err.name}: ${err.message})`]);
