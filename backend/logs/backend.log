@@ -14,3 +14,8 @@
 2026-01-22 02:30:36,488 - story_sign - INFO - Client disconnected
 2026-01-22 02:30:36,587 - story_sign - ERROR - Error receiving from Gemini: Unexpected ASGI message 'websocket.send', after sending 'websocket.close' or response already completed.
 2026-01-22 02:32:13,260 - story_sign - INFO - Loaded GEMINI_API_KEY: AIza...DBxE
+2026-01-22 12:45:13,038 - story_sign - INFO - Loaded GEMINI_API_KEY: AIza...DBxE
+2026-01-22 12:45:35,326 - story_sign - INFO - Client connected in mode: RECONNECT
+2026-01-22 12:45:35,329 - story_sign - INFO - Connecting to Gemini with model: gemini-2.0-flash-exp
+2026-01-22 12:45:36,084 - story_sign - INFO - Connected to Gemini API
+2026-01-22 12:47:48,995 - story_sign - INFO - Client disconnected

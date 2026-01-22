@@ -29,7 +29,8 @@ export function useGeminiLive({ mode, detectPose }: UseGeminiLiveProps) {
       maxRightElbowAngle: 0,
       avgShoulderStability: 0, 
       frameCount: 0,
-      shoulderYSum: 0
+      shoulderYSum: 0,
+      angleHistory: [] as number[] // [NEW] Track peaks for fatigue analysis
   });
 
   const getSessionStats = useCallback(() => {
@@ -236,7 +237,22 @@ export function useGeminiLive({ mode, detectPose }: UseGeminiLiveProps) {
                           
                           // Update Min/Max
                           if (rightElbowAngle < sessionStatsRef.current.minRightElbowAngle) sessionStatsRef.current.minRightElbowAngle = rightElbowAngle;
-                          if (rightElbowAngle > sessionStatsRef.current.maxRightElbowAngle) sessionStatsRef.current.maxRightElbowAngle = rightElbowAngle;
+                          
+                          // Track Peak Extension (Max Angle) History to detect fatigue
+                          // Logic: If angle > 160 and we haven't logged one recently (simple debounce)
+                          if (rightElbowAngle > sessionStatsRef.current.maxRightElbowAngle) {
+                              sessionStatsRef.current.maxRightElbowAngle = rightElbowAngle;
+                          }
+
+                          // Simple "Rep Peak" Logger: if we hit full extension, log it
+                          // (In a real app, we'd use a state machine for "Up/Down" phases)
+                          if (rightElbowAngle > 150) {
+                              const lastPeak = sessionStatsRef.current.angleHistory[sessionStatsRef.current.angleHistory.length-1] || 0;
+                              // Only log if it's a "new" peak (different from last logged)
+                              if (Math.abs(rightElbowAngle - lastPeak) > 5) {
+                                   sessionStatsRef.current.angleHistory.push(parseFloat(rightElbowAngle.toFixed(1)));
+                              }
+                          }
 
                           // Update Stability (Shoulder Y Variance)
                           sessionStatsRef.current.shoulderYSum += landmarks[12].y;

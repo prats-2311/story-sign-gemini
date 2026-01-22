@@ -48,10 +48,14 @@ async def analyze_session(request: Request):
         Output format: Markdown.
         """
 
-        # Use standard GenAI client for non-streaming response (Deep Think)
+        # Use Gemini 3 Flash Preview (Confirmed Availability)
+        # This provides the superior reasoning capabilities for the Hackathon.
         response = client.models.generate_content(
-            model="gemini-2.0-flash-exp", # Using latest stable flash for static tasks
-            contents=prompt
+            model="gemini-3-flash-preview", 
+            contents=prompt,
+            config=types.GenerateContentConfig(
+                thinking_config=types.ThinkingConfig(include_thoughts=True)
+            )
         )
         
         return {"report": response.text}

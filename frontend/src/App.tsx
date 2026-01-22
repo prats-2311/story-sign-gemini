@@ -37,8 +37,9 @@ function App() {
       // Create a data-driven summary
       const biomechanicsSummary = `
       Session Biometrics:
-      - Range of Motion (Right Elbow): ${Math.round(stats.minRightElbowAngle)}° (Flexion) to ${Math.round(stats.maxRightElbowAngle)}° (Extension).
-      - Avg Shoulder Stability: ${(stats.shoulderYSum / stats.frameCount || 0).toFixed(4)} (Y-axis variance).
+      - Range of Motion: ${Math.round(stats.minRightElbowAngle)}° to ${Math.round(stats.maxRightElbowAngle)}°.
+      - Repetition Peaks (Fatigue Check): [${stats.angleHistory.slice(-5).join(", ")}] (Last 5 reps).
+      - Avg Shoulder Stability: ${(stats.shoulderYSum / stats.frameCount || 0).toFixed(4)}.
       `;
 
       const response = await fetch('/api/analyze_session', { // note: need proxy or full URL if CORS not set
