@@ -129,6 +129,10 @@ async def stream(websocket: WebSocket, mode: str):
 
                         try:
                             msg = json.loads(data)
+                            
+                            # [NEW PROTOCOL]: Frontend controls the turn trigger
+                            should_trigger = msg.get("trigger", False)
+                            
                             if "text" in msg:
                                 text_msg = msg["text"]
                                 # Check for Data Header like [POSE_DATA]
@@ -137,14 +141,11 @@ async def stream(websocket: WebSocket, mode: str):
                                     try:
                                         tag = text_msg[:tag_end+1]
                                         json_data = text_msg[tag_end+2:]
-                                        
                                         landmarks = json.loads(json_data)
                                         
-                                        # [OPTIMIZATION]: Filter for ONLY needed landmarks and use a compact string
-                                        # Reconnect Critical Landmarks: Shoulders(11,12), Elbows(13,14), Wrists(15,16)
+                                        # [OPTIMIZATION]
                                         RECONNECT_LANDMARKS = {11, 12, 13, 14, 15, 16}
                                         compact_parts = []
-                                        
                                         if isinstance(landmarks, list):
                                             for idx, lm in enumerate(landmarks):
                                                 if idx in RECONNECT_LANDMARKS:
@@ -152,19 +153,16 @@ async def stream(websocket: WebSocket, mode: str):
                                                     y = round(lm.get("y", 0), 2)
                                                     compact_parts.append(f"{idx}:{x},{y}")
                                         
-                                        # Format: [POSE] 11:0.45,0.22|12:0.55,0.23...
                                         optimized_msg = f"[POSE] {'|'.join(compact_parts)}"
                                         
-                                        # [FIX]: Heartbeat Protocol
-                                        # Send pose data WITHOUT end_of_turn (False).
-                                        # This builds "context" at low frequency without forcing the model to start a response.
-                                        await gemini_output_queue.put((session.send, {"input": optimized_msg, "end_of_turn": False}))
+                                        # Use the Frontend's Trigger Decision
+                                        await gemini_output_queue.put((session.send, {"input": optimized_msg, "end_of_turn": should_trigger}))
 
                                     except Exception as e:
                                         logger.warning(f"Error optimizing data: {e}")
-                                        await gemini_output_queue.put((session.send, {"input": text_msg, "end_of_turn": True}))
+                                        await gemini_output_queue.put((session.send, {"input": text_msg, "end_of_turn": should_trigger}))
                                 else:
-                                    # User text messages always trigger a turn
+                                    # Regular chat (Default to Trigger unless silenced explicitly)
                                     logger.debug(f"Sending text to Gemini: {text_msg}")
                                     await gemini_output_queue.put((session.send, {"input": text_msg, "end_of_turn": True}))
 
@@ -177,11 +175,12 @@ async def stream(websocket: WebSocket, mode: str):
                                     if mime_type.startswith("audio/"):
                                         await gemini_output_queue.put((session.send_realtime_input, {"audio": {"mime_type": mime_type, "data": base64_data}}))
                                     elif mime_type.startswith("image/"):
-                                        # [FIX]: Use the 1 FPS Video Frame as the "Heartbeat Trigger"
-                                        # 1. Send the image data
+                                        # [FIX]: Make Video Passive ("Silent Observer")
+                                        # Only trigger if frontend asked for it (e.g., Rep Completed)
                                         await gemini_output_queue.put((session.send_realtime_input, {"video": {"mime_type": mime_type, "data": base64_data}}))
-                                        # 2. Trigger the turn explicitly.
-                                        await gemini_output_queue.put((session.send, {"input": "Check form.", "end_of_turn": True}))
+                                        
+                                        if should_trigger:
+                                             await gemini_output_queue.put((session.send, {"input": "Analyze form now.", "end_of_turn": True}))
 
                                 except Exception as send_err:
                                     logger.error(f"ERROR: queuing realtime input failed: {send_err}")

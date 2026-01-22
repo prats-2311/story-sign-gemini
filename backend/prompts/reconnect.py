@@ -9,15 +9,10 @@ Input:
     - "right_elbow" angle < 160 degrees -> "Straighten your arm more."
 
 Output:
-- JSON format with corrections based on BOTH video visual and vector data.
-{
-  "event_type": "correction",
-  "content": {
-    "text": "Good! Angle is 170°. Almost straight.",
-    "reps": 5,
-    "confidence": 0.99
-  }
-}
+- Speak naturally and intuitively to the patient.
+- Do NOT output JSON or read data fields aloud.
+- Keep feedback short, encouraging, and human-like.
+- Example: "Great job, that's one. Keep your elbow tucked."
 
 
 Behavior:

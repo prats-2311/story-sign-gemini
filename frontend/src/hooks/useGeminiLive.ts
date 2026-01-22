@@ -7,7 +7,9 @@ type PoseDetector = (video: HTMLVideoElement) => any;
 
 interface UseGeminiLiveProps {
   mode: InteractionMode;
-  detectPose?: PoseDetector; // New optional prop
+  detectPose?: PoseDetector;
+  onLandmarks?: (landmarks: any) => void;
+  videoRef: React.RefObject<HTMLVideoElement | null>; // [FIX] Driven by App.tsx
 }
 
 // --- HELPER: Vector Math for Angles ---
@@ -18,10 +20,17 @@ function calculateAngle(a: any, b: any, c: any) {
     return angle;
 }
 
-export function useGeminiLive({ mode, detectPose }: UseGeminiLiveProps) {
+export function useGeminiLive({ mode, detectPose, onLandmarks, videoRef }: UseGeminiLiveProps) {
   const [isConnected, setIsConnected] = useState(false);
   const [messages, setMessages] = useState<string[]>([]);
   const wsRef = useRef<WebSocket | null>(null);
+
+  
+  // const videoRef = useRef<HTMLVideoElement | null>(null); // [REMOVED] Shadowing prop
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const videoIntervalRef = useRef<number | null>(null);
+  const poseIntervalRef = useRef<number | null>(null); // [FIX] Restored
+  const videoStreamRef = useRef<MediaStream | null>(null); // [FIX] Restored
 
   // --- SESSION STATISTICS ---
   const sessionStatsRef = useRef({
@@ -30,21 +39,21 @@ export function useGeminiLive({ mode, detectPose }: UseGeminiLiveProps) {
       avgShoulderStability: 0, 
       frameCount: 0,
       shoulderYSum: 0,
-      angleHistory: [] as number[] // [NEW] Track peaks for fatigue analysis
+      angleHistory: [] as number[],
+      repCount: 0, // [FIX] Added
+      repState: 'DOWN' as 'DOWN' | 'UP' // [FIX] Added
   });
 
   const getSessionStats = useCallback(() => {
      return sessionStatsRef.current;
   }, []);
-  const audioContextRef = useRef<AudioContext | null>(null); // For Microphone (16kHz)
-  const playbackContextRef = useRef<AudioContext | null>(null); // For Speakers (24kHz)
+
+  // [FIX] Restore missing refs for Audio/Media
+  const audioContextRef = useRef<AudioContext | null>(null); 
+  const playbackContextRef = useRef<AudioContext | null>(null); 
   const mediaStreamRef = useRef<MediaStream | null>(null);
   const processorRef = useRef<ScriptProcessorNode | null>(null);
   const sourceRef = useRef<MediaStreamAudioSourceNode | null>(null);
-  
-  const videoRef = useRef<HTMLVideoElement | null>(null);
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const videoIntervalRef = useRef<number | null>(null);
 
   // --- AUDIO PLAYBACK ---
   const nextStartTimeRef = useRef<number>(0);
@@ -175,106 +184,127 @@ export function useGeminiLive({ mode, detectPose }: UseGeminiLiveProps) {
   }, []);
 
   // --- VIDEO & POSE MULTIPLEXING ---
-  const poseIntervalRef = useRef<number | null>(null);
+  // const poseIntervalRef = useRef<number | null>(null); // Moved up
 
   const startVideoStream = useCallback(async () => {
     try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        const stream = await navigator.mediaDevices.getUserMedia({ 
+            video: { width: 640, height: 480, frameRate: 15 } 
+        });
+        videoStreamRef.current = stream;
         
-        if (!videoRef.current) {
-            const vid = document.createElement('video');
-            vid.style.display = 'block'; // Make visible for debugging
-            vid.style.position = 'fixed';
-            vid.style.bottom = '10px';
-            vid.style.right = '10px';
-            vid.style.width = '240px'; 
-            vid.style.zIndex = '1000';
-            vid.autoplay = true;
-            vid.playsInline = true;
-            document.body.appendChild(vid);
-            videoRef.current = vid;
-        }
-        
-        videoRef.current.srcObject = stream;
-        await videoRef.current.play();
-
-        if (!canvasRef.current) {
-            canvasRef.current = document.createElement('canvas');
-            canvasRef.current.width = 640;
-            canvasRef.current.height = 480;
+        // Use the External Ref!
+        if (videoRef.current) {
+            videoRef.current.srcObject = stream;
+            // No need to append to body or set absolute position!
         }
 
-        const ctx = canvasRef.current.getContext('2d');
-        if (!ctx) return;
-
-        // Loop A: Video Stream (Low Frequency - 1 FPS)
+        // --- Loop A: Video Frame Sender (1 FPS) ---
+        // Sends visual context to Gemini.
+        // NOW PASSIVE: "trigger: false"
         videoIntervalRef.current = window.setInterval(() => {
-            if (wsRef.current?.readyState !== WebSocket.OPEN || !videoRef.current || !canvasRef.current) return;
-            
-            // Draw frame to canvas
-            ctx.drawImage(videoRef.current, 0, 0, 640, 480);
+            if (wsRef.current?.readyState === WebSocket.OPEN && videoRef.current) {
+                // [PERF] Reuse canvas ref
+                if (!canvasRef.current) {
+                    canvasRef.current = document.createElement('canvas');
+                    canvasRef.current.width = videoRef.current.videoWidth || 640;
+                    canvasRef.current.height = videoRef.current.videoHeight || 480;
+                }
+                
+                const ctx = canvasRef.current.getContext('2d');
+                if (ctx) {
+                    ctx.drawImage(videoRef.current, 0, 0);
+                    const base64Data = canvasRef.current.toDataURL('image/jpeg', 0.5).split(',')[1];
+                    
+                    // PASSIVE FRAME (No Trigger)
+                    wsRef.current.send(JSON.stringify({
+                        mime_type: "image/jpeg",
+                        data: base64Data,
+                        trigger: false 
+                    }));
+                    setDataSentCount(c => c + 1);
+                }
+            }
+        }, 1000);
 
-            // Send Video Frame
-            const base64Data = canvasRef.current.toDataURL('image/jpeg', 0.8).split(',')[1];
-            wsRef.current.send(JSON.stringify({
-                mime_type: "image/jpeg",
-                data: base64Data
-            }));
-        }, 1000); 
-
-        // Loop B: Pose Tracking (High Frequency - 4 FPS)
+        // --- Loop B: Pose Tracking (High Frequency - 4 FPS) ---
+        // Handles "Smart Counting" and triggers Gemini only on events.
         if (detectPose) {
              poseIntervalRef.current = window.setInterval(() => {
                  if (wsRef.current?.readyState !== WebSocket.OPEN || !videoRef.current) return;
 
                  const landmarks = detectPose(videoRef.current);
                  if (landmarks) {
-                      // 1. Send Data
-                      wsRef.current.send(JSON.stringify({
-                          text: `[POSE_DATA] ${JSON.stringify(landmarks)}`
-                      }));
-                      setDataSentCount(c => c + 1);
+                      if (onLandmarks) onLandmarks(landmarks);
 
-                      // 2. Calculate Stats (Right Arm Focus for Demo)
-                      // Landmarks: 12 (R_Shoulder), 14 (R_Elbow), 16 (R_Wrist)
+                      // 1. Calculate Biometrics
+                      let shouldTrigger = false;
+                      let triggerMessage = "";
+
                       if (landmarks[12] && landmarks[14] && landmarks[16]) {
-                          const rightElbowAngle = calculateAngle(landmarks[12], landmarks[14], landmarks[16]);
+                          const angle = calculateAngle(landmarks[12], landmarks[14], landmarks[16]);
                           
-                          // Update Min/Max
-                          if (rightElbowAngle < sessionStatsRef.current.minRightElbowAngle) sessionStatsRef.current.minRightElbowAngle = rightElbowAngle;
+                          // --- SMART REP COUNTER (State Machine) ---
+                          const { repState } = sessionStatsRef.current;
                           
-                          // Track Peak Extension (Max Angle) History to detect fatigue
-                          // Logic: If angle > 160 and we haven't logged one recently (simple debounce)
-                          if (rightElbowAngle > sessionStatsRef.current.maxRightElbowAngle) {
-                              sessionStatsRef.current.maxRightElbowAngle = rightElbowAngle;
+                          // DOWN Phase (Flexion) - Reset if < 50 deg
+                          if (repState === 'DOWN' && angle < 50) {
+                              sessionStatsRef.current.repState = 'UP'; // Prepared
+                              console.log("🦾 FLEX DETECTED (UP Phase)");
+                          }
+                          
+                          // UP Phase (Extension) - Count if > 165 deg
+                          else if (repState === 'UP' && angle > 165) {
+                              sessionStatsRef.current.repState = 'DOWN';
+                              sessionStatsRef.current.repCount += 1;
+                              
+                              // [TRIGGER EVENT]
+                              shouldTrigger = true;
+                              triggerMessage = `[EVENT] Repetition ${sessionStatsRef.current.repCount} Completed. Elbow Angle reached ${angle.toFixed(1)}°.`;
+                              console.log("✅ REP COMPLETED:", sessionStatsRef.current.repCount);
+                              
+                              // Log for Report
+                              sessionStatsRef.current.angleHistory.push(parseFloat(angle.toFixed(1)));
                           }
 
-                          // Simple "Rep Peak" Logger: if we hit full extension, log it
-                          // (In a real app, we'd use a state machine for "Up/Down" phases)
-                          if (rightElbowAngle > 150) {
-                              const lastPeak = sessionStatsRef.current.angleHistory[sessionStatsRef.current.angleHistory.length-1] || 0;
-                              // Only log if it's a "new" peak (different from last logged)
-                              if (Math.abs(rightElbowAngle - lastPeak) > 5) {
-                                   sessionStatsRef.current.angleHistory.push(parseFloat(rightElbowAngle.toFixed(1)));
-                              }
-                          }
-
-                          // Update Stability (Shoulder Y Variance)
+                          // Update generic stats
+                          if (angle < sessionStatsRef.current.minRightElbowAngle) sessionStatsRef.current.minRightElbowAngle = angle;
+                          if (angle > sessionStatsRef.current.maxRightElbowAngle) sessionStatsRef.current.maxRightElbowAngle = angle;
                           sessionStatsRef.current.shoulderYSum += landmarks[12].y;
                           sessionStatsRef.current.frameCount++;
                       }
+
+                      // 2. Send Data (Silent or Triggered)
+                      if (shouldTrigger) {
+                          // Event Trigger (The AI "Speaks" now)
+                          wsRef.current.send(JSON.stringify({
+                              text: triggerMessage,
+                              trigger: true
+                          }));
+                      } else {
+                          // Silent Stream (Context only)
+                          wsRef.current.send(JSON.stringify({
+                              text: `[POSE_DATA] ${JSON.stringify(landmarks)}`,
+                              trigger: false
+                          }));
+                      }
+                      
+                      setDataSentCount(c => c + 1);
                  }
-             }, 250); // 4 FPS (Higher resolution for accurate rep counting)
+             }, 250); 
         }
 
-        setMessages(prev => [...prev, "System: Dual-Stream Started (Video 1FPS + Pose 4FPS) 🚀"]);
     } catch (err: any) {
         console.error("Error accessing camera:", err);
         setMessages(prev => [...prev, `Error: Could not access camera (${err.name}: ${err.message})`]);
     }
-  }, [detectPose, mode]);
+  }, [detectPose, mode, onLandmarks, videoRef]);
 
   const stopVideoStream = useCallback(() => {
+    if (videoStreamRef.current) {
+        videoStreamRef.current.getTracks().forEach(track => track.stop());
+        videoStreamRef.current = null;
+    }
     if (videoIntervalRef.current) {
         clearInterval(videoIntervalRef.current);
         videoIntervalRef.current = null;
@@ -283,15 +313,9 @@ export function useGeminiLive({ mode, detectPose }: UseGeminiLiveProps) {
         clearInterval(poseIntervalRef.current);
         poseIntervalRef.current = null;
     }
-    if (videoRef.current) {
-        const stream = videoRef.current.srcObject as MediaStream;
-        if (stream) {
-            stream.getTracks().forEach(track => track.stop());
-        }
-        videoRef.current.remove();
-        videoRef.current = null; 
-    }
-  }, []);
+    // Clear Ref
+    if (videoRef.current) videoRef.current.srcObject = null;
+  }, [videoRef]);
 
   const disconnect = useCallback(() => {
     if (wsRef.current) {
