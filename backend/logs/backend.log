@@ -107,3 +107,233 @@
 2026-01-22 16:29:26,705 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
 2026-01-22 16:29:30,707 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
 2026-01-22 16:29:53,770 - story_sign - INFO - Client disconnected
+2026-01-22 16:40:06,252 - story_sign - ERROR - Error receiving from Gemini: received 1011 (internal error) Deadline expired before operation could complete.; then sent 1011 (internal error) Deadline expired before operation could complete.
+2026-01-22 18:34:44,600 - story_sign - INFO - Loaded GEMINI_API_KEY: AIza...DBxE
+2026-01-22 18:45:30,527 - story_sign - INFO - Loaded GEMINI_API_KEY: AIza...DBxE
+2026-01-22 18:56:09,939 - story_sign - INFO - Loaded GEMINI_API_KEY: AIza...DBxE
+2026-01-22 19:32:03,203 - story_sign - INFO - Loaded GEMINI_API_KEY: AIza...DBxE
+2026-01-22 19:32:22,706 - story_sign - INFO - Client connected in mode: RECONNECT
+2026-01-22 19:32:22,708 - story_sign - INFO - Connecting to Gemini with model: gemini-2.0-flash-exp
+2026-01-22 19:32:23,457 - story_sign - INFO - Connected to Gemini API
+2026-01-22 19:32:29,189 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 19:32:29,940 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 19:32:30,195 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 19:32:30,575 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 19:32:31,455 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 19:32:31,810 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 19:32:31,940 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 19:32:48,323 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 19:32:49,745 - story_sign - INFO - Client disconnected
+2026-01-22 19:35:10,498 - story_sign - INFO - Loaded GEMINI_API_KEY: AIza...DBxE
+2026-01-22 19:35:25,327 - story_sign - INFO - Client connected in mode: RECONNECT
+2026-01-22 19:35:25,327 - story_sign - INFO - Connecting to Gemini with model: gemini-2.0-flash-exp
+2026-01-22 19:35:25,782 - story_sign - INFO - Connected to Gemini API
+2026-01-22 19:35:41,333 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 19:35:44,709 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 19:35:44,826 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 19:35:47,451 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 19:35:47,699 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 19:35:48,075 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 19:35:48,193 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 19:35:48,326 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 19:35:48,446 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 19:35:48,574 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 19:35:48,708 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 19:35:48,825 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 19:35:49,077 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 19:35:49,339 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 19:35:49,576 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 19:35:49,695 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 19:36:27,577 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 19:36:27,708 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 19:36:27,825 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 19:36:27,946 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 19:36:28,074 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 19:36:28,194 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 19:36:30,823 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 19:36:33,590 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 19:36:33,704 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 19:36:33,824 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 19:36:33,945 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 19:36:34,074 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 19:36:34,946 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 19:36:37,694 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 19:36:37,827 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 19:36:37,957 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 19:36:38,072 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 19:36:38,207 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 19:36:38,339 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 19:36:39,577 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 19:36:39,826 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 19:36:40,075 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 19:36:40,326 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 19:36:41,454 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 19:36:41,694 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 19:36:42,946 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 19:36:43,329 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 19:36:43,707 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 19:36:45,825 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 19:36:46,075 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 19:36:46,207 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 19:36:47,396 - story_sign - INFO - Client disconnected
+2026-01-22 19:37:58,279 - story_sign - INFO - Client connected in mode: RECONNECT
+2026-01-22 19:37:58,280 - story_sign - INFO - Connecting to Gemini with model: gemini-2.0-flash-exp
+2026-01-22 19:37:58,922 - story_sign - INFO - Connected to Gemini API
+2026-01-22 19:38:28,191 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 19:38:51,325 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 19:39:46,514 - story_sign - INFO - Client disconnected
+2026-01-22 19:42:31,438 - story_sign - INFO - Loaded GEMINI_API_KEY: AIza...DBxE
+2026-01-22 19:42:40,064 - story_sign - INFO - Loaded GEMINI_API_KEY: AIza...DBxE
+2026-01-22 19:42:48,496 - story_sign - INFO - Client connected in mode: RECONNECT
+2026-01-22 19:42:48,497 - story_sign - INFO - Connecting to Gemini with model: gemini-2.0-flash-exp
+2026-01-22 19:42:49,059 - story_sign - INFO - Connected to Gemini API
+2026-01-22 19:42:53,606 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 19:44:08,212 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 19:44:08,341 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 19:44:44,711 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 19:44:44,959 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 19:44:45,220 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 19:44:50,880 - story_sign - INFO - Client disconnected
+2026-01-22 20:13:02,210 - story_sign - INFO - Loaded GEMINI_API_KEY: AIza...DBxE
+2026-01-22 20:13:18,068 - story_sign - INFO - Client connected in mode: RECONNECT
+2026-01-22 20:13:18,070 - story_sign - INFO - Connecting to Gemini with model: gemini-2.0-flash-exp
+2026-01-22 20:13:18,440 - story_sign - INFO - Connected to Gemini API
+2026-01-22 20:14:01,716 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:14:01,846 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:14:02,712 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:14:07,842 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:14:07,962 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:14:08,212 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:14:08,343 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:14:14,046 - story_sign - INFO - Client disconnected
+2026-01-22 20:16:58,990 - story_sign - INFO - Loaded GEMINI_API_KEY: AIza...DBxE
+2026-01-22 20:19:23,554 - story_sign - INFO - Loaded GEMINI_API_KEY: AIza...DBxE
+2026-01-22 20:19:40,908 - story_sign - INFO - Client connected in mode: RECONNECT
+2026-01-22 20:19:40,909 - story_sign - INFO - Connecting to Gemini with model: gemini-2.0-flash-exp
+2026-01-22 20:19:41,625 - story_sign - INFO - Connected to Gemini API
+2026-01-22 20:19:48,959 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:19:49,078 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:19:49,130 - story_sign - INFO - Client disconnected
+2026-01-22 20:20:03,815 - story_sign - INFO - Loaded GEMINI_API_KEY: AIza...DBxE
+2026-01-22 20:20:11,613 - story_sign - INFO - Client connected in mode: RECONNECT
+2026-01-22 20:20:11,613 - story_sign - INFO - Connecting to Gemini with model: gemini-2.0-flash-exp
+2026-01-22 20:20:12,154 - story_sign - INFO - Connected to Gemini API
+2026-01-22 20:20:18,506 - story_sign - INFO - Client disconnected
+2026-01-22 20:20:25,752 - story_sign - INFO - Client connected in mode: RECONNECT
+2026-01-22 20:20:25,753 - story_sign - INFO - Connecting to Gemini with model: gemini-2.0-flash-exp
+2026-01-22 20:20:26,675 - story_sign - INFO - Connected to Gemini API
+2026-01-22 20:20:57,112 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:20:57,239 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:21:06,479 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:21:06,610 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:21:08,230 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:21:08,362 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:21:09,612 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:21:09,743 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:21:14,742 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:21:14,859 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:21:34,988 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:21:35,110 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:21:39,742 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:21:39,858 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:21:40,109 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:21:40,229 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:21:47,112 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:21:47,239 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:21:56,798 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:21:56,799 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:21:56,799 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:21:56,799 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:21:56,799 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:21:56,800 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:21:56,800 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:21:56,811 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:21:57,105 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:21:57,223 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:21:58,737 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:21:58,852 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:21:59,103 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:22:02,856 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:22:03,109 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:22:15,233 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:22:15,361 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:22:17,736 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:22:17,867 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:22:24,440 - story_sign - INFO - Client disconnected
+2026-01-22 20:24:32,759 - story_sign - INFO - Loaded GEMINI_API_KEY: AIza...DBxE
+2026-01-22 20:24:51,235 - story_sign - INFO - Client connected in mode: RECONNECT
+2026-01-22 20:24:51,238 - story_sign - INFO - Connecting to Gemini with model: gemini-2.0-flash-exp
+2026-01-22 20:24:51,894 - story_sign - INFO - Connected to Gemini API
+2026-01-22 20:24:57,608 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:25:02,858 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:25:07,358 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:25:11,229 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:25:11,358 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:25:12,855 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:25:16,609 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:25:23,227 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:25:23,357 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:25:28,977 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:25:34,857 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:25:40,360 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:25:44,860 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:25:49,477 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:25:54,976 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:25:55,726 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:25:56,031 - story_sign - INFO - Client disconnected
+2026-01-22 20:29:37,822 - story_sign - INFO - Loaded GEMINI_API_KEY: AIza...DBxE
+2026-01-22 20:29:44,319 - story_sign - INFO - Client connected in mode: RECONNECT
+2026-01-22 20:29:44,320 - story_sign - INFO - Connecting to Gemini with model: gemini-2.0-flash-exp
+2026-01-22 20:29:44,770 - story_sign - INFO - Connected to Gemini API
+2026-01-22 20:29:50,545 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:29:55,545 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:30:00,441 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:30:04,796 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:30:08,926 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:30:11,796 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:30:12,176 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:30:16,294 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:30:20,045 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:30:25,545 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:30:29,804 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:30:34,045 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:30:38,175 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:30:42,177 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:31:19,766 - story_sign - INFO - Client disconnected
+2026-01-22 20:33:57,504 - story_sign - INFO - Loaded GEMINI_API_KEY: AIza...DBxE
+2026-01-22 20:34:04,203 - story_sign - INFO - Client connected in mode: RECONNECT
+2026-01-22 20:34:04,203 - story_sign - INFO - Connecting to Gemini with model: gemini-2.0-flash-exp
+2026-01-22 20:34:04,949 - story_sign - INFO - Connected to Gemini API
+2026-01-22 20:34:09,609 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:34:14,227 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:34:18,228 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:34:22,608 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:34:26,607 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:34:30,727 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:34:34,859 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:34:38,858 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:34:42,479 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:34:43,229 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:34:46,609 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:34:51,858 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:35:31,738 - story_sign - INFO - Client disconnected
+2026-01-22 20:37:54,226 - story_sign - INFO - Loaded GEMINI_API_KEY: AIza...DBxE
+2026-01-22 20:38:02,206 - story_sign - INFO - Client connected in mode: RECONNECT
+2026-01-22 20:38:02,208 - story_sign - INFO - Connecting to Gemini with model: gemini-2.0-flash-exp
+2026-01-22 20:38:02,926 - story_sign - INFO - Connected to Gemini API
+2026-01-22 20:38:06,825 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:38:11,193 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:38:15,575 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:38:19,827 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:38:23,574 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:38:27,324 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:38:27,827 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:38:28,195 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:38:28,325 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:38:32,576 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:38:36,695 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:38:41,076 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:38:45,193 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:38:49,325 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:38:53,196 - story_sign - WARNING - Error optimizing data: Expecting value: line 1 column 1 (char 0)
+2026-01-22 20:39:45,233 - story_sign - INFO - Client disconnected

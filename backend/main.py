@@ -58,7 +58,23 @@ async def analyze_session(request: Request):
             )
         )
         
-        return {"report": response.text}
+        # Extract Thoughts
+        thoughts = []
+        try:
+            for part in response.candidates[0].content.parts:
+                # Check for thought parts (experimental attribute)
+                if hasattr(part, "thought") and part.thought:
+                     thoughts.append(part.text)
+                # Fallback: Check if it looks like a thought block
+                elif "Thinking Process:" in part.text:
+                     thoughts.append(part.text)
+        except Exception:
+            pass
+        
+        return {
+            "report": response.text, 
+            "thoughts": "\n".join(thoughts) if thoughts else "Processing clinical data..."
+        }
     except Exception as e:
         logger.error(f"Error in deep think analysis: {e}")
         return {"report": "Could not generate report at this time."}
@@ -144,7 +160,7 @@ async def stream(websocket: WebSocket, mode: str):
                                         landmarks = json.loads(json_data)
                                         
                                         # [OPTIMIZATION]
-                                        RECONNECT_LANDMARKS = {11, 12, 13, 14, 15, 16}
+                                        RECONNECT_LANDMARKS = {11, 12, 13, 14, 15, 16, 23, 24}
                                         compact_parts = []
                                         if isinstance(landmarks, list):
                                             for idx, lm in enumerate(landmarks):

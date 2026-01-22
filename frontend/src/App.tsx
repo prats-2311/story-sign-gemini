@@ -3,11 +3,14 @@ import { useGeminiLive } from './hooks/useGeminiLive';
 import { usePoseDetection } from './hooks/usePoseDetection'; 
 import { SpatialAngleGauge } from './components/SpatialAngleGauge';
 import { ThinkingLog } from './components/ThinkingLog';
+import { HistoryGraph } from './components/HistoryGraph'; // [NEW]
+import { useSessionHistory } from './hooks/useSessionHistory'; // [NEW]
 import './App.css';
 
 function App() {
   // --- STATE ---
   const { isModelLoaded, detectPose } = usePoseDetection();
+  const { history, saveSession } = useSessionHistory(); // [NEW] History Hook
   
   // Real-time Landmarks state for Spatial UI
   const [currentLandmarks, setCurrentLandmarks] = useState<any>(null);
@@ -17,7 +20,7 @@ function App() {
   // [FIX] Video Ref for the Main Canvas
   const videoRef = useRef<HTMLVideoElement>(null);
 
-  const { isConnected, messages, connect, disconnect, startAudioStream, stopAudioStream, startVideoStream, stopVideoStream, dataSentCount, getSessionStats } = useGeminiLive({ 
+  const { isConnected, messages, connect, disconnect, startAudioStream, stopAudioStream, startVideoStream, stopVideoStream, dataSentCount, getSessionStats, feedbackStatus } = useGeminiLive({ 
       mode: 'RECONNECT', 
       detectPose,
       videoRef, // [NEW] Pass the ref
@@ -40,6 +43,7 @@ function App() {
 
   // UI States
   const [report, setReport] = useState<string | null>(null);
+  const [thoughts, setThoughts] = useState<string | null>(null); // [NEW]
   const [isAnalyzeLoading, setIsAnalyzeLoading] = useState(false);
   const [isMicActive, setIsMicActive] = useState(false);
 
@@ -54,6 +58,14 @@ function App() {
   };
 
   const handleStopSession = () => {
+      // [NEW] Auto-Save Session Logic
+      if (isConnected) {
+          const stats = getSessionStats();
+          if (stats.frameCount > 10) { // Only save if meaningful
+             saveSession(stats);
+          }
+      }
+
       stopAudioStream();
       setIsMicActive(false);
       stopVideoStream();
@@ -62,6 +74,7 @@ function App() {
 
   const handleAnalyzeSession = async () => {
     setIsAnalyzeLoading(true);
+    setThoughts("Initializing Clinical Reasoning..."); // Initial State
     try {
       const transcript = messages.join("\n");
       const stats = getSessionStats();
@@ -83,11 +96,23 @@ function App() {
       });
       const data = await response.json();
       setReport(data.report);
+      if (data.thoughts) setThoughts(data.thoughts); // Update with real thoughts
     } catch (e) {
       console.error(e);
       setReport("Failed to generate report.");
+      setThoughts("Analysis Failed.");
     }
     setIsAnalyzeLoading(false);
+  };
+
+  // Status Colors
+  const getBorderColor = () => {
+      switch (feedbackStatus) {
+          case 'critical': return "border-8 border-red-500 shadow-[0_0_100px_rgba(239,68,68,0.8)] z-50"; 
+          case 'warning': return "border-8 border-amber-500 shadow-[0_0_50px_rgba(245,158,11,0.6)] z-50";
+          case 'success': return "border-8 border-green-500 shadow-[0_0_50px_rgba(34,197,94,0.6)] z-50";
+          default: return "border-2 border-neural-800 shadow-2xl";
+      }
   };
 
   return (
@@ -116,7 +141,7 @@ function App() {
       <main className="pt-20 pb-20 px-6 max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6 h-[calc(100vh-80px)]">
           
           {/* LEFT: Camera / Observer HUD */}
-          <section className="lg:col-span-8 relative bg-black rounded-2xl overflow-hidden border border-neural-800 shadow-2xl">
+          <section className={`lg:col-span-8 relative bg-black rounded-2xl overflow-hidden border transition-all duration-300 ${getBorderColor()}`}>
               {/* [FIX] The Video Element is now part of the layout */}
               <video 
                 ref={videoRef}
@@ -152,6 +177,15 @@ function App() {
                   </div>
               </div>
 
+               {/* [NEW] History Graph Card */}
+               {history.length > 0 && (
+                  <HistoryGraph 
+                      data={history.map(h => h.romMax).slice(-5)} 
+                      label="Recovery Trend (Max ROM)" 
+                      color="#00F2FF" 
+                  />
+               )}
+
               {/* Controls */}
               <div className="bg-neural-800 p-6 rounded-2xl border border-neural-700 flex-1 flex flex-col justify-end gap-3">
                   {!isConnected ? (
@@ -183,7 +217,7 @@ function App() {
       </main>
 
       {/* 3. Thinking Overlay */}
-      <ThinkingLog isThinking={isAnalyzeLoading} />
+      <ThinkingLog isThinking={isAnalyzeLoading} thoughts={thoughts} />
 
       {/* 4. Report Modal (Bento Grid Style) */}
       {report && (
@@ -193,7 +227,7 @@ function App() {
                     <h2 className="text-2xl font-bold text-white flex items-center gap-2">
                         <span className="text-cyber-cyan">🧠</span> GEMINI 3 ANALYSIS
                     </h2>
-                    <button onClick={() => setReport(null)} className="text-gray-400 hover:text-white">✕ CLOSE</button>
+                    <button onClick={() => { setReport(null); setThoughts(null); }} className="text-gray-400 hover:text-white">✕ CLOSE</button>
                 </div>
                 
                 <div className="flex-1 overflow-y-auto p-8">

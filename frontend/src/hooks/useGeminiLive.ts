@@ -23,6 +23,7 @@ function calculateAngle(a: any, b: any, c: any) {
 export function useGeminiLive({ mode, detectPose, onLandmarks, videoRef }: UseGeminiLiveProps) {
   const [isConnected, setIsConnected] = useState(false);
   const [messages, setMessages] = useState<string[]>([]);
+  const [feedbackStatus, setFeedbackStatus] = useState<'neutral' | 'success' | 'warning' | 'critical'>('neutral');
   const wsRef = useRef<WebSocket | null>(null);
 
   
@@ -40,8 +41,10 @@ export function useGeminiLive({ mode, detectPose, onLandmarks, videoRef }: UseGe
       frameCount: 0,
       shoulderYSum: 0,
       angleHistory: [] as number[],
-      repCount: 0, // [FIX] Added
-      repState: 'DOWN' as 'DOWN' | 'UP' // [FIX] Added
+      repCount: 0, 
+      repState: 'DOWN' as 'DOWN' | 'UP',
+      lastWristPos: null as any, // [FIX] Added for Velocity Check
+      lastShoulderY: null as number | null // [FIX] For Stability
   });
 
   const getSessionStats = useCallback(() => {
@@ -241,38 +244,148 @@ export function useGeminiLive({ mode, detectPose, onLandmarks, videoRef }: UseGe
                       let shouldTrigger = false;
                       let triggerMessage = "";
 
-                      if (landmarks[12] && landmarks[14] && landmarks[16]) {
-                          const angle = calculateAngle(landmarks[12], landmarks[14], landmarks[16]);
-                          
-                          // --- SMART REP COUNTER (State Machine) ---
-                          const { repState } = sessionStatsRef.current;
-                          
-                          // DOWN Phase (Flexion) - Reset if < 50 deg
-                          if (repState === 'DOWN' && angle < 50) {
-                              sessionStatsRef.current.repState = 'UP'; // Prepared
-                              console.log("🦾 FLEX DETECTED (UP Phase)");
+                      // --- EXERCISE LOGIC ROUTER ---
+                      // Landmarks: 11/12 (Shoulders), 13/14 (Elbows), 23/24 (Hips)
+                      
+                      const rightHip = landmarks[24];
+                      const rightShoulder = landmarks[12];
+                      const rightElbow = landmarks[14];
+                      const rightWrist = landmarks[16];
+
+                      if (rightShoulder && rightElbow && rightHip && rightWrist) {
+                          let velocity = 0;
+                          // A0. SAFETY CHECK: Velocity (Jerk Detection)
+                          // Check dist moved by wrist since last frame (125ms ago)
+                          const lastWrist = sessionStatsRef.current.lastWristPos;
+                          if (lastWrist) {
+                              const dist = Math.sqrt(Math.pow(rightWrist.x - lastWrist.x, 2) + Math.pow(rightWrist.y - lastWrist.y, 2));
+                              velocity = dist; // dist per 125ms
+                              
+                              // Threshold: > 0.35 (was 0.15) to avoid false positives during normal reps
+                              if (velocity > 0.35) {
+                                   shouldTrigger = true;
+                                   triggerMessage = `[SAFETY_STOP] High Velocity Detected (Speed: ${velocity.toFixed(2)}). Possible Spasm or Drop. STOP IMMEDIATELY.`;
+                                   console.warn("🚨 SAFETY STOP: High Velocity Detected", velocity);
+                                   // [IMMEDIATE FEEDBACK]
+                                   setFeedbackStatus('critical');
+                                   setTimeout(() => setFeedbackStatus('neutral'), 4000);
+                              }
                           }
-                          
-                          // UP Phase (Extension) - Count if > 165 deg
-                          else if (repState === 'UP' && angle > 165) {
-                              sessionStatsRef.current.repState = 'DOWN';
-                              sessionStatsRef.current.repCount += 1;
-                              
-                              // [TRIGGER EVENT]
+                          // Update stats
+                          sessionStatsRef.current.lastWristPos = { x: rightWrist.x, y: rightWrist.y };
+
+                          // A. HELPER: Vector Logic
+                          // HELPER: Vector Logic
+                          const getVector = (p1: any, p2: any) => ({ x: p2.x - p1.x, y: p2.y - p1.y });
+                          const getMagnitude = (v: any) => Math.sqrt(v.x * v.x + v.y * v.y);
+                          const getDotProduct = (v1: any, v2: any) => v1.x * v2.x + v1.y * v2.y;
+                          const getVectorAngle = (v1: any, v2: any) => {
+                              const dot = getDotProduct(v1, v2);
+                              const mag1 = getMagnitude(v1);
+                              const mag2 = getMagnitude(v2);
+                              if (mag1 === 0 || mag2 === 0) return 0;
+                              const val = Math.max(-1, Math.min(1, dot / (mag1 * mag2)));
+                              return Math.acos(val) * 180 / Math.PI;
+                          };
+
+                          // VECTORS
+                          // Torso: Hip -> Shoulder (Points UP usually)
+                          const torsoVec = getVector(rightHip, rightShoulder); 
+                          // Arm: Shoulder -> Elbow (Points DOWN at rest)
+                          const armVec = getVector(rightShoulder, rightElbow);
+                          // Vertical Reference (UP)
+                          const upVec = { x: 0, y: -1 };
+
+                          // A. SAFETY: Torso Tilt
+                          // Angle between Torso and Straight Up
+                          const leanAngle = getVectorAngle(torsoVec, upVec);
+
+                          if (leanAngle > 15) { 
                               shouldTrigger = true;
-                              triggerMessage = `[EVENT] Repetition ${sessionStatsRef.current.repCount} Completed. Elbow Angle reached ${angle.toFixed(1)}°.`;
-                              console.log("✅ REP COMPLETED:", sessionStatsRef.current.repCount);
-                              
-                              // Log for Report
-                              sessionStatsRef.current.angleHistory.push(parseFloat(angle.toFixed(1)));
+                              triggerMessage = `[CORRECTION] Torso Lean Detected (${leanAngle.toFixed(0)}°). Keep your back straight!`;
+                              console.warn("⚠️ CHEATING DETECTED: Torso Lean");
+                              // [IMMEDIATE FEEDBACK]
+                              setFeedbackStatus('warning');
+                              setTimeout(() => setFeedbackStatus('neutral'), 3000);
                           }
 
-                          // Update generic stats
-                          if (angle < sessionStatsRef.current.minRightElbowAngle) sessionStatsRef.current.minRightElbowAngle = angle;
-                          if (angle > sessionStatsRef.current.maxRightElbowAngle) sessionStatsRef.current.maxRightElbowAngle = angle;
-                          sessionStatsRef.current.shoulderYSum += landmarks[12].y;
-                          sessionStatsRef.current.frameCount++;
+                          // B. ABDUCTION
+                          // Angle between Torso (UP) and Arm.
+                          // Rest (Arm Down): Up vs Down = 180 deg.
+                          // T-Pose: Up vs Right = 90 deg.
+                          // Overhead: Up vs Up = 0 deg.
+                          const abduction = getVectorAngle(torsoVec, armVec);
+                          
+                          // State Machine
+                          const { repState } = sessionStatsRef.current;
+                          
+                          // Rest (Down) is 180.
+                          // [TUNING] Relaxed 'Down' to >140 to catch people who don't fully relax
+                          if (repState === 'DOWN' && abduction > 140) {
+                              sessionStatsRef.current.repState = 'UP'; // "Reset"
+                          } 
+                          // [TUNING] Relaxed 'Up' to <110 (T-Pose is 90). 
+                          // User reached ~73 in logs. 110 is a safe "Active" zone.
+                          else if (repState === 'UP' && abduction < 110) {
+                              sessionStatsRef.current.repState = 'DOWN';
+                              sessionStatsRef.current.repCount += 1;
+                              shouldTrigger = true;
+                              triggerMessage = `[EVENT] Abduction Rep ${sessionStatsRef.current.repCount} Completed. Good form.`;
+                              // [IMMEDIATE FEEDBACK]
+                              setFeedbackStatus('success');
+                              setTimeout(() => setFeedbackStatus('neutral'), 2000);
+                          }
+
+                          // ---------------------------------------------------------
+                          // DEBUG: Real-time Physics Logs
+                          // ---------------------------------------------------------
+                          // ---------------------------------------------------------
+                          // DEBUG: Real-time Physics Logs
+                          // ---------------------------------------------------------
+                          if (sessionStatsRef.current.frameCount % 5 === 0) { 
+                              console.log(`[PHYSICS LOG] 
+                              > Velocity: ${velocity ? velocity.toFixed(3) : 0}
+                              > Torso Lean: ${leanAngle.toFixed(1)}°
+                              > Abduction: ${abduction.toFixed(1)}°
+                              > RepState: ${repState}
+                              `);
+                          }
+
+                          // C. DATA COLLECTION (For Report)
+                          // 1. Stability (Shoulder Y variance)
+                          // [FIX] Was incorrectly using lastWristPos. Now using lastShoulderY.
+                          const lastShoulderY = sessionStatsRef.current.lastShoulderY || rightShoulder.y;
+                          sessionStatsRef.current.shoulderYSum += Math.abs(rightShoulder.y - lastShoulderY);
+                          sessionStatsRef.current.lastShoulderY = rightShoulder.y; // Update for next frame
+                          
+                          // 2. ROM Tracking
+                          sessionStatsRef.current.minRightElbowAngle = Math.min(sessionStatsRef.current.minRightElbowAngle, abduction);
+                          sessionStatsRef.current.maxRightElbowAngle = Math.max(sessionStatsRef.current.maxRightElbowAngle, abduction);
+
+                          // 3. History (Limit to last 100 for graph/report)
+                          if (sessionStatsRef.current.frameCount % 5 === 0) { // Sample every 5th frame
+                              sessionStatsRef.current.angleHistory.push(parseFloat(abduction.toFixed(1)));
+                              if (sessionStatsRef.current.angleHistory.length > 200) {
+                                  sessionStatsRef.current.angleHistory.shift();
+                              }
+                          }
+                          
+                      } else if (landmarks[12] && landmarks[14] && landmarks[16]) {
+                           // Fallback to Elbow Angle if Hips not visible
+                           const angle = calculateAngle(landmarks[12], landmarks[14], landmarks[16]);
+                           /* ... bicep logic ... */
+                           if (sessionStatsRef.current.repState === 'DOWN' && angle < 50) {
+                              sessionStatsRef.current.repState = 'UP';
+                           } else if (sessionStatsRef.current.repState === 'UP' && angle > 165) {
+                               sessionStatsRef.current.repState = 'DOWN';
+                               sessionStatsRef.current.repCount += 1;
+                               shouldTrigger = true;
+                               triggerMessage = `[EVENT] Bicep Curl ${sessionStatsRef.current.repCount} Completed.`;
+                           }
                       }
+
+                      // Update generic stats (using whatever available)
+                      if (rightElbow) sessionStatsRef.current.frameCount++;
 
                       // 2. Send Data (Silent or Triggered)
                       if (shouldTrigger) {
@@ -291,7 +404,8 @@ export function useGeminiLive({ mode, detectPose, onLandmarks, videoRef }: UseGe
                       
                       setDataSentCount(c => c + 1);
                  }
-             }, 250); 
+                  // --- REF: 8 FPS for High Fidelity ---
+                  }, 125); 
         }
 
     } catch (err: any) {
@@ -352,17 +466,18 @@ export function useGeminiLive({ mode, detectPose, onLandmarks, videoRef }: UseGe
 
         // --- 2. Text/JSON Stream ---
         if (msg.text) {
-             // Try to parse nested JSON events (e.g. "event_type": "correction")
-             try {
-                 const content = JSON.parse(msg.text);
-                 if (content.event_type === "correction") {
-                     // Dispatch: Visual Feedback/Correction
-                     setMessages((prev) => [...prev, `[CORRECTION] ${content.content.text} (Reps: ${content.content.reps})`]);
-                     return; 
-                 }
-             } catch (e) {
-                 // Not JSON, just standard text
+             const lower = msg.text.toUpperCase();
+             if (lower.includes("[SAFETY_STOP]")) {
+                 setFeedbackStatus('critical');
+                 setTimeout(() => setFeedbackStatus('neutral'), 4000);
+             } else if (lower.includes("[CORRECTION]") || lower.includes("TORSO LEAN")) {
+                 setFeedbackStatus('warning');
+                 setTimeout(() => setFeedbackStatus('neutral'), 3000);
+             } else if (lower.includes("[EVENT]")) {
+                 setFeedbackStatus('success'); // Good Rep
+                 setTimeout(() => setFeedbackStatus('neutral'), 2000);
              }
+
              setMessages((prev) => [...prev, `Gemini: ${msg.text}`]);
         }
       } catch (e) {
@@ -392,5 +507,5 @@ export function useGeminiLive({ mode, detectPose, onLandmarks, videoRef }: UseGe
     };
   }, [disconnect]);
 
-  return { isConnected, messages, connect, disconnect, sendMessage, startAudioStream, stopAudioStream, startVideoStream, stopVideoStream, dataSentCount, getSessionStats };
+  return { isConnected, messages, connect, disconnect, sendMessage, startAudioStream, stopAudioStream, startVideoStream, stopVideoStream, dataSentCount, getSessionStats, feedbackStatus };
 }
