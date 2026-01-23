@@ -18,6 +18,17 @@ else:
     logger.info(f"Loaded GEMINI_API_KEY: {api_key[:4]}...{api_key[-4:]}")
 
 app = FastAPI()
+
+# Configure CORS
+from fastapi.middleware.cors import CORSMiddleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # For development; restrict in production
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 session_manager = SessionManager()
 client = genai.Client(api_key=api_key, http_options={"api_version": "v1alpha"})
 
@@ -156,7 +167,11 @@ async def stream(websocket: WebSocket, mode: str):
                                 if tag_end != -1:
                                     try:
                                         tag = text_msg[:tag_end+1]
-                                        json_data = text_msg[tag_end+2:]
+                                        json_data = text_msg[tag_end+2:].strip()
+                                        
+                                        if not json_data:
+                                            raise ValueError("Empty JSON data")
+                                            
                                         landmarks = json.loads(json_data)
                                         
                                         # [OPTIMIZATION]

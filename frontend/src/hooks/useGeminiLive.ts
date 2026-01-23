@@ -1,4 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
+import type { ExerciseConfig, CalibrationData } from '../types/Exercise';
+import { getVector, getVectorAngle } from '../utils/vectorMath';
 
 type InteractionMode = 'ASL' | 'HARMONY' | 'RECONNECT';
 
@@ -7,26 +9,24 @@ type PoseDetector = (video: HTMLVideoElement) => any;
 
 interface UseGeminiLiveProps {
   mode: InteractionMode;
+  exerciseConfig: ExerciseConfig;
   detectPose?: PoseDetector;
   onLandmarks?: (landmarks: any) => void;
   videoRef: React.RefObject<HTMLVideoElement | null>; // [FIX] Driven by App.tsx
 }
 
-// --- HELPER: Vector Math for Angles ---
-function calculateAngle(a: any, b: any, c: any) {
-    const radians = Math.atan2(c.y - b.y, c.x - b.x) - Math.atan2(a.y - b.y, a.x - b.x);
-    let angle = Math.abs(radians * 180.0 / Math.PI);
-    if (angle > 180.0) angle = 360 - angle;
-    return angle;
-}
-
-export function useGeminiLive({ mode, detectPose, onLandmarks, videoRef }: UseGeminiLiveProps) {
+export function useGeminiLive({ mode, exerciseConfig, detectPose, onLandmarks, videoRef }: UseGeminiLiveProps) {
   const [isConnected, setIsConnected] = useState(false);
   const [messages, setMessages] = useState<string[]>([]);
   const [feedbackStatus, setFeedbackStatus] = useState<'neutral' | 'success' | 'warning' | 'critical'>('neutral');
-  const wsRef = useRef<WebSocket | null>(null);
+  const [isCalibrating, setIsCalibrating] = useState(false); // New Calibration State
 
+  const wsRef = useRef<WebSocket | null>(null);
   
+  // Calibration Refs
+  const calibrationRef = useRef<CalibrationData | null>(null);
+  const calibrationBufferRef = useRef<number[]>([]);
+
   // const videoRef = useRef<HTMLVideoElement | null>(null); // [REMOVED] Shadowing prop
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const videoIntervalRef = useRef<number | null>(null);
@@ -199,8 +199,13 @@ export function useGeminiLive({ mode, detectPose, onLandmarks, videoRef }: UseGe
         // Use the External Ref!
         if (videoRef.current) {
             videoRef.current.srcObject = stream;
-            // No need to append to body or set absolute position!
         }
+
+        // Start Calibration Phase
+        setIsCalibrating(true);
+        calibrationBufferRef.current = [];
+        calibrationRef.current = null;
+        setMessages(prev => [...prev, "System: CALIBRATING... STAND STILL."]);
 
         // --- Loop A: Video Frame Sender (1 FPS) ---
         // Sends visual context to Gemini.
@@ -240,162 +245,101 @@ export function useGeminiLive({ mode, detectPose, onLandmarks, videoRef }: UseGe
                  if (landmarks) {
                       if (onLandmarks) onLandmarks(landmarks);
 
-                      // 1. Calculate Biometrics
-                      let shouldTrigger = false;
-                      let triggerMessage = "";
-
-                      // --- EXERCISE LOGIC ROUTER ---
-                      // Landmarks: 11/12 (Shoulders), 13/14 (Elbows), 23/24 (Hips)
-                      
+                      // [GLOBAL] Get Key Landmarks
                       const rightHip = landmarks[24];
                       const rightShoulder = landmarks[12];
                       const rightElbow = landmarks[14];
                       const rightWrist = landmarks[16];
 
-                      if (rightShoulder && rightElbow && rightHip && rightWrist) {
-                          let velocity = 0;
-                          // A0. SAFETY CHECK: Velocity (Jerk Detection)
-                          // Check dist moved by wrist since last frame (125ms ago)
-                          const lastWrist = sessionStatsRef.current.lastWristPos;
-                          if (lastWrist) {
-                              const dist = Math.sqrt(Math.pow(rightWrist.x - lastWrist.x, 2) + Math.pow(rightWrist.y - lastWrist.y, 2));
-                              velocity = dist; // dist per 125ms
+                      // --- PHASE 1: CALIBRATION ---
+                      if (calibrationRef.current === null) {
+                          if (rightHip && rightShoulder) {
+                              const torsoVec = getVector(rightHip, rightShoulder);
+                              const upVec = { x: 0, y: -1 };
+                              const currentLean = getVectorAngle(torsoVec, upVec);
                               
-                              // Threshold: > 0.35 (was 0.15) to avoid false positives during normal reps
-                              if (velocity > 0.35) {
-                                   shouldTrigger = true;
-                                   triggerMessage = `[SAFETY_STOP] High Velocity Detected (Speed: ${velocity.toFixed(2)}). Possible Spasm or Drop. STOP IMMEDIATELY.`;
-                                   console.warn("🚨 SAFETY STOP: High Velocity Detected", velocity);
-                                   // [IMMEDIATE FEEDBACK]
-                                   setFeedbackStatus('critical');
-                                   setTimeout(() => setFeedbackStatus('neutral'), 4000);
+                              calibrationBufferRef.current.push(currentLean);
+                              
+                              if (calibrationBufferRef.current.length > 24) { // ~3 seconds @ 8fps
+                                  const avgLean = calibrationBufferRef.current.reduce((a, b) => a + b, 0) / calibrationBufferRef.current.length;
+                                  calibrationRef.current = { restingTorsoAngle: avgLean };
+                                  setIsCalibrating(false);
+                                  setMessages(prev => [...prev, "System: CALIBRATION COMPLETE. GO!"]);
+                                  // Announce to Gemini?
+                                  wsRef.current.send(JSON.stringify({
+                                      text: `[SYSTEM] Calibration Complete. Resting Torso Lean: ${avgLean.toFixed(1)} degrees.`,
+                                      trigger: false
+                                  }));
                               }
                           }
-                          // Update stats
-                          sessionStatsRef.current.lastWristPos = { x: rightWrist.x, y: rightWrist.y };
-
-                          // A. HELPER: Vector Logic
-                          // HELPER: Vector Logic
-                          const getVector = (p1: any, p2: any) => ({ x: p2.x - p1.x, y: p2.y - p1.y });
-                          const getMagnitude = (v: any) => Math.sqrt(v.x * v.x + v.y * v.y);
-                          const getDotProduct = (v1: any, v2: any) => v1.x * v2.x + v1.y * v2.y;
-                          const getVectorAngle = (v1: any, v2: any) => {
-                              const dot = getDotProduct(v1, v2);
-                              const mag1 = getMagnitude(v1);
-                              const mag2 = getMagnitude(v2);
-                              if (mag1 === 0 || mag2 === 0) return 0;
-                              const val = Math.max(-1, Math.min(1, dot / (mag1 * mag2)));
-                              return Math.acos(val) * 180 / Math.PI;
-                          };
-
-                          // VECTORS
-                          // Torso: Hip -> Shoulder (Points UP usually)
-                          const torsoVec = getVector(rightHip, rightShoulder); 
-                          // Arm: Shoulder -> Elbow (Points DOWN at rest)
-                          const armVec = getVector(rightShoulder, rightElbow);
-                          // Vertical Reference (UP)
-                          const upVec = { x: 0, y: -1 };
-
-                          // A. SAFETY: Torso Tilt
-                          // Angle between Torso and Straight Up
-                          const leanAngle = getVectorAngle(torsoVec, upVec);
-
-                          if (leanAngle > 15) { 
-                              shouldTrigger = true;
-                              triggerMessage = `[CORRECTION] Torso Lean Detected (${leanAngle.toFixed(0)}°). Keep your back straight!`;
-                              console.warn("⚠️ CHEATING DETECTED: Torso Lean");
-                              // [IMMEDIATE FEEDBACK]
-                              setFeedbackStatus('warning');
-                              setTimeout(() => setFeedbackStatus('neutral'), 3000);
-                          }
-
-                          // B. ABDUCTION
-                          // Angle between Torso (UP) and Arm.
-                          // Rest (Arm Down): Up vs Down = 180 deg.
-                          // T-Pose: Up vs Right = 90 deg.
-                          // Overhead: Up vs Up = 0 deg.
-                          const abduction = getVectorAngle(torsoVec, armVec);
-                          
-                          // State Machine
-                          const { repState } = sessionStatsRef.current;
-                          
-                          // Rest (Down) is 180.
-                          // [TUNING] Relaxed 'Down' to >140 to catch people who don't fully relax
-                          if (repState === 'DOWN' && abduction > 140) {
-                              sessionStatsRef.current.repState = 'UP'; // "Reset"
-                          } 
-                          // [TUNING] Relaxed 'Up' to <110 (T-Pose is 90). 
-                          // User reached ~73 in logs. 110 is a safe "Active" zone.
-                          else if (repState === 'UP' && abduction < 110) {
-                              sessionStatsRef.current.repState = 'DOWN';
-                              sessionStatsRef.current.repCount += 1;
-                              shouldTrigger = true;
-                              triggerMessage = `[EVENT] Abduction Rep ${sessionStatsRef.current.repCount} Completed. Good form.`;
-                              // [IMMEDIATE FEEDBACK]
-                              setFeedbackStatus('success');
-                              setTimeout(() => setFeedbackStatus('neutral'), 2000);
-                          }
-
-                          // ---------------------------------------------------------
-                          // DEBUG: Real-time Physics Logs
-                          // ---------------------------------------------------------
-                          // ---------------------------------------------------------
-                          // DEBUG: Real-time Physics Logs
-                          // ---------------------------------------------------------
-                          if (sessionStatsRef.current.frameCount % 5 === 0) { 
-                              console.log(`[PHYSICS LOG] 
-                              > Velocity: ${velocity ? velocity.toFixed(3) : 0}
-                              > Torso Lean: ${leanAngle.toFixed(1)}°
-                              > Abduction: ${abduction.toFixed(1)}°
-                              > RepState: ${repState}
-                              `);
-                          }
-
-                          // C. DATA COLLECTION (For Report)
-                          // 1. Stability (Shoulder Y variance)
-                          // [FIX] Was incorrectly using lastWristPos. Now using lastShoulderY.
-                          const lastShoulderY = sessionStatsRef.current.lastShoulderY || rightShoulder.y;
-                          sessionStatsRef.current.shoulderYSum += Math.abs(rightShoulder.y - lastShoulderY);
-                          sessionStatsRef.current.lastShoulderY = rightShoulder.y; // Update for next frame
-                          
-                          // 2. ROM Tracking
-                          sessionStatsRef.current.minRightElbowAngle = Math.min(sessionStatsRef.current.minRightElbowAngle, abduction);
-                          sessionStatsRef.current.maxRightElbowAngle = Math.max(sessionStatsRef.current.maxRightElbowAngle, abduction);
-
-                          // 3. History (Limit to last 100 for graph/report)
-                          if (sessionStatsRef.current.frameCount % 5 === 0) { // Sample every 5th frame
-                              sessionStatsRef.current.angleHistory.push(parseFloat(abduction.toFixed(1)));
-                              if (sessionStatsRef.current.angleHistory.length > 200) {
-                                  sessionStatsRef.current.angleHistory.shift();
-                              }
-                          }
-                          
-                      } else if (landmarks[12] && landmarks[14] && landmarks[16]) {
-                           // Fallback to Elbow Angle if Hips not visible
-                           const angle = calculateAngle(landmarks[12], landmarks[14], landmarks[16]);
-                           /* ... bicep logic ... */
-                           if (sessionStatsRef.current.repState === 'DOWN' && angle < 50) {
-                              sessionStatsRef.current.repState = 'UP';
-                           } else if (sessionStatsRef.current.repState === 'UP' && angle > 165) {
-                               sessionStatsRef.current.repState = 'DOWN';
-                               sessionStatsRef.current.repCount += 1;
-                               shouldTrigger = true;
-                               triggerMessage = `[EVENT] Bicep Curl ${sessionStatsRef.current.repCount} Completed.`;
-                           }
+                          return; // Skip physics until calibrated
                       }
 
-                      // Update generic stats (using whatever available)
-                      if (rightElbow) sessionStatsRef.current.frameCount++;
+                      // --- PHASE 2: ACTIVE SESSION ---
 
-                      // 2. Send Data (Silent or Triggered)
+                      // 1. Calculate Biometrics
+                      let shouldTrigger = false;
+                      let triggerMessage = "";
+
+                      // ---------------------------------------------------------
+                      // GLOBAL SAFETY CHECK (Runs for ALL exercises)
+                      // ---------------------------------------------------------
+                      let velocity = 0;
+                      if (rightWrist) {
+                           // Velocity (Jerk Detection)
+                           const lastWrist = sessionStatsRef.current.lastWristPos;
+                           if (lastWrist) {
+                               const dist = Math.sqrt(Math.pow(rightWrist.x - lastWrist.x, 2) + Math.pow(rightWrist.y - lastWrist.y, 2));
+                               velocity = dist; // dist per 125ms
+                               
+                               // Threshold: > 0.35
+                               if (velocity > 0.35) {
+                                    shouldTrigger = true;
+                                    triggerMessage = `[SAFETY_STOP] High Velocity Detected (Speed: ${velocity.toFixed(2)}). Possible Spasm or Drop. STOP IMMEDIATELY.`;
+                                    console.warn("🚨 SAFETY STOP: High Velocity Detected", velocity);
+                                    setFeedbackStatus('critical');
+                                    setTimeout(() => setFeedbackStatus('neutral'), 4000);
+                               }
+                           }
+                           // Update Stats
+                           sessionStatsRef.current.lastWristPos = { x: rightWrist.x, y: rightWrist.y };
+                      }
+
+                      // ---------------------------------------------------------
+                      // 2. EXERCISE ENGINE (Strategy Pattern)
+                      // ---------------------------------------------------------
+                      // PASS CALIBRATION DATA
+                      const engineOutput = exerciseConfig.engine.calculate(
+                          landmarks, 
+                          sessionStatsRef.current,
+                          calibrationRef.current 
+                      );
+                      
+                      // Merge Output
+                      if (engineOutput.trigger) {
+                          shouldTrigger = true;
+                          triggerMessage = engineOutput.message;
+                          setFeedbackStatus(engineOutput.feedbackStatus);
+                          if (engineOutput.feedbackStatus !== 'neutral') {
+                             setTimeout(() => setFeedbackStatus('neutral'), 2000);
+                          }
+                      }
+                      
+                      // Merge Stats
+                      if (engineOutput.statsUpdate) {
+                          sessionStatsRef.current = { ...sessionStatsRef.current, ...engineOutput.statsUpdate };
+                      }
+                      
+                      // Increment Frame
+                      sessionStatsRef.current.frameCount++;
+
+                      // 3. Send Data
                       if (shouldTrigger) {
-                          // Event Trigger (The AI "Speaks" now)
                           wsRef.current.send(JSON.stringify({
                               text: triggerMessage,
                               trigger: true
                           }));
                       } else {
-                          // Silent Stream (Context only)
                           wsRef.current.send(JSON.stringify({
                               text: `[POSE_DATA] ${JSON.stringify(landmarks)}`,
                               trigger: false
@@ -403,6 +347,9 @@ export function useGeminiLive({ mode, detectPose, onLandmarks, videoRef }: UseGe
                       }
                       
                       setDataSentCount(c => c + 1);
+
+                      // Update generic stats (using whatever available)
+                      if (rightElbow) sessionStatsRef.current.frameCount++;
                  }
                   // --- REF: 8 FPS for High Fidelity ---
                   }, 125); 
@@ -412,7 +359,7 @@ export function useGeminiLive({ mode, detectPose, onLandmarks, videoRef }: UseGe
         console.error("Error accessing camera:", err);
         setMessages(prev => [...prev, `Error: Could not access camera (${err.name}: ${err.message})`]);
     }
-  }, [detectPose, mode, onLandmarks, videoRef]);
+  }, [detectPose, mode, onLandmarks, videoRef, exerciseConfig.engine]); // Added exerciseConfig.engine dependency
 
   const stopVideoStream = useCallback(() => {
     if (videoStreamRef.current) {
@@ -507,5 +454,5 @@ export function useGeminiLive({ mode, detectPose, onLandmarks, videoRef }: UseGe
     };
   }, [disconnect]);
 
-  return { isConnected, messages, connect, disconnect, sendMessage, startAudioStream, stopAudioStream, startVideoStream, stopVideoStream, dataSentCount, getSessionStats, feedbackStatus };
+  return { isConnected, messages, connect, disconnect, sendMessage, startAudioStream, stopAudioStream, startVideoStream, stopVideoStream, dataSentCount, getSessionStats, feedbackStatus, isCalibrating };
 }

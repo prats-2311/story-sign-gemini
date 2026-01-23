@@ -1,276 +1,283 @@
 import { useState, useRef } from 'react';
 import { useGeminiLive } from './hooks/useGeminiLive';
 import { usePoseDetection } from './hooks/usePoseDetection'; 
-import { SpatialAngleGauge } from './components/SpatialAngleGauge';
 import { ThinkingLog } from './components/ThinkingLog';
-import { HistoryGraph } from './components/HistoryGraph'; // [NEW]
-import { useSessionHistory } from './hooks/useSessionHistory'; // [NEW]
+import { HistoryGraph } from './components/HistoryGraph'; 
+import { Dashboard } from './components/Dashboard'; 
+import type { ExerciseConfig } from './types/Exercise';
 import './App.css';
 
 function App() {
-  // --- STATE ---
-  const { isModelLoaded, detectPose } = usePoseDetection();
-  const { history, saveSession } = useSessionHistory(); // [NEW] History Hook
-  
-  // Real-time Landmarks state for Spatial UI
-  const [currentLandmarks, setCurrentLandmarks] = useState<any>(null);
-  // Calculate angle for gauge
-  const [currentAngle, setCurrentAngle] = useState(0);
+  // --- NAVIGATION STATE ---
+  const [view, setView] = useState<'dashboard' | 'session'>('dashboard');
+  const [currentConfig, setCurrentConfig] = useState<ExerciseConfig | null>(null);
 
-  // [FIX] Video Ref for the Main Canvas
-  const videoRef = useRef<HTMLVideoElement>(null);
-
-  const { isConnected, messages, connect, disconnect, startAudioStream, stopAudioStream, startVideoStream, stopVideoStream, dataSentCount, getSessionStats, feedbackStatus } = useGeminiLive({ 
-      mode: 'RECONNECT', 
-      detectPose,
-      videoRef, // [NEW] Pass the ref
-      onLandmarks: (landmarks) => {
-          setCurrentLandmarks(landmarks);
-          // Calc angle for gauge
-          if (landmarks[12] && landmarks[14] && landmarks[16]) {
-             // Re-calc here for UI sync (or export calc function)
-             // Simple version:
-             const calculateAngle = (a: any, b: any, c: any) => {
-                const radians = Math.atan2(c.y - b.y, c.x - b.x) - Math.atan2(a.y - b.y, a.x - b.x);
-                let angle = Math.abs(radians * 180.0 / Math.PI);
-                if (angle > 180.0) angle = 360 - angle;
-                return angle;
-             };
-             setCurrentAngle(calculateAngle(landmarks[12], landmarks[14], landmarks[16]));
-          }
-      }
-  }); 
-
-  // UI States
-  const [report, setReport] = useState<string | null>(null);
-  const [thoughts, setThoughts] = useState<string | null>(null); // [NEW]
-  const [isAnalyzeLoading, setIsAnalyzeLoading] = useState(false);
-  const [isMicActive, setIsMicActive] = useState(false);
-
-  // --- HANDLERS ---
-  const handleStartSession = async () => {
-     await connect();
-     setTimeout(async () => {
-         await startAudioStream();
-         setIsMicActive(true);
-         await startVideoStream();
-     }, 500);
+  const handleStartSession = (config: ExerciseConfig) => {
+      setCurrentConfig(config);
+      setView('session');
   };
 
-  const handleStopSession = () => {
-      // [NEW] Auto-Save Session Logic
-      if (isConnected) {
-          const stats = getSessionStats();
-          if (stats.frameCount > 10) { // Only save if meaningful
-             saveSession(stats);
-          }
-      }
-
-      stopAudioStream();
-      setIsMicActive(false);
-      stopVideoStream();
-      disconnect();
-  };
-
-  const handleAnalyzeSession = async () => {
-    setIsAnalyzeLoading(true);
-    setThoughts("Initializing Clinical Reasoning..."); // Initial State
-    try {
-      const transcript = messages.join("\n");
-      const stats = getSessionStats();
-
-      const biomechanicsSummary = `
-      Session Biometrics:
-      - Range of Motion: ${Math.round(stats.minRightElbowAngle)}° to ${Math.round(stats.maxRightElbowAngle)}°.
-      - Repetition Peaks: [${stats.angleHistory.slice(-10).join(", ")}].
-      - Stability Score: ${(stats.shoulderYSum / stats.frameCount || 0).toFixed(4)}.
-      `;
-
-      const response = await fetch('/api/analyze_session', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-            transcript,
-            pose_summary: biomechanicsSummary
-        })
-      });
-      const data = await response.json();
-      setReport(data.report);
-      if (data.thoughts) setThoughts(data.thoughts); // Update with real thoughts
-    } catch (e) {
-      console.error(e);
-      setReport("Failed to generate report.");
-      setThoughts("Analysis Failed.");
-    }
-    setIsAnalyzeLoading(false);
-  };
-
-  // Status Colors
-  const getBorderColor = () => {
-      switch (feedbackStatus) {
-          case 'critical': return "border-8 border-red-500 shadow-[0_0_100px_rgba(239,68,68,0.8)] z-50"; 
-          case 'warning': return "border-8 border-amber-500 shadow-[0_0_50px_rgba(245,158,11,0.6)] z-50";
-          case 'success': return "border-8 border-green-500 shadow-[0_0_50px_rgba(34,197,94,0.6)] z-50";
-          default: return "border-2 border-neural-800 shadow-2xl";
-      }
+  const handleExitSession = () => {
+      setView('dashboard');
+      setCurrentConfig(null);
   };
 
   return (
-    <div className="min-h-screen bg-neural-900 text-white relative font-sans selection:bg-cyber-cyan selection:text-black">
+    <div className="bg-black min-h-screen font-sans selection:bg-cyber-cyan selection:text-black">
       
-      {/* 1. Header */}
-      <header className="fixed top-0 left-0 right-0 z-40 bg-neural-900/80 backdrop-blur-md border-b border-neural-800 h-16 flex items-center justify-between px-6">
-          <div className="flex items-center gap-2">
-              <span className="text-2xl">🧬</span>
-              <h1 className="text-xl font-bold tracking-tight">RECONNECT <span className="text-cyber-cyan text-sm font-mono ml-2">PRO</span></h1>
-          </div>
-          <div className="flex items-center gap-4 text-sm font-mono text-gray-400">
-             <span className={isConnected ? "text-cyber-cyan animate-pulse" : "text-gray-600"}>
-                {isConnected ? "● LIVE LINK" : "○ DISCONNECTED"}
-             </span>
-             <span>
-                📡 {dataSentCount} PACKETS
-             </span>
-             <span className={isMicActive ? "text-cyber-red animate-pulse" : "text-gray-600"}>
-                {isMicActive ? "🎤 ON AİR" : "🔇 MUTED"}
-             </span>
-          </div>
-      </header>
-
-      {/* 2. Main Content Area */}
-      <main className="pt-20 pb-20 px-6 max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6 h-[calc(100vh-80px)]">
-          
-          {/* LEFT: Camera / Observer HUD */}
-          <section className={`lg:col-span-8 relative bg-black rounded-2xl overflow-hidden border transition-all duration-300 ${getBorderColor()}`}>
-              {/* [FIX] The Video Element is now part of the layout */}
-              <video 
-                ref={videoRef}
-                className="w-full h-full object-cover transform scale-x-[-1]" // Mirror effect
-                autoPlay 
-                muted 
-                playsInline
-              />
-
-              {/* Spatial UI Layer */}
-              {isConnected && currentLandmarks && (
-                  <div className="absolute inset-0 z-30 pointer-events-none">
-                      {/* Floating Angle Gauge */}
-                      <SpatialAngleGauge 
-                          angle={currentAngle}
-                          x={currentLandmarks[14].x} // Elbow X
-                          y={currentLandmarks[14].y} // Elbow Y
-                          isCorrect={currentAngle > 165}
-                      />
-                  </div>
-              )}
-          </section>
-
-          {/* RIGHT: Metrics & Controls */}
-          <section className="lg:col-span-4 flex flex-col gap-4">
-              
-              {/* Status Card */}
-              <div className="bg-neural-800 p-6 rounded-2xl border border-neural-700">
-                  <h3 className="text-gray-400 text-xs font-mono uppercase tracking-widest mb-2">System Status</h3>
-                  <div className="flex items-center justify-between">
-                      <span className="text-2xl font-bold">Trace: {isModelLoaded ? "Active" : "Loading..."}</span>
-                      <div className={`w-3 h-3 rounded-full ${isModelLoaded ? 'bg-cyber-cyan shadow-neon-cyan' : 'bg-gray-600'}`}></div>
-                  </div>
-              </div>
-
-               {/* [NEW] History Graph Card */}
-               {history.length > 0 && (
-                  <HistoryGraph 
-                      data={history.map(h => h.romMax).slice(-5)} 
-                      label="Recovery Trend (Max ROM)" 
-                      color="#00F2FF" 
-                  />
-               )}
-
-              {/* Controls */}
-              <div className="bg-neural-800 p-6 rounded-2xl border border-neural-700 flex-1 flex flex-col justify-end gap-3">
-                  {!isConnected ? (
-                      <button 
-                        onClick={handleStartSession}
-                        className="w-full py-4 bg-cyber-cyan text-black font-bold rounded-xl hover:bg-white transition-colors shadow-neon-cyan"
-                      >
-                        INITIATE SESSION ⚡
-                      </button>
-                  ) : (
-                      <>
-                        <button 
-                            onClick={handleStopSession}
-                            className="w-full py-4 bg-neural-700 text-white font-bold rounded-xl hover:bg-neural-600 transition-colors"
-                        >
-                            END SESSION ⏹
-                        </button>
-                        <button 
-                            onClick={handleAnalyzeSession} 
-                            disabled={isAnalyzeLoading}
-                            className="w-full py-4 bg-cyber-amber/10 text-cyber-amber border border-cyber-amber font-bold rounded-xl hover:bg-cyber-amber hover:text-black transition-all"
-                        >
-                            {isAnalyzeLoading ? "PROCESSING..." : "GENERATE REPORT 🧠"}
-                        </button>
-                      </>
-                  )}
-              </div>
-          </section>
-      </main>
-
-      {/* 3. Thinking Overlay */}
-      <ThinkingLog isThinking={isAnalyzeLoading} thoughts={thoughts} />
-
-      {/* 4. Report Modal (Bento Grid Style) */}
-      {report && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
-            <div className="bg-neural-900 border border-neural-700 rounded-3xl w-full max-w-5xl h-[80vh] overflow-hidden flex flex-col shadow-2xl">
-                <div className="p-6 border-b border-neural-800 flex justify-between items-center bg-neural-800/50">
-                    <h2 className="text-2xl font-bold text-white flex items-center gap-2">
-                        <span className="text-cyber-cyan">🧠</span> GEMINI 3 ANALYSIS
-                    </h2>
-                    <button onClick={() => { setReport(null); setThoughts(null); }} className="text-gray-400 hover:text-white">✕ CLOSE</button>
-                </div>
-                
-                <div className="flex-1 overflow-y-auto p-8">
-                    {/* Render simplified markdown or pre for now, but styled */}
-                    <div className="prose prose-invert max-w-none">
-                        <pre className="font-mono text-sm whitespace-pre-wrap text-gray-300">
-                            {report}
-                        </pre>
-                    </div>
-                </div>
-            </div>
-        </div>
+      {/* VIEW: DASHBOARD */}
+      {view === 'dashboard' && (
+          <Dashboard onSelectExercise={handleStartSession} />
       )}
 
-      {/* Video Element Hider (Since useGeminiLive injects it fixed, we can hide it or style it via CSS if needed, 
-          but design said "Keep video view". The hook puts it bottom-right. 
-          For the "Main View", we might need to change the hook to attach to a ref, 
-          but for Hackathon speed, let's leave the hook's fixed video and just overlay the HUD on top of the "Section" 
-          Wait, the HUD relies on normalized coordinates. If the video is fixed bottom-right (240px) and the HUD 
-          is in the main big section, they won't align. 
-          
-          CORRECTION: The user wants "Contextual HUD ... in the video feed". 
-          If the video is small bottom-right, the HUD needs to be there. 
-          OR we update the hook to render into the Main Section.
-          
-          For this iteration, I will style the video to be FULL SCREEN in the 'section' via CSS or useEffect ref logic?
-          Actually, the hook creates the video element. 
-          Let's just update the hook in the next step to attach to a provided Ref if possible, or 
-          just use CSS to move the fixed video to the center of the 'section' bounding box.
-          
-          Simpler: I will just render the SpatialGauge covering the whole screen, 
-          and if the video is bottom-right, the gauge will be incorrect relative to the video visual, 
-          BUT correct relative to the coordinate system (0-1).
-          
-          To make it perfect: The video and the Gauge container must match dimensions.
-          I will leave the hook's video as is (Bottom Right Preview) for "Self View" 
-          but ideally we want the MAIN view to be the video. 
-      */}
+      {/* VIEW: SESSION (Only mounts when active, forcing fresh hooks) */}
+      {view === 'session' && currentConfig && (
+          <SessionRunner config={currentConfig} onExit={handleExitSession} />
+      )}
 
     </div>
   );
 }
 
+// --- SUB-COMPONENT: SESSION RUNNER ---
+// This contains the logic that used to be in the main App. 
+// By isolating it, we guarantee a "Clean Slate" every time we enter.
+function SessionRunner({ config, onExit }: { config: ExerciseConfig, onExit: () => void }) {
+  const { isModelLoaded, detectPose } = usePoseDetection();
+  
+  // Video Ref
+  const videoRef = useRef<HTMLVideoElement>(null);
 
+  // Hook Init (FRESH INSTANCE)
+  const { isConnected, messages, connect, disconnect, startAudioStream, stopAudioStream, startVideoStream, stopVideoStream, getSessionStats, feedbackStatus, isCalibrating } = useGeminiLive({ 
+      mode: 'RECONNECT', 
+      detectPose,
+      videoRef,
+      exerciseConfig: config, 
+      onLandmarks: (_landmarks) => {
+          // Unused for now
+      }
+  });
+
+  // Report State
+  const [report, setReport] = useState<string | null>(null);
+  const [thoughts, setThoughts] = useState<string | null>(null);
+  const [isGeneratingReport, setIsGeneratingReport] = useState(false);
+
+  // Handlers
+  const handleStart = async () => {
+    connect();
+    // Wait for connection... ideally handled by useEffect or promise, but simple timeout works for demo
+    setTimeout(async () => {
+        await startAudioStream();
+        await startVideoStream();
+    }, 1000);
+  };
+
+  const handleStop = () => {
+      stopAudioStream();
+      stopVideoStream();
+      disconnect();
+  };
+
+  const handleGenerateReport = async () => {
+      console.log("Generating Report...");
+      setIsGeneratingReport(true);
+      try {
+           const stats = getSessionStats();
+           
+           // Inject logic based on Exercise Type?
+           // For now, using the generalized backend endpoint
+           const poseSummary = JSON.stringify({
+               exercise: config.name,
+               reps: stats.repCount,
+               average_rom: ((stats.minRightElbowAngle + stats.maxRightElbowAngle) / 2).toFixed(1),
+               stability_metric: (stats.shoulderYSum / (stats.frameCount || 1)).toFixed(3),
+               recent_angles: stats.angleHistory.slice(-20) 
+           });
+
+           const payload = {
+            session_id: "demo_session_1",
+            duration_seconds: 45, 
+            transcript: messages.join("\n"),
+            pose_summary: poseSummary,
+            include_thoughts: true
+           };
+
+           const response = await fetch('http://localhost:8000/analyze_session', {
+               method: 'POST',
+               headers: {'Content-Type': 'application/json'},
+               body: JSON.stringify(payload)
+           });
+           
+           const data = await response.json();
+           setReport(data.report);
+           if (data.thoughts) setThoughts(data.thoughts);
+
+      } catch (e) {
+          console.error("Report Error", e);
+          setReport("Error generating report. Check backend console.");
+      } finally {
+          setIsGeneratingReport(false);
+      }
+  };
+
+  // Extract Rep Count for UI
+  const repCount = getSessionStats().repCount || 0;
+
+  return (
+      <div className="relative h-screen flex flex-col overflow-hidden">
+          
+          {/* HEADER HUD */}
+          <header className="fixed top-0 left-0 right-0 z-50 p-6 flex justify-between items-start pointer-events-none">
+              <div>
+                  <h1 className="text-4xl font-bold italic tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-cyber-cyan to-blue-600 drop-shadow-[0_0_10px_rgba(6,182,212,0.5)]">
+                      RECONNECT
+                  </h1>
+                  <div className="flex items-center gap-2 mt-1">
+                      <div className={`w-2 h-2 rounded-full ${isModelLoaded ? 'bg-green-500 shadow-[0_0_8px_#22c55e]' : 'bg-yellow-500 animate-pulse'}`}></div>
+                      <span className="text-[10px] font-mono text-gray-400 uppercase tracking-widest">
+                          {config.name.toUpperCase()}
+                      </span>
+                  </div>
+              </div>
+              
+              <div className="pointer-events-auto flex items-center gap-4">
+                  <button onClick={() => { handleStop(); onExit(); }} className="text-gray-400 hover:text-white flex items-center gap-2 font-mono text-xs border border-gray-800 px-4 py-2 rounded bg-black/50">
+                     ← DASHBOARD
+                  </button>
+
+                  {!isConnected ? (
+                      <button 
+                        onClick={handleStart}
+                        disabled={!isModelLoaded}
+                        className="bg-cyber-cyan text-black font-bold text-sm px-6 py-3 rounded clip-path-polygon hover:bg-white transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-[0_0_20px_rgba(6,182,212,0.3)]"
+                      >
+                          INITIALIZE LINK
+                      </button>
+                  ) : (
+                      <button 
+                        onClick={handleStop}
+                        className="bg-red-500/10 border border-red-500 text-red-500 font-bold text-sm px-6 py-3 rounded hover:bg-red-500 hover:text-white transition-all backdrop-blur-md"
+                      >
+                          TERMINATE LINK
+                      </button>
+                  )}
+              </div>
+          </header>
+
+          {/* CALIBRATION OVERLAY */}
+          {isCalibrating && (
+              <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm animate-fade-in">
+                  <div className="text-center space-y-4">
+                      <div className="text-6xl animate-pulse text-cyber-cyan">⌖</div>
+                      <h2 className="text-3xl font-bold text-white tracking-[0.2em] animate-pulse">CALIBRATING</h2>
+                      <p className="text-gray-400 font-mono text-xs uppercase tracking-widest max-w-sm mx-auto border-t border-gray-800 pt-4">
+                          Stand still in neutral position...
+                      </p>
+                  </div>
+              </div>
+          )}
+
+          {/* MAIN VIEWPORT */}
+          <main className="relative h-full w-full flex items-center justify-center bg-gray-900">
+               
+               {/* VIDEO LAYER */}
+               <div className="relative w-full h-full">
+                   <video 
+                      ref={videoRef} 
+                      className="w-full h-full object-cover opacity-60" 
+                      autoPlay 
+                      playsInline 
+                      muted
+                   />
+                   {/* Vignette Overlay */}
+                   <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,black_100%)] pointer-events-none"></div>
+                   
+                   {/* FEEDBACK BORDERS */}
+                   {feedbackStatus === 'critical' && (
+                       <div className="absolute inset-0 border-[20px] border-red-600 animate-pulse mix-blend-overlay pointer-events-none"></div>
+                   )}
+                   {feedbackStatus === 'warning' && (
+                       <div className="absolute inset-0 border-[10px] border-yellow-500/50 mix-blend-overlay pointer-events-none"></div>
+                   )}
+                   {feedbackStatus === 'success' && (
+                       <div className="absolute inset-0 border-[10px] border-green-500/50 mix-blend-overlay pointer-events-none"></div>
+                   )}
+               </div>
+
+               {/* SPATIAL UI LAYER */}
+               <div className="absolute inset-0 pointer-events-none">
+                    {/* 1. Velocity / Stability Gauge (Left) */}
+                    <div className="absolute left-10 top-1/2 -translate-y-1/2 w-64 pointer-events-auto">
+                        <div className="bg-black/50 backdrop-blur border border-gray-800 p-4 rounded-xl">
+                            <h3 className="text-xs text-gray-500 font-bold mb-2 uppercase tracking-widest">ROM / Stability</h3>
+                            <HistoryGraph data={[0]} color="#06b6d4" label="ROM" /> 
+                            {/* NOTE: Stats need to be piped via context or hook to be real */}
+                        </div>
+                    </div>
+
+                    {/* 2. Rep Counter (Right) */}
+                    <div className="absolute right-10 top-1/2 -translate-y-1/2 text-right">
+                        <div className="text-[120px] font-bold text-white leading-none tracking-tighter drop-shadow-2xl">
+                            {repCount.toString().padStart(2, '0')}
+                        </div>
+                        <div className="text-cyber-cyan font-mono text-xl tracking-[0.5em] mr-2">REPS</div>
+                    </div>
+               </div>
+
+               {/* CHAT/LOG OVERLAY (Bottom Left) */}
+               <div className="absolute bottom-10 left-10 w-96 h-64 pointer-events-auto flex flex-col gap-4">
+                   <div className="flex-1 overflow-y-auto font-mono text-xs text-cyber-cyan space-y-1 p-4 bg-black/50 backdrop-blur-md rounded-xl border border-white/10 shadow-2xl mask-fade-bottom">
+                       {messages.map((m, i) => (
+                           <div key={i} className="opacity-80 hover:opacity-100 transition-opacity">
+                               <span className="text-gray-500">[{new Date().toLocaleTimeString()}]</span> {m}
+                           </div>
+                       ))}
+                   </div>
+                   
+                   {/* REPORT BUTTON */}
+                   <button 
+                     onClick={handleGenerateReport}
+                     disabled={!isConnected && messages.length === 0}
+                     className="w-full bg-gray-900 border border-gray-700 hover:border-cyber-cyan text-gray-400 hover:text-white py-3 rounded-lg text-xs font-bold tracking-widest transition-all "
+                   >
+                     {isGeneratingReport ? 'ANALYZING BIOMETRICS...' : 'GENERATE REPORT_V2.0'}
+                   </button>
+               </div>
+          </main>
+
+          {/* REPORT MODAL */}
+          {report && (
+            <div className="fixed inset-0 bg-black/90 backdrop-blur-xl z-[100] flex items-center justify-center p-20 animate-in fade-in duration-300">
+                <div className="max-w-5xl w-full h-full bg-black border border-gray-800 rounded-3xl overflow-hidden flex flex-col shadow-[0_0_50px_rgba(6,182,212,0.1)]">
+                    
+                    <div className="p-8 border-b border-gray-800 flex justify-between items-center bg-gray-900/50">
+                        <h2 className="text-2xl font-bold text-white flex items-center gap-2">
+                             <span className="text-cyber-cyan">🧠</span> GEMINI 3 ANALYSIS
+                        </h2>
+                        <button onClick={() => { setReport(null); setThoughts(null); }} className="text-gray-400 hover:text-white">✕ CLOSE</button>
+                    </div>
+                    
+                    <div className="flex-1 overflow-y-auto p-8 flex gap-8">
+                        {/* Report Content */}
+                        <div className="flex-1 prose prose-invert max-w-none">
+                             <div className="whitespace-pre-wrap font-mono text-sm text-gray-300 leading-relaxed border-l-2 border-cyber-cyan/30 pl-6">
+                                 {report}
+                             </div>
+                        </div>
+
+                         {/* Hidden Thoughts Layer */}
+                         {thoughts && (
+                             <ThinkingLog thoughts={thoughts} isThinking={false} />
+                         )}
+                    </div>
+                </div>
+            </div>
+          )}
+
+      </div>
+  );
+}
 
 export default App;

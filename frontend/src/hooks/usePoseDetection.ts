@@ -31,6 +31,8 @@ export const usePoseDetection = () => {
     const detectPose = useCallback((videoElement: HTMLVideoElement) => {
         if (!poseLandmarker || videoElement.currentTime === lastVideoTimeRef.current) return null;
 
+        if (videoElement.readyState < 2 || videoElement.videoWidth === 0 || videoElement.videoHeight === 0) return null;
+
         lastVideoTimeRef.current = videoElement.currentTime;
         const result = poseLandmarker.detectForVideo(videoElement, performance.now());
         
