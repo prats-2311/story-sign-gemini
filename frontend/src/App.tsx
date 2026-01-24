@@ -49,7 +49,7 @@ function SessionRunner({ config, onExit }: { config: ExerciseConfig, onExit: () 
   const videoRef = useRef<HTMLVideoElement>(null);
 
   // Hook Init (FRESH INSTANCE)
-  const { isConnected, messages, connect, disconnect, startAudioStream, stopAudioStream, startVideoStream, stopVideoStream, getSessionStats, feedbackStatus, isCalibrating } = useGeminiLive({ 
+  const { isConnected, messages, connect, disconnect, startAudioStream, stopAudioStream, startVideoStream, stopVideoStream, getSessionStats, feedbackStatus, isCalibrating, clinicalNotes } = useGeminiLive({ 
       mode: 'RECONNECT', 
       detectPose,
       videoRef,
@@ -80,7 +80,7 @@ function SessionRunner({ config, onExit }: { config: ExerciseConfig, onExit: () 
       disconnect();
   };
 
-  const handleGenerateReport = async () => {
+   const handleGenerateReport = async () => {
       console.log("Generating Report...");
       setIsGeneratingReport(true);
       try {
@@ -100,10 +100,12 @@ function SessionRunner({ config, onExit }: { config: ExerciseConfig, onExit: () 
             session_id: "demo_session_1",
             duration_seconds: 45, 
             transcript: messages.join("\n"),
+            clinical_notes: clinicalNotes, // Strategy A Input
             pose_summary: poseSummary,
             include_thoughts: true
            };
 
+           console.log("[App] Generating Report payload:", payload);
            const response = await fetch('http://localhost:8000/analyze_session', {
                method: 'POST',
                headers: {'Content-Type': 'application/json'},
@@ -206,6 +208,29 @@ function SessionRunner({ config, onExit }: { config: ExerciseConfig, onExit: () 
                    )}
                </div>
 
+
+               {/* LIVE CLINICAL FEED (Right Side) */}
+               <div className="absolute top-32 right-10 w-80 pointer-events-auto flex flex-col gap-4">
+                   <div className="bg-black/40 backdrop-blur-md rounded-xl border border-white/10 p-4 shadow-xl">
+                       <h3 className="text-xs text-cyber-cyan font-bold mb-3 uppercase tracking-widest flex items-center gap-2">
+                           <span className="w-2 h-2 bg-cyber-cyan rounded-full animate-pulse"/>
+                           Live Observations
+                       </h3>
+                       <div className="space-y-3 max-h-96 overflow-y-auto mask-fade-bottom">
+                           {clinicalNotes.length === 0 ? (
+                               <div className="text-gray-600 text-xs italic animate-pulse">Monitoring session...</div>
+                           ) : (
+                               clinicalNotes.map((note, i) => (
+                                   <div key={i} className="bg-gray-900/80 border-l-2 border-cyber-cyan p-3 rounded-r text-xs text-gray-300 animate-slide-in">
+                                       {note}
+                                   </div>
+                               ))
+                           )}
+                           <div ref={(el) => el?.scrollIntoView({ behavior: "smooth" })} /> 
+                       </div>
+                   </div>
+               </div>
+
                {/* SPATIAL UI LAYER */}
                <div className="absolute inset-0 pointer-events-none">
                     {/* 1. Velocity / Stability Gauge (Left) */}
@@ -267,9 +292,17 @@ function SessionRunner({ config, onExit }: { config: ExerciseConfig, onExit: () 
                              </div>
                         </div>
 
-                         {/* Hidden Thoughts Layer */}
-                         {thoughts && (
-                             <ThinkingLog thoughts={thoughts} isThinking={false} />
+                         {/* Hidden Thoughts Layer - Only show if actively thinking or user toggled? 
+                             Actually, if report is present, we shouldn't block it. 
+                             Let's only show ThinkingLog if we are waiting, OR if we want to debug.
+                             For now, let's remove the BLOCKING overlay once report is here, 
+                             but maybe render it inline? 
+                             
+                             FIX: Only render if we don't have a report yet, OR if we explicitly want to see thoughts.
+                             Since 'thoughts' come WITH 'report', this was always blocking.
+                          */}
+                         {isGeneratingReport && (
+                             <ThinkingLog thoughts={thoughts} isThinking={true} />
                          )}
                     </div>
                 </div>

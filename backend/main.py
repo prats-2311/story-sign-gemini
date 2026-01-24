@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 import asyncio
 import os
 import json
+import re
 import base64
 from google import genai
 from google.genai import types
@@ -41,20 +42,26 @@ async def analyze_session(request: Request):
     try:
         data = await request.json()
         transcript = data.get("transcript", "")
+        clinical_notes = data.get("clinical_notes", [])
         pose_summary = data.get("pose_summary", "")
 
+        notes_text = "\n- ".join(clinical_notes) if clinical_notes else "No specific clinical notes recorded."
+
         prompt = f"""
-        You are an expert Physical Therapist analyzing a patient's session.
+        You are an expert Physical Therapist synthesizing a session report.
         
-        **Session Context:**
-        Transcript: {transcript}
-        Pose Data Summary: {pose_summary}
+        **Input Data:**
+        1. Clinical Observations (Recorded Live):
+        - {notes_text}
+
+        2. Pose Statistics:
+        {pose_summary}
 
         **Task:**
-        Generate a concise but professional "Progress Report" (max 150 words).
-        1. Evaluate form correctness based on pose data (e.g. range of motion).
-        2. Highlight improvements.
-        3. Suggest specific focus areas for next time.
+        Synthesize these observations into a concise "Progress Report" (max 150 words).
+        - Focus on the "Clinical Observations" provided above.
+        - Back them up with the "Pose Statistics".
+        - Do NOT re-analyze raw audio; trust the Clinical Observations.
         
         Output format: Markdown.
         """
@@ -101,11 +108,38 @@ async def stream(websocket: WebSocket, mode: str):
     # Using the standard experimental model which supports Multimodal Live API (Video + Audio)
     model = "gemini-2.0-flash-exp"
 
-    # Create the LiveConnectConfig
-    config = types.LiveConnectConfig(
-        response_modalities=["AUDIO"],  # Only one modality allowed for this model
-        system_instruction=types.Content(parts=[types.Part(text=sys_instruct)])
+    clinical_tool_func = types.FunctionDeclaration(
+        name="log_clinical_note",
+        description="Log a clinical observation about the patient's form or progress. Silent.",
+        parameters=types.Schema(
+            type="OBJECT",
+            properties={
+                "note": types.Schema(type="STRING", description="The clinical observation.")
+            },
+            required=["note"]
+        )
     )
+    
+    heartbeat_tool = types.FunctionDeclaration(
+        name="log_heartbeat",
+        description="Call this immediately when the session starts to confirm tool connectivity.",
+        parameters=types.Schema(
+            type="OBJECT",
+            properties={},
+        )
+    )
+
+    # Create the LiveConnectConfig with Tools
+    try:
+        config = types.LiveConnectConfig(
+            response_modalities=["AUDIO"],
+            system_instruction=types.Content(parts=[types.Part(text=sys_instruct)]),
+            tools=[types.Tool(function_declarations=[clinical_tool_func, heartbeat_tool])]
+        )
+    except Exception as config_err:
+        logger.critical(f"Failed to create LiveConnectConfig: {config_err}")
+        await websocket.close(code=1008, reason="Configuration Error")
+        return
 
     try:
         logger.info(f"Connecting to Gemini with model: {model}")
@@ -129,15 +163,22 @@ async def stream(websocket: WebSocket, mode: str):
                         
                     try:
                         func, kwargs = item
+                        # [DEBUG] Trace Sending
+                        msg_preview = str(kwargs)[:50]
+                        logger.debug(f">> Sending to Gemini: {msg_preview}...")
+                        
                         await func(**kwargs)
+                        
+                        logger.debug(f">> Sent to Gemini: {msg_preview}")
+
                     except Exception as e:
-                         logger.error(f"Error in gemini sender worker: {e}")
-                         # If 1007 or connection closed, break the circuit
-                         if "1007" in str(e) or "closed" in str(e) or "Connection" in str(e):
-                             logger.critical("Critical Gemini Error. Breaking Circuit.")
-                             gemini_connection_active = False
-                             await websocket.close(code=1008, reason="Gemini Protocol Error")
-                             break
+                            logger.error(f"Error in gemini sender worker: {e}")
+                            # If 1007 or connection closed, break the circuit
+                            if "1007" in str(e) or "closed" in str(e) or "Connection" in str(e):
+                                logger.critical("Critical Gemini Error. Breaking Circuit.")
+                                gemini_connection_active = False
+                                await websocket.close(code=1008, reason="Gemini Protocol Error")
+                                break
                     finally:
                         gemini_output_queue.task_done()
 
@@ -162,39 +203,53 @@ async def stream(websocket: WebSocket, mode: str):
                             
                             if "text" in msg:
                                 text_msg = msg["text"]
+                                processed_as_data = False
+                                
                                 # Check for Data Header like [POSE_DATA]
                                 tag_end = text_msg.find("] ")
                                 if tag_end != -1:
-                                    try:
-                                        tag = text_msg[:tag_end+1]
-                                        json_data = text_msg[tag_end+2:].strip()
-                                        
-                                        if not json_data:
-                                            raise ValueError("Empty JSON data")
+                                    tag = text_msg[:tag_end+1]
+                                    if tag == "[POSE_DATA]":
+                                        try:
+                                            json_data = text_msg[tag_end+2:].strip()
                                             
-                                        landmarks = json.loads(json_data)
-                                        
-                                        # [OPTIMIZATION]
-                                        RECONNECT_LANDMARKS = {11, 12, 13, 14, 15, 16, 23, 24}
-                                        compact_parts = []
-                                        if isinstance(landmarks, list):
-                                            for idx, lm in enumerate(landmarks):
-                                                if idx in RECONNECT_LANDMARKS:
-                                                    x = round(lm.get("x", 0), 2)
-                                                    y = round(lm.get("y", 0), 2)
-                                                    compact_parts.append(f"{idx}:{x},{y}")
-                                        
-                                        optimized_msg = f"[POSE] {'|'.join(compact_parts)}"
-                                        
-                                        # Use the Frontend's Trigger Decision
-                                        await gemini_output_queue.put((session.send, {"input": optimized_msg, "end_of_turn": should_trigger}))
+                                            if not json_data:
+                                                raise ValueError("Empty JSON data")
+                                                
+                                            landmarks = json.loads(json_data)
+                                            
+                                            # [OPTIMIZATION]
+                                            RECONNECT_LANDMARKS = {11, 12, 13, 14, 15, 16, 23, 24}
+                                            compact_parts = []
+                                            if isinstance(landmarks, list):
+                                                for idx, lm in enumerate(landmarks):
+                                                    if idx in RECONNECT_LANDMARKS:
+                                                        x = round(lm.get("x", 0), 2)
+                                                        y = round(lm.get("y", 0), 2)
+                                                        compact_parts.append(f"{idx}:{x},{y}")
+                                            
+                                            optimized_msg = f"[POSE] {'|'.join(compact_parts)}"
+                                            
+                                            # Use the Frontend's Trigger Decision
+                                            await gemini_output_queue.put((session.send, {"input": optimized_msg, "end_of_turn": should_trigger}))
+                                            processed_as_data = True
 
-                                    except Exception as e:
-                                        logger.warning(f"Error optimizing data: {e}")
-                                        await gemini_output_queue.put((session.send, {"input": text_msg, "end_of_turn": should_trigger}))
-                                else:
+                                        except Exception as e:
+                                            logger.warning(f"Error optimizing data: {e} | Content: {repr(json_data) if 'json_data' in locals() else 'N/A'}")
+                                            # Fall through to send original text
+                                
+                                if not processed_as_data:
                                     # Regular chat (Default to Trigger unless silenced explicitly)
-                                    logger.debug(f"Sending text to Gemini: {text_msg}")
+                                    logger.info(f"backend received text: '{text_msg}'") # [DEBUG]
+                                    
+                                    # [DEBUG] Manual Force Trigger
+                                    if "test note" in text_msg.lower():
+                                        logger.info("!!! TRIGGER HIT: Sending Manual Note to Frontend !!!")
+                                        await websocket.send_text(json.dumps({
+                                            "type": "clinical_note", 
+                                            "note": "SYSTEM TEST: This is a forced clinical note to verify UI."
+                                        }))
+                                    
                                     await gemini_output_queue.put((session.send, {"input": text_msg, "end_of_turn": True}))
 
                             elif "data" in msg:
@@ -211,7 +266,7 @@ async def stream(websocket: WebSocket, mode: str):
                                         await gemini_output_queue.put((session.send_realtime_input, {"video": {"mime_type": mime_type, "data": base64_data}}))
                                         
                                         if should_trigger:
-                                             await gemini_output_queue.put((session.send, {"input": "Analyze form now.", "end_of_turn": True}))
+                                                await gemini_output_queue.put((session.send, {"input": "Analyze form now.", "end_of_turn": True}))
 
                                 except Exception as send_err:
                                     logger.error(f"ERROR: queuing realtime input failed: {send_err}")
@@ -232,26 +287,90 @@ async def stream(websocket: WebSocket, mode: str):
                 try:
                     while gemini_connection_active:
                         async for response in session.receive():
-                            # Gemini returns chunks. We need to parse them.
-                            server_content = response.server_content
-                            if server_content is None:
-                                continue
-                            
-                            model_turn = server_content.model_turn
-                            if model_turn:
-                                for part in model_turn.parts:
+                            # [DEBUG] Raw Response Trace
+                            logger.debug(f"<< Raw Gemini Response: {response}")
+
+                            # ---------------------------------------------------------
+                            # 1. Handle Tool Calls (Top-Level in Live API)
+                            # ---------------------------------------------------------
+                            tool_call = response.tool_call
+                            if tool_call:
+                                for call in tool_call.function_calls:
                                     try:
-                                        if part.text:
-                                            await websocket.send_text(json.dumps({"text": part.text}))
-                                        elif part.inline_data:
+                                        logger.info(f"Tool Call Received via Header: {call.name}")
+                                        
+                                        if call.name == "log_heartbeat":
+                                            logger.info("UseHeartbeat: Alive")
                                             await websocket.send_text(json.dumps({
-                                                "audio": base64.b64encode(part.inline_data.data).decode('utf-8'),
-                                                "mime_type": part.inline_data.mime_type or "audio/pcm;rate=24000" 
+                                                "type": "clinical_note", 
+                                                "note": "System: Tool Connectivity Confirmed (Heartbeat)"
                                             }))
-                                    except Exception:
-                                        # Client disconnected during send
-                                        gemini_connection_active = False
-                                        break
+                                            
+                                            await gemini_output_queue.put((session.send, {
+                                                "input": types.LiveClientToolResponse(
+                                                    function_responses=[
+                                                        types.FunctionResponse(
+                                                            name=call.name,
+                                                            id=call.id,
+                                                            response={"status": "ok"}
+                                                        )
+                                                    ]
+                                                )
+                                            }))
+
+                                        elif call.name == "log_clinical_note":
+                                            # Extract arguments
+                                            args = call.args
+                                            note_text = args.get("note", "No content")
+                                            logger.info(f"Tool Call Received: {note_text}")
+                                            
+                                            # A. Send to Frontend (Silent)
+                                            await websocket.send_text(json.dumps({
+                                                "type": "clinical_note", 
+                                                "note": note_text
+                                            }))
+                                            
+                                            # B. Respond to Gemini (Required)
+                                            await gemini_output_queue.put((session.send, {
+                                                "input": types.LiveClientToolResponse(
+                                                    function_responses=[
+                                                        types.FunctionResponse(
+                                                            name=call.name,
+                                                            id=call.id,
+                                                            response={"status": "ok"}
+                                                        )
+                                                    ]
+                                                )
+                                            }))
+                                            
+                                    except Exception as tool_err:
+                                        logger.error(f"Error handling tool call {call.name}: {tool_err}")
+
+                            # ---------------------------------------------------------
+                            # 2. Handle Content (Text/Audio)
+                            # ---------------------------------------------------------
+                            server_content = response.server_content
+                            if server_content is not None:
+                                model_turn = server_content.model_turn
+                                if model_turn:
+                                    for part in model_turn.parts:
+                                        try:
+                                            # Text Response
+                                            if part.text:
+                                                await websocket.send_text(json.dumps({"text": part.text}))
+                                            
+                                            # Audio Response
+                                            elif part.inline_data:
+                                                await websocket.send_text(json.dumps({
+                                                    "audio": base64.b64encode(part.inline_data.data).decode('utf-8'),
+                                                    "mime_type": part.inline_data.mime_type or "audio/pcm;rate=24000" 
+                                                }))
+                                                
+                                        except Exception as content_err:
+                                             logger.error(f"Error handling content part: {content_err}")
+                                             gemini_connection_active = False
+                                             break
+
                 except Exception as e:
                     logger.error(f"Error receiving from Gemini: {e}")
                     gemini_connection_active = False

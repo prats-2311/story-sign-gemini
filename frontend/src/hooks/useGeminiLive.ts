@@ -20,6 +20,8 @@ export function useGeminiLive({ mode, exerciseConfig, detectPose, onLandmarks, v
   const [messages, setMessages] = useState<string[]>([]);
   const [feedbackStatus, setFeedbackStatus] = useState<'neutral' | 'success' | 'warning' | 'critical'>('neutral');
   const [isCalibrating, setIsCalibrating] = useState(false); // New Calibration State
+  // Clinical Notes State (Strategy A)
+  const [clinicalNotes, setClinicalNotes] = useState<string[]>([]);
 
   const wsRef = useRef<WebSocket | null>(null);
   
@@ -29,6 +31,7 @@ export function useGeminiLive({ mode, exerciseConfig, detectPose, onLandmarks, v
 
   // const videoRef = useRef<HTMLVideoElement | null>(null); // [REMOVED] Shadowing prop
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  // const noteBufferRef = useRef<string>(""); // [REMOVED] Legacy Buffer
   const videoIntervalRef = useRef<number | null>(null);
   const poseIntervalRef = useRef<number | null>(null); // [FIX] Restored
   const videoStreamRef = useRef<MediaStream | null>(null); // [FIX] Restored
@@ -287,20 +290,20 @@ export function useGeminiLive({ mode, exerciseConfig, detectPose, onLandmarks, v
                       let velocity = 0;
                       if (rightWrist) {
                            // Velocity (Jerk Detection)
-                           const lastWrist = sessionStatsRef.current.lastWristPos;
-                           if (lastWrist) {
-                               const dist = Math.sqrt(Math.pow(rightWrist.x - lastWrist.x, 2) + Math.pow(rightWrist.y - lastWrist.y, 2));
-                               velocity = dist; // dist per 125ms
-                               
-                               // Threshold: > 0.35
-                               if (velocity > 0.35) {
-                                    shouldTrigger = true;
-                                    triggerMessage = `[SAFETY_STOP] High Velocity Detected (Speed: ${velocity.toFixed(2)}). Possible Spasm or Drop. STOP IMMEDIATELY.`;
-                                    console.warn("🚨 SAFETY STOP: High Velocity Detected", velocity);
-                                    setFeedbackStatus('critical');
-                                    setTimeout(() => setFeedbackStatus('neutral'), 4000);
-                               }
+                       const lastWrist = sessionStatsRef.current.lastWristPos;
+                       if (lastWrist) {
+                           const dist = Math.sqrt(Math.pow(rightWrist.x - lastWrist.x, 2) + Math.pow(rightWrist.y - lastWrist.y, 2));
+                           velocity = dist; // dist per 125ms
+                           
+                           // [FIX] Threshold: > 0.5 (Restored for testing safety stops)
+                           if (velocity > 0.5) {
+                                shouldTrigger = true;
+                                triggerMessage = `[SAFETY_STOP] High Velocity Detected (Speed: ${velocity.toFixed(2)}). Possible Spasm or Drop. STOP IMMEDIATELY.`;
+                                console.warn("🚨 SAFETY STOP: High Velocity Detected", velocity);
+                                setFeedbackStatus('critical');
+                                setTimeout(() => setFeedbackStatus('neutral'), 4000);
                            }
+                       }
                            // Update Stats
                            sessionStatsRef.current.lastWristPos = { x: rightWrist.x, y: rightWrist.y };
                       }
@@ -340,6 +343,7 @@ export function useGeminiLive({ mode, exerciseConfig, detectPose, onLandmarks, v
                               trigger: true
                           }));
                       } else {
+                          // [RESTORE] Passive Stream (Context is needed)
                           wsRef.current.send(JSON.stringify({
                               text: `[POSE_DATA] ${JSON.stringify(landmarks)}`,
                               trigger: false
@@ -399,40 +403,59 @@ export function useGeminiLive({ mode, exerciseConfig, detectPose, onLandmarks, v
     ws.onopen = () => {
       console.log('Connected to Gemini Tunnel');
       setIsConnected(true);
+      // [FORCE STARTUP] Send immediate context
+      ws.send(JSON.stringify({
+          text: "[SYSTEM] SESSION STARTED. EXECUTE STARTUP CHECKS (HEARTBEAT).",
+          trigger: true 
+      }));
     };
+
+
 
     ws.onmessage = (event) => {
       // Handle server messages (JSON or Text)
+      // [DEBUG] Log Raw Message
+      // console.log("[WS IN]", event.data.substring(0, 100)); // Print first 100 chars
       try {
         const msg = JSON.parse(event.data);
+        
+        // [DEBUG] Log Parsed Message 
+        if (msg.type) console.log("[WS MSG TYPE]", msg.type);
         
         // --- 1. Audio Stream ---
         if (msg.audio) {
             playAudioChunk(msg.audio);
         }
 
-        // --- 2. Text/JSON Stream ---
-        if (msg.text) {
-             const lower = msg.text.toUpperCase();
-             if (lower.includes("[SAFETY_STOP]")) {
-                 setFeedbackStatus('critical');
-                 setTimeout(() => setFeedbackStatus('neutral'), 4000);
-             } else if (lower.includes("[CORRECTION]") || lower.includes("TORSO LEAN")) {
-                 setFeedbackStatus('warning');
-                 setTimeout(() => setFeedbackStatus('neutral'), 3000);
-             } else if (lower.includes("[EVENT]")) {
-                 setFeedbackStatus('success'); // Good Rep
-                 setTimeout(() => setFeedbackStatus('neutral'), 2000);
+             // --- 2. Text/JSON Stream ---
+             if (msg.type === 'clinical_note') {
+                 // [NEW] Handle Silent Tool Call Event
+                 console.log("[GeminiLive] Received Silent Clinical Note:", msg.note);
+                 setClinicalNotes(prev => [...prev, msg.note]);
+             } else if (msg.text) {
+                 const lower = msg.text.toUpperCase();
+                 // Standard UI Triggers
+                 if (lower.includes("[SAFETY_STOP]")) {
+                     setFeedbackStatus('critical');
+                     setTimeout(() => setFeedbackStatus('neutral'), 4000);
+                 } else if (lower.includes("[CORRECTION]") || lower.includes("TORSO LEAN")) {
+                     setFeedbackStatus('warning');
+                     setTimeout(() => setFeedbackStatus('neutral'), 3000);
+                 } else if (lower.includes("[EVENT]")) {
+                     setFeedbackStatus('success'); // Good Rep
+                     setTimeout(() => setFeedbackStatus('neutral'), 2000);
+                 }
+
+                 // [CLEANUP] No more Regex Buffering. The text is just text (Audio transcript).
+                 // We display it all, assuming the backend prompt ensures no "JSON_NOTE" text leaks.
+                 setMessages((prev) => [...prev, `Gemini: ${msg.text}`]);
              }
-
-             setMessages((prev) => [...prev, `Gemini: ${msg.text}`]);
-        }
-      } catch (e) {
-        // Fallback for plain text
-        setMessages((prev) => [...prev, `Gemini: ${event.data}`]);
-      }
+       } catch (e) {
+         // Fallback for plain text
+         setMessages((prev) => [...prev, `Gemini: ${event.data}`]);
+       }
     };
-
+    
     ws.onclose = () => {
       console.log('Disconnected');
       setIsConnected(false);
@@ -446,7 +469,7 @@ export function useGeminiLive({ mode, exerciseConfig, detectPose, onLandmarks, v
     };
 
     wsRef.current = ws;
-  }, [mode, playAudioChunk, stopAudioStream, stopVideoStream]); // Dependencies are now defined above
+  }, [mode, playAudioChunk, stopAudioStream, stopVideoStream]);
 
   useEffect(() => {
     return () => {
@@ -454,5 +477,5 @@ export function useGeminiLive({ mode, exerciseConfig, detectPose, onLandmarks, v
     };
   }, [disconnect]);
 
-  return { isConnected, messages, connect, disconnect, sendMessage, startAudioStream, stopAudioStream, startVideoStream, stopVideoStream, dataSentCount, getSessionStats, feedbackStatus, isCalibrating };
+  return { isConnected, messages, clinicalNotes, connect, disconnect, sendMessage, startAudioStream, stopAudioStream, startVideoStream, stopVideoStream, dataSentCount, getSessionStats, feedbackStatus, isCalibrating };
 }
