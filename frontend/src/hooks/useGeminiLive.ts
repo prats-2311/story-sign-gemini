@@ -47,7 +47,9 @@ export function useGeminiLive({ mode, exerciseConfig, detectPose, onLandmarks, v
       repCount: 0, 
       repState: 'DOWN' as 'DOWN' | 'UP',
       lastWristPos: null as any, // [FIX] Added for Velocity Check
-      lastShoulderY: null as number | null // [FIX] For Stability
+      lastShoulderY: null as number | null, // [FIX] For Stability
+      telemetry: [] as { t: number, val: number, vel: number }[], // [STRATEGY C]
+      startTime: Date.now() 
   });
 
   const getSessionStats = useCallback(() => {
@@ -336,19 +338,39 @@ export function useGeminiLive({ mode, exerciseConfig, detectPose, onLandmarks, v
                       // Increment Frame
                       sessionStatsRef.current.frameCount++;
 
-                      // 3. Send Data
-                      if (shouldTrigger) {
-                          wsRef.current.send(JSON.stringify({
-                              text: triggerMessage,
-                              trigger: true
-                          }));
-                      } else {
-                          // [RESTORE] Passive Stream (Context is needed)
-                          wsRef.current.send(JSON.stringify({
-                              text: `[POSE_DATA] ${JSON.stringify(landmarks)}`,
-                              trigger: false
-                          }));
-                      }
+                       // ---------------------------------------------------------
+                       // 3. TELEMETRY CAPTURE (Strategy C)
+                       // ---------------------------------------------------------
+                       // Capture data point for post-session analysis
+                       const elapsedSeconds = Number(((Date.now() - sessionStatsRef.current.startTime) / 1000).toFixed(2));
+                       
+                       // Get the primary angle metric (e.g., Elbow Angle)
+                       // We can infer this from the latest engine update or re-calculate.
+                       // For robustness, let's re-calculate R_Elbow_Flexion just for the chart trace
+                       const upperArm = getVector(rightShoulder, rightElbow);
+                       const lowerArm = getVector(rightElbow, rightWrist);
+                       const rawAngle = getVectorAngle(upperArm, lowerArm); 
+                       const currentVal = Math.round(180 - rawAngle); // Convert to flexion
+
+                       sessionStatsRef.current.telemetry.push({
+                           t: elapsedSeconds,
+                           val: currentVal,
+                           vel: Number(velocity.toFixed(2))
+                       });
+
+                       // 3. Send Data
+                       if (shouldTrigger) {
+                           wsRef.current.send(JSON.stringify({
+                               text: triggerMessage,
+                               trigger: true
+                           }));
+                       } else {
+                           // [RESTORE] Passive Stream (Context is needed)
+                           wsRef.current.send(JSON.stringify({
+                               text: `[POSE_DATA] ${JSON.stringify(landmarks)}`,
+                               trigger: false
+                           }));
+                       }
                       
                       setDataSentCount(c => c + 1);
 

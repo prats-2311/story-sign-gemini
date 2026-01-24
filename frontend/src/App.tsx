@@ -5,6 +5,7 @@ import { ThinkingLog } from './components/ThinkingLog';
 import { HistoryGraph } from './components/HistoryGraph'; 
 import { Dashboard } from './components/Dashboard'; 
 import type { ExerciseConfig } from './types/Exercise';
+import { AnalyticsChart } from './components/AnalyticsChart';
 import './App.css';
 
 function App() {
@@ -62,6 +63,7 @@ function SessionRunner({ config, onExit }: { config: ExerciseConfig, onExit: () 
   // Report State
   const [report, setReport] = useState<string | null>(null);
   const [thoughts, setThoughts] = useState<string | null>(null);
+  const [chartConfig, setChartConfig] = useState<any>(null); // [STRATEGY C]
   const [isGeneratingReport, setIsGeneratingReport] = useState(false);
 
   // Handlers
@@ -96,12 +98,21 @@ function SessionRunner({ config, onExit }: { config: ExerciseConfig, onExit: () 
                recent_angles: stats.angleHistory.slice(-20) 
            });
 
+           // [STRATEGY C] Downsampling Logic
+           // We want max ~100 points to keep context light.
+           const rawTelemetry = stats.telemetry || [];
+           const sampleRate = Math.ceil(Math.max(1, rawTelemetry.length / 100));
+           const sampledTelemetry = rawTelemetry.filter((_, i) => i % sampleRate === 0);
+           
+           console.log(`[Strategy C] Telemetry: Raw ${rawTelemetry.length} -> Sampled ${sampledTelemetry.length}`);
+
            const payload = {
             session_id: "demo_session_1",
             duration_seconds: 45, 
             transcript: messages.join("\n"),
             clinical_notes: clinicalNotes, // Strategy A Input
             pose_summary: poseSummary,
+            telemetry: sampledTelemetry,   // [STRATEGY C] Input
             include_thoughts: true
            };
 
@@ -113,8 +124,9 @@ function SessionRunner({ config, onExit }: { config: ExerciseConfig, onExit: () 
            });
            
            const data = await response.json();
-           setReport(data.report);
+           setReport(data.report_markdown || data.report); // Handle both formats
            if (data.thoughts) setThoughts(data.thoughts);
+           if (data.chart_config) setChartConfig(data.chart_config); // [STRATEGY C]
 
       } catch (e) {
           console.error("Report Error", e);
@@ -281,18 +293,24 @@ function SessionRunner({ config, onExit }: { config: ExerciseConfig, onExit: () 
                         <h2 className="text-2xl font-bold text-white flex items-center gap-2">
                              <span className="text-cyber-cyan">🧠</span> GEMINI 3 ANALYSIS
                         </h2>
-                        <button onClick={() => { setReport(null); setThoughts(null); }} className="text-gray-400 hover:text-white">✕ CLOSE</button>
+                    <button onClick={() => { setReport(null); setThoughts(null); setChartConfig(null); }} className="text-gray-400 hover:text-white">✕ CLOSE</button>
                     </div>
                     
-                    <div className="flex-1 overflow-y-auto p-8 flex gap-8">
-                        {/* Report Content */}
-                        <div className="flex-1 prose prose-invert max-w-none">
+                    <div className="flex-1 overflow-y-auto p-8 space-y-8">
+                        {/* CHART SECTION (Strategy C) */}
+                        {chartConfig && (
+                            <div className="animate-slide-in">
+                                <AnalyticsChart config={chartConfig} />
+                            </div>
+                        )}
+
+                        {/* TEXT REPORT */}
+                        <div className="prose prose-invert max-w-none">
                              <div className="whitespace-pre-wrap font-mono text-sm text-gray-300 leading-relaxed border-l-2 border-cyber-cyan/30 pl-6">
                                  {report}
                              </div>
                         </div>
-
-                         {/* Hidden Thoughts Layer - Only show if actively thinking or user toggled? 
+                    </div>      {/* Hidden Thoughts Layer - Only show if actively thinking or user toggled? 
                              Actually, if report is present, we shouldn't block it. 
                              Let's only show ThinkingLog if we are waiting, OR if we want to debug.
                              For now, let's remove the BLOCKING overlay once report is here, 
@@ -306,7 +324,7 @@ function SessionRunner({ config, onExit }: { config: ExerciseConfig, onExit: () 
                          )}
                     </div>
                 </div>
-            </div>
+
           )}
 
       </div>

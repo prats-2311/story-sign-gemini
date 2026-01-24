@@ -44,55 +44,75 @@ async def analyze_session(request: Request):
         transcript = data.get("transcript", "")
         clinical_notes = data.get("clinical_notes", [])
         pose_summary = data.get("pose_summary", "")
-
+        telemetry = data.get("telemetry", [])
+        
         notes_text = "\n- ".join(clinical_notes) if clinical_notes else "No specific clinical notes recorded."
 
         prompt = f"""
-        You are an expert Physical Therapist synthesizing a session report.
+        You are an expert Physical Therapist and Data Journalist.
         
-        **Input Data:**
-        1. Clinical Observations (Recorded Live):
+        **1. Clinical Observations (Notes):**
         - {notes_text}
 
-        2. Pose Statistics:
+        **2. Raw Telemetry (Sampled):**
+        - Format: [ {{ "t": time, "val": measure, "vel": velocity }}, ... ]
+        {json.dumps(telemetry)}
+        
+        **3. Pose Statistics:**
         {pose_summary}
 
         **Task:**
-        Synthesize these observations into a concise "Progress Report" (max 150 words).
-        - Focus on the "Clinical Observations" provided above.
-        - Back them up with the "Pose Statistics".
-        - Do NOT re-analyze raw audio; trust the Clinical Observations.
+        1. **Progress Report**: Write a concise markdown report (max 150 words). 
+           - Synthesize the "Notes" with the "Telemetry". 
+           - E.g. "The user fatigued at 30s" (Proof: Velocity dropped to 0.1).
+        2. **Visual Evidence**: Generate a configuration for a line chart that best proves your point (e.g. "Fatigue Curve" or "Consistency Graph").
+           - Select the most relevant metric (val or vel) for the Y-Axis.
         
-        Output format: Markdown.
+        **Output Schema (Strict JSON):**
+        {{
+            "report_markdown": "markdown string...",
+            "chart_config": {{
+                "title": "Elbow Flexion Consistency",
+                "xAxis": "Time (s)",
+                "yAxis": "Angle (deg)",
+                "data": [ {{"x": 1.2, "y": 45}}, ... ] 
+            }}
+        }}
         """
 
-        # Use Gemini 3 Flash Preview (Confirmed Availability)
-        # This provides the superior reasoning capabilities for the Hackathon.
+        # Use Gemini 3 Pro Preview (Found via list_models.py)
         response = client.models.generate_content(
-            model="gemini-3-flash-preview", 
+            model="gemini-3-pro-preview", 
             contents=prompt,
             config=types.GenerateContentConfig(
-                thinking_config=types.ThinkingConfig(include_thoughts=True)
+                response_mime_type="application/json"
             )
         )
         
-        # Extract Thoughts
-        thoughts = []
+        # Parse JSON
         try:
-            for part in response.candidates[0].content.parts:
-                # Check for thought parts (experimental attribute)
-                if hasattr(part, "thought") and part.thought:
-                     thoughts.append(part.text)
-                # Fallback: Check if it looks like a thought block
-                elif "Thinking Process:" in part.text:
-                     thoughts.append(part.text)
-        except Exception:
-            pass
-        
-        return {
-            "report": response.text, 
-            "thoughts": "\n".join(thoughts) if thoughts else "Processing clinical data..."
-        }
+            result = json.loads(response.text)
+            
+            # Extract Thoughts Manually if needed, though they are usually separate
+            # For now, we trust the JSON structure
+            thoughts = []
+            try:
+                for part in response.candidates[0].content.parts:
+                    if hasattr(part, "thought") and part.thought:
+                        thoughts.append(part.text)
+            except:
+                pass
+                
+            result["thoughts"] = "\n".join(thoughts) if thoughts else "Processing data insights..."
+            return result
+            
+        except json.JSONDecodeError:
+            logger.error(f"Failed to parse JSON response: {response.text}")
+            return {
+                "report_markdown": response.text,  # Fallback
+                "chart_config": None,
+                "thoughts": "Error parsing data visualization."
+            }
     except Exception as e:
         logger.error(f"Error in deep think analysis: {e}")
         return {"report": "Could not generate report at this time."}
