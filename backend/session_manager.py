@@ -1,6 +1,11 @@
-from .prompts.asl import ASL_SYSTEM_INSTRUCTION
-from .prompts.harmony import HARMONY_SYSTEM_INSTRUCTION
-from .prompts.reconnect import RECONNECT_SYSTEM_INSTRUCTION
+try:
+    from .prompts.asl import ASL_SYSTEM_INSTRUCTION
+    from .prompts.harmony import HARMONY_SYSTEM_INSTRUCTION
+    from .prompts.reconnect import RECONNECT_SYSTEM_INSTRUCTION
+except ImportError:
+    from prompts.asl import ASL_SYSTEM_INSTRUCTION
+    from prompts.harmony import HARMONY_SYSTEM_INSTRUCTION
+    from prompts.reconnect import RECONNECT_SYSTEM_INSTRUCTION
 
 class SessionManager:
     def __init__(self):

@@ -3,3 +3,6 @@ uvicorn
 websockets
 python-dotenv
 google-genai
+sqlalchemy
+psycopg2-binary
+supabase

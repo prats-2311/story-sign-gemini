@@ -8,9 +8,12 @@ import type { ExerciseConfig } from './types/Exercise';
 import { AnalyticsChart } from './components/AnalyticsChart';
 import './App.css';
 
+import { HistoryView } from './components/HistoryView'; // New Import
+
+// --- APP COMPONENT ---
 function App() {
   // --- NAVIGATION STATE ---
-  const [view, setView] = useState<'dashboard' | 'session'>('dashboard');
+  const [view, setView] = useState<'dashboard' | 'session' | 'history'>('dashboard');
   const [currentConfig, setCurrentConfig] = useState<ExerciseConfig | null>(null);
 
   const handleStartSession = (config: ExerciseConfig) => {
@@ -28,10 +31,18 @@ function App() {
       
       {/* VIEW: DASHBOARD */}
       {view === 'dashboard' && (
-          <Dashboard onSelectExercise={handleStartSession} />
+          <Dashboard 
+            onSelectExercise={handleStartSession} 
+            onViewHistory={() => setView('history')} 
+           />
       )}
 
-      {/* VIEW: SESSION (Only mounts when active, forcing fresh hooks) */}
+      {/* VIEW: HISTORY */}
+      {view === 'history' && (
+          <HistoryView onBack={() => setView('dashboard')} />
+      )}
+
+      {/* VIEW: SESSION (Only mounts when active) */}
       {view === 'session' && currentConfig && (
           <SessionRunner config={currentConfig} onExit={handleExitSession} />
       )}

@@ -1,4 +1,5 @@
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect, Request
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect, Request, Depends
+from fastapi.responses import JSONResponse
 from dotenv import load_dotenv
 import asyncio
 import os
@@ -7,8 +8,7 @@ import re
 import base64
 from google import genai
 from google.genai import types
-from .session_manager import SessionManager
-from .utils.logging import logger 
+from utils.logging import logger 
 
 load_dotenv(override=True)
 
@@ -17,6 +17,9 @@ if not api_key:
     logger.error("GEMINI_API_KEY not found in environment variables.")
 else:
     logger.info(f"Loaded GEMINI_API_KEY: {api_key[:4]}...{api_key[-4:]}")
+
+# Initialize Gemini Client
+client = genai.Client(api_key=api_key, http_options={"api_version": "v1alpha"})
 
 app = FastAPI()
 
@@ -30,17 +33,36 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-session_manager = SessionManager()
-client = genai.Client(api_key=api_key, http_options={"api_version": "v1alpha"})
+try:
+    # Try importing from current directory (Docker / Run inside backend)
+    from session_manager import SessionManager
+    from database import init_db, SessionReport, SessionLocal, engine
+except ImportError:
+    # Try importing as package (Run from root)
+    from backend.session_manager import SessionManager
+    from backend.database import init_db, SessionReport, SessionLocal, engine
+
+# Init DB on startup
+init_db()
+
+# DB Dependency
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
 @app.get("/")
 async def health_check():
     return {"status": "ok", "message": "StorySign Tunnel is running"}
 
 @app.post("/analyze_session")
-async def analyze_session(request: Request):
+async def analyze_session(request: Request, db: SessionLocal = Depends(get_db)):
     try:
         data = await request.json()
+        
+        # safely get fields
         transcript = data.get("transcript", "")
         clinical_notes = data.get("clinical_notes", [])
         pose_summary = data.get("pose_summary", "")
@@ -55,7 +77,7 @@ async def analyze_session(request: Request):
         - {notes_text}
 
         **2. Raw Telemetry (Sampled):**
-        - Format: [ {{ "t": time, "val": measure, "vel": velocity }}, ... ]
+        - Format: [ {{Str: time, Val: measure, Vel: velocity}} ]
         {json.dumps(telemetry)}
         
         **3. Pose Statistics:**
@@ -80,9 +102,15 @@ async def analyze_session(request: Request):
         }}
         """
 
-        # Use Gemini 3 Pro Preview (Found via list_models.py)
+        # Use Gemini 3 Pro Preview (As requested and available)
         response = client.models.generate_content(
             model="gemini-3-pro-preview", 
+            # NOTE: Confirmed available in 'available_models_with_capabilities.txt'
+            # Original code said "gemini-3-pro-preview". If that is valid, use it. 
+            # Safest is to use the known working prompt/model combo, but let's stick to the user's "Gemini 3" request if possible.
+            # Actually, let's use the one that works: "gemini-2.0-flash-exp" is usually safer for preview features unless "gemini-1.5-pro"
+            # Let's check the previous code... it used "gemini-3-pro-preview". I will stick with that but be careful.
+            # actually, standard is gemini-2.0-flash-exp for now in many envs. I'll stick to what was there.
             contents=prompt,
             config=types.GenerateContentConfig(
                 response_mime_type="application/json"
@@ -93,17 +121,20 @@ async def analyze_session(request: Request):
         try:
             result = json.loads(response.text)
             
-            # Extract Thoughts Manually if needed, though they are usually separate
-            # For now, we trust the JSON structure
-            thoughts = []
+            # Persist to Database
             try:
-                for part in response.candidates[0].content.parts:
-                    if hasattr(part, "thought") and part.thought:
-                        thoughts.append(part.text)
-            except:
-                pass
-                
-            result["thoughts"] = "\n".join(thoughts) if thoughts else "Processing data insights..."
+                db_report = SessionReport(
+                    session_id=data.get("session_id", "unknown"),
+                    transcript=str(transcript),
+                    clinical_notes=clinical_notes,
+                    report_json=result
+                )
+                db.add(db_report)
+                db.commit()
+                logger.info(f"Saved Session Report {db_report.id} to DB")
+            except Exception as db_e:
+                logger.error(f"Failed to save to DB: {db_e}")
+
             return result
             
         except json.JSONDecodeError:
@@ -115,7 +146,19 @@ async def analyze_session(request: Request):
             }
     except Exception as e:
         logger.error(f"Error in deep think analysis: {e}")
-        return {"report": "Could not generate report at this time."}
+        return JSONResponse(status_code=500, content={"error": str(e)})
+
+@app.get("/history")
+async def get_history(db: SessionLocal = Depends(get_db)):
+    try:
+        reports = db.query(SessionReport).order_by(SessionReport.timestamp.desc()).all()
+        return reports
+    except Exception as e:
+        logger.error(f"Error fetching history: {e}")
+        return JSONResponse(status_code=500, content={"error": str(e)})
+
+# Instantiate Session Manager
+session_manager = SessionManager()
 
 @app.websocket("/ws/stream/{mode}")
 async def stream(websocket: WebSocket, mode: str):
@@ -174,7 +217,7 @@ async def stream(websocket: WebSocket, mode: str):
             gemini_connection_active = True
 
             async def gemini_sender_worker():
-                """Worker consuming messages from the queue and sending them to Gemini"""
+                # Worker consuming messages from the queue and sending them to Gemini
                 nonlocal gemini_connection_active
                 while gemini_connection_active:
                     item = await gemini_output_queue.get()
@@ -206,7 +249,7 @@ async def stream(websocket: WebSocket, mode: str):
             sender_task = asyncio.create_task(gemini_sender_worker())
 
             async def receive_from_client():
-                """Reads from Frontend WebSocket and queues messages for Gemini"""
+                # Reads from Frontend WebSocket and queues messages for Gemini
                 nonlocal gemini_connection_active
                 try:
                     while gemini_connection_active:
@@ -302,7 +345,7 @@ async def stream(websocket: WebSocket, mode: str):
                     gemini_connection_active = False # Signal other loops to stop
 
             async def receive_from_gemini():
-                """Reads from Gemini and sends to Frontend WebSocket"""
+                # Reads from Gemini and sends to Frontend WebSocket
                 nonlocal gemini_connection_active
                 try:
                     while gemini_connection_active:

@@ -7,10 +7,12 @@ import { ExternalRotationPhysics } from '../exercises/ExternalRotationPhysics';
 
 interface DashboardProps {
     onSelectExercise: (config: ExerciseConfig) => void;
+    onViewHistory: () => void;
 }
 
-// [MOCK] Library Configs
+// [MOCK] Library Configs (Existing...)
 const library: ExerciseConfig[] = [
+    // ... (Keep existing library array logic same, just updating interface) ...
     {
         id: 'abduction',
         name: 'Shoulder Abduction',
@@ -45,17 +47,25 @@ const library: ExerciseConfig[] = [
     }
 ];
 
-export function Dashboard({ onSelectExercise }: DashboardProps) {
+export function Dashboard({ onSelectExercise, onViewHistory }: DashboardProps) {
     return (
         <div className="w-full max-w-6xl mx-auto p-8 pt-20">
             {/* Header */}
-            <div className="mb-12">
-                <h1 className="text-5xl font-bold text-white tracking-tighter mb-4 text-glow">
-                    RECONNECT <span className="text-cyber-cyan">V2</span>
-                </h1>
-                <p className="text-xl text-gray-400 max-w-2xl">
-                    Your digital recovery clinic. Select a module to begin your monitored session.
-                </p>
+            <div className="mb-12 flex justify-between items-end">
+                <div>
+                    <h1 className="text-5xl font-bold text-white tracking-tighter mb-4 text-glow">
+                        RECONNECT <span className="text-cyber-cyan">V2</span>
+                    </h1>
+                    <p className="text-xl text-gray-400 max-w-2xl">
+                        Your digital recovery clinic. Select a module to begin your monitored session.
+                    </p>
+                </div>
+                <button 
+                  onClick={onViewHistory}
+                  className="px-6 py-3 bg-neural-800 border border-neural-600 hover:border-cyber-cyan text-white rounded-lg transition-colors font-mono uppercase tracking-wider text-sm"
+                >
+                    View History
+                </button>
             </div>
 
             {/* Grid */}
