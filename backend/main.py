@@ -125,9 +125,9 @@ async def stream(websocket: WebSocket, mode: str):
     sys_instruct = session_manager.get_system_instruction(mode)
 
     # Configure the session
-    # Using the standard experimental model which supports Multimodal Live API (Video + Audio)
-    model = "gemini-2.0-flash-exp"
-
+    # Use the model identified by the user as supporting both Audio and Video
+    model = "gemini-2.5-flash-native-audio-latest" 
+    # Valid alternatives: "gemini-2.5-flash-native-audio-preview-12-2025"     
     clinical_tool_func = types.FunctionDeclaration(
         name="log_clinical_note",
         description="Log a clinical observation about the patient's form or progress. Silent.",

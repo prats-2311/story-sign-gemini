@@ -1,0 +1,145 @@
+Listing models...
+Model: models/gemini-2.5-flash
+  DisplayName: Gemini 2.5 Flash
+  Supported: (attribute not found)
+Model: models/gemini-2.5-pro
+  DisplayName: Gemini 2.5 Pro
+  Supported: (attribute not found)
+Model: models/gemini-2.0-flash
+  DisplayName: Gemini 2.0 Flash
+  Supported: (attribute not found)
+Model: models/gemini-2.0-flash-001
+  DisplayName: Gemini 2.0 Flash 001
+  Supported: (attribute not found)
+Model: models/gemini-2.0-flash-exp-image-generation
+  DisplayName: Gemini 2.0 Flash (Image Generation) Experimental
+  Supported: (attribute not found)
+Model: models/gemini-2.0-flash-lite-001
+  DisplayName: Gemini 2.0 Flash-Lite 001
+  Supported: (attribute not found)
+Model: models/gemini-2.0-flash-lite
+  DisplayName: Gemini 2.0 Flash-Lite
+  Supported: (attribute not found)
+Model: models/gemini-exp-1206
+  DisplayName: Gemini Experimental 1206
+  Supported: (attribute not found)
+Model: models/gemini-2.5-flash-preview-tts
+  DisplayName: Gemini 2.5 Flash Preview TTS
+  Supported: (attribute not found)
+Model: models/gemini-2.5-pro-preview-tts
+  DisplayName: Gemini 2.5 Pro Preview TTS
+  Supported: (attribute not found)
+Model: models/gemma-3-1b-it
+  DisplayName: Gemma 3 1B
+  Supported: (attribute not found)
+Model: models/gemma-3-4b-it
+  DisplayName: Gemma 3 4B
+  Supported: (attribute not found)
+Model: models/gemma-3-12b-it
+  DisplayName: Gemma 3 12B
+  Supported: (attribute not found)
+Model: models/gemma-3-27b-it
+  DisplayName: Gemma 3 27B
+  Supported: (attribute not found)
+Model: models/gemma-3n-e4b-it
+  DisplayName: Gemma 3n E4B
+  Supported: (attribute not found)
+Model: models/gemma-3n-e2b-it
+  DisplayName: Gemma 3n E2B
+  Supported: (attribute not found)
+Model: models/gemini-flash-latest
+  DisplayName: Gemini Flash Latest
+  Supported: (attribute not found)
+Model: models/gemini-flash-lite-latest
+  DisplayName: Gemini Flash-Lite Latest
+  Supported: (attribute not found)
+Model: models/gemini-pro-latest
+  DisplayName: Gemini Pro Latest
+  Supported: (attribute not found)
+Model: models/gemini-2.5-flash-lite
+  DisplayName: Gemini 2.5 Flash-Lite
+  Supported: (attribute not found)
+Model: models/gemini-2.5-flash-image
+  DisplayName: Nano Banana
+  Supported: (attribute not found)
+Model: models/gemini-2.5-flash-preview-09-2025
+  DisplayName: Gemini 2.5 Flash Preview Sep 2025
+  Supported: (attribute not found)
+Model: models/gemini-2.5-flash-lite-preview-09-2025
+  DisplayName: Gemini 2.5 Flash-Lite Preview Sep 2025
+  Supported: (attribute not found)
+Model: models/gemini-3-pro-preview
+  DisplayName: Gemini 3 Pro Preview
+  Supported: (attribute not found)
+Model: models/gemini-3-flash-preview
+  DisplayName: Gemini 3 Flash Preview
+  Supported: (attribute not found)
+Model: models/gemini-3-pro-image-preview
+  DisplayName: Nano Banana Pro
+  Supported: (attribute not found)
+Model: models/nano-banana-pro-preview
+  DisplayName: Nano Banana Pro
+  Supported: (attribute not found)
+Model: models/gemini-robotics-er-1.5-preview
+  DisplayName: Gemini Robotics-ER 1.5 Preview
+  Supported: (attribute not found)
+Model: models/gemini-2.5-computer-use-preview-10-2025
+  DisplayName: Gemini 2.5 Computer Use Preview 10-2025
+  Supported: (attribute not found)
+Model: models/deep-research-pro-preview-12-2025
+  DisplayName: Deep Research Pro Preview (Dec-12-2025)
+  Supported: (attribute not found)
+Model: models/embedding-001
+  DisplayName: Embedding 001
+  Supported: (attribute not found)
+Model: models/text-embedding-004
+  DisplayName: Text Embedding 004
+  Supported: (attribute not found)
+Model: models/gemini-embedding-001
+  DisplayName: Gemini Embedding 001
+  Supported: (attribute not found)
+Model: models/aqa
+  DisplayName: Model that performs Attributed Question Answering.
+  Supported: (attribute not found)
+Model: models/imagen-4.0-generate-preview-06-06
+  DisplayName: Imagen 4 (Preview)
+  Supported: (attribute not found)
+Model: models/imagen-4.0-ultra-generate-preview-06-06
+  DisplayName: Imagen 4 Ultra (Preview)
+  Supported: (attribute not found)
+Model: models/imagen-4.0-generate-001
+  DisplayName: Imagen 4
+  Supported: (attribute not found)
+Model: models/imagen-4.0-ultra-generate-001
+  DisplayName: Imagen 4 Ultra
+  Supported: (attribute not found)
+Model: models/imagen-4.0-fast-generate-001
+  DisplayName: Imagen 4 Fast
+  Supported: (attribute not found)
+Model: models/veo-2.0-generate-001
+  DisplayName: Veo 2
+  Supported: (attribute not found)
+Model: models/veo-3.0-generate-001
+  DisplayName: Veo 3
+  Supported: (attribute not found)
+Model: models/veo-3.0-fast-generate-001
+  DisplayName: Veo 3 fast
+  Supported: (attribute not found)
+Model: models/veo-3.1-generate-preview
+  DisplayName: Veo 3.1
+  Supported: (attribute not found)
+Model: models/veo-3.1-fast-generate-preview
+  DisplayName: Veo 3.1 fast
+  Supported: (attribute not found)
+Model: models/gemini-2.5-flash-native-audio-latest
+  DisplayName: Gemini 2.5 Flash Native Audio Latest
+  Supported: (attribute not found)
+Model: models/gemini-2.5-flash-native-audio-preview-09-2025
+  DisplayName: Gemini 2.5 Flash Native Audio Preview 09-2025
+  Supported: (attribute not found)
+Model: models/gemini-2.5-flash-native-audio-preview-12-2025
+  DisplayName: Gemini 2.5 Flash Native Audio Preview 12-2025
+  Supported: (attribute not found)
+Model: models/lyria-realtime-exp
+  DisplayName: Lyria Realtime Experimental
+  Supported: (attribute not found)
