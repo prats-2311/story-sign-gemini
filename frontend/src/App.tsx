@@ -128,7 +128,7 @@ function SessionRunner({ config, onExit }: { config: ExerciseConfig, onExit: () 
            };
 
            console.log("[App] Generating Report payload:", payload);
-           const response = await fetch('http://localhost:8000/analyze_session', {
+           const response = await fetch('/analyze_session', {
                method: 'POST',
                headers: {'Content-Type': 'application/json'},
                body: JSON.stringify(payload)

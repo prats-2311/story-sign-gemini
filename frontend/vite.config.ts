@@ -19,6 +19,10 @@ export default defineConfig({
         target: 'ws://0.0.0.0:8000',
         ws: true,
         changeOrigin: true
+      },
+      '/analyze_session': {
+        target: 'http://0.0.0.0:8000',
+        changeOrigin: true
       }
     }
   }
