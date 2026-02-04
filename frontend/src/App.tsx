@@ -10,6 +10,8 @@ import './App.css';
 
 import { HistoryView } from './components/HistoryView'; // New Import
 
+import { ArcadeOverlay } from './components/ArcadeOverlay'; // New Import
+
 // --- APP COMPONENT ---
 function App() {
   // --- NAVIGATION STATE ---
@@ -60,14 +62,25 @@ function SessionRunner({ config, onExit }: { config: ExerciseConfig, onExit: () 
   // Video Ref
   const videoRef = useRef<HTMLVideoElement>(null);
 
+  // [ARCADE MODE STATE]
+  const [arcadeMode, setArcadeMode] = useState(false);
+  const [shoulderY, setShoulderY] = useState(0.5); // Default Middle
+
   // Hook Init (FRESH INSTANCE)
   const { isConnected, messages, connect, disconnect, startAudioStream, stopAudioStream, startVideoStream, stopVideoStream, getSessionStats, feedbackStatus, isCalibrating, clinicalNotes } = useGeminiLive({ 
       mode: 'RECONNECT', 
       detectPose,
       videoRef,
       exerciseConfig: config, 
-      onLandmarks: (_landmarks) => {
-          // Unused for now
+      onLandmarks: (landmarks) => {
+          // [ARCADE INPUT]
+          // Index 12 is Right Shoulder
+          if (landmarks && landmarks[12]) {
+              // Normalize Y (0 is top, 1 is bottom) -> Feed to Game
+              // Buffer it slightly to avoid jitter? React update batching handles some.
+              // Direct access for performance
+              setShoulderY(landmarks[12].y);
+          }
       }
   });
 
@@ -168,6 +181,15 @@ function SessionRunner({ config, onExit }: { config: ExerciseConfig, onExit: () 
               </div>
               
               <div className="pointer-events-auto flex items-center gap-4">
+                  {/* ARCADE TOGGLE */}
+                  <button 
+                    onClick={() => setArcadeMode(!arcadeMode)}
+                    className={`flex items-center gap-2 font-mono text-xs border border-gray-800 px-4 py-2 rounded transition-all 
+                        ${arcadeMode ? 'bg-cyber-cyan text-black shadow-[0_0_15px_rgba(6,182,212,0.5)]' : 'bg-black/50 text-gray-400 hover:text-white'}`}
+                  >
+                      {arcadeMode ? '🕹️ ARCADE ON' : '🕹️ ARCADE OFF'}
+                  </button>
+
                   <button onClick={() => { handleStop(); onExit(); }} className="text-gray-400 hover:text-white flex items-center gap-2 font-mono text-xs border border-gray-800 px-4 py-2 rounded bg-black/50">
                      ← DASHBOARD
                   </button>
@@ -254,8 +276,15 @@ function SessionRunner({ config, onExit }: { config: ExerciseConfig, onExit: () 
                    </div>
                </div>
 
+
                {/* SPATIAL UI LAYER */}
                <div className="absolute inset-0 pointer-events-none">
+                    
+                    {/* ARCADE OVERLAY */}
+                    {arcadeMode && (
+                        <ArcadeOverlay shoulderY={shoulderY} isPlaying={isConnected} />
+                    )}
+
                     {/* 1. Velocity / Stability Gauge (Left) */}
                     <div className="absolute left-10 top-1/2 -translate-y-1/2 w-64 pointer-events-auto">
                         <div className="bg-black/50 backdrop-blur border border-gray-800 p-4 rounded-xl">

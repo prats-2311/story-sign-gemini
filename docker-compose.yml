@@ -5,6 +5,8 @@ services:
     build: ./backend
     expose:
       - "8000"
+    ports:
+      - "8000:8000"  # Restored for Local Dev (Hybrid Mode)
     environment:
       - GEMINI_API_KEY=${GEMINI_API_KEY}
       - DATABASE_URL=postgresql://user:password@db:5432/storysign
