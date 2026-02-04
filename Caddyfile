@@ -1,0 +1,5 @@
+story-sign.34.45.27.191.nip.io {
+    reverse_proxy /ws/* backend:8000
+    reverse_proxy /history backend:8000
+    reverse_proxy /* frontend:80
+}

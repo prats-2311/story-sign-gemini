@@ -3,8 +3,8 @@
 services:
   backend:
     build: ./backend
-    ports:
-      - "8000:8000"
+    expose:
+      - "8000"
     environment:
       - GEMINI_API_KEY=${GEMINI_API_KEY}
       - DATABASE_URL=postgresql://user:password@db:5432/storysign
@@ -16,9 +16,23 @@ services:
 
   frontend:
     build: ./frontend
-    ports:
-      - "3000:80"  # Nginx internal port 80
+    expose:
+      - "80"
     depends_on:
+      - backend
+
+  caddy:
+    image: caddy:latest
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - frontend
       - backend
 
   db:
@@ -27,8 +41,8 @@ services:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
       POSTGRES_DB: storysign
-    ports:
-      - "5432:5432"
+    expose:
+      - "5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
@@ -39,3 +53,5 @@ services:
 
 volumes:
   postgres_data:
+  caddy_data:
+  caddy_config:

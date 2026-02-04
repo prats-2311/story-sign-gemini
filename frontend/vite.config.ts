@@ -10,6 +10,15 @@ export default defineConfig({
         target: 'http://0.0.0.0:8000',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, '')
+      },
+      '/history': {
+        target: 'http://0.0.0.0:8000',
+        changeOrigin: true
+      },
+      '/ws': {
+        target: 'ws://0.0.0.0:8000',
+        ws: true,
+        changeOrigin: true
       }
     }
   }

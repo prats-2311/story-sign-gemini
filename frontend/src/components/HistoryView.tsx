@@ -19,7 +19,7 @@ export function HistoryView({ onBack }: HistoryViewProps) {
     const [selectedSession, setSelectedSession] = useState<SessionRecord | null>(null);
 
     useEffect(() => {
-        fetch(`http://${window.location.hostname}:8000/history`)
+        fetch('/history')
             .then(res => res.json())
             .then(data => {
                 setSessions(data);

@@ -420,7 +420,8 @@ export function useGeminiLive({ mode, exerciseConfig, detectPose, onLandmarks, v
   const connect = useCallback(() => {
     if (wsRef.current?.readyState === WebSocket.OPEN) return;
 
-    const ws = new WebSocket(`ws://${window.location.hostname}:8000/ws/stream/${mode}`);
+    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+    const ws = new WebSocket(`${protocol}//${window.location.host}/ws/stream/${mode}`);
 
     ws.onopen = () => {
       console.log('Connected to Gemini Tunnel');
