@@ -3,6 +3,7 @@ import json
 import logging
 from google import genai
 from google.genai import types
+import asyncio
 
 logger = logging.getLogger("uvicorn.error")
 
@@ -10,6 +11,7 @@ class ReportDrafter:
     def __init__(self, api_key: str):
         self.client = genai.Client(api_key=api_key, http_options={"api_version": "v1alpha"})
         self.active_sessions = {} # { session_id: chat_session }
+        self.locks = {} # { session_id: asyncio.Lock }
         
         # The "Shadow Brain" Instructions
         self.SYSTEM_INSTRUCTION = """
@@ -38,13 +40,14 @@ class ReportDrafter:
         """Initializes a new 'Shadow Brain' chat session."""
         try:
             chat = self.client.aio.chats.create(
-                model="gemini-3-pro-preview", # Using the SOTA model as requested
+                model="gemini-3-pro-preview", 
                 config=types.GenerateContentConfig(
                     system_instruction=self.SYSTEM_INSTRUCTION,
                     temperature=0.4 # Keep it analytical
                 )
             )
             self.active_sessions[session_id] = chat
+            self.locks[session_id] = asyncio.Lock()
             logger.info(f"[ReportDrafter] Started Shadow Session: {session_id}")
             return True
         except Exception as e:
@@ -58,6 +61,7 @@ class ReportDrafter:
             await self.start_session(session_id)
         
         chat = self.active_sessions[session_id]
+        lock = self.locks.get(session_id)
         
         # Format the prompt
         prompt = f"""
@@ -72,10 +76,10 @@ class ReportDrafter:
         """
         
         try:
-            # We don't wait long for the Ack, we just fire and forget mostly, 
-            # but here we await to ensure sequence.
-            response = await chat.send_message(prompt)
-            logger.debug(f"[ReportDrafter] Chunk Ingested. Brain said: {response.text[:20]}...")
+            # Concurrency Safety: Ensure we don't overlap turns in the same chat
+            async with lock:
+                response = await chat.send_message(prompt)
+                logger.debug(f"[ReportDrafter] Chunk Ingested. Brain said: {response.text[:20]}...")
             return True
         except Exception as e:
             logger.error(f"[ReportDrafter] Error ingesting chunk: {e}")

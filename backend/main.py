@@ -1,4 +1,4 @@
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect, Request, Depends
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect, Request, Depends, BackgroundTasks
 from fastapi.responses import JSONResponse
 from dotenv import load_dotenv
 import asyncio
@@ -78,12 +78,17 @@ async def start_session_draft(request: Request):
     return {"status": "started" if success else "error"}
 
 @app.post("/session/chunk")
-async def ingest_session_chunk(request: Request):
+async def ingest_session_chunk(request: Request, background_tasks: BackgroundTasks):
     if not drafter: return JSONResponse(status_code=503, content={"error": "Drafter not initialized"})
     data = await request.json()
     session_id = data.get("session_id")
-    success = await drafter.ingest_chunk(session_id, data)
-    return {"status": "received" if success else "error"}
+    
+    # [OPTIMIZATION] Non-Blocking Ingestion
+    # Fire and forget. The client gets 202 Accepted immediately.
+    # The drafter processes it in the background.
+    background_tasks.add_task(drafter.ingest_chunk, session_id, data)
+    
+    return JSONResponse(status_code=202, content={"status": "queued"})
 
 @app.post("/session/end")
 async def finalize_session_draft(request: Request, db: SessionLocal = Depends(get_db)):
