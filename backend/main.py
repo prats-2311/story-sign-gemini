@@ -57,6 +57,61 @@ def get_db():
 async def health_check():
     return {"status": "ok", "message": "StorySign Tunnel is running"}
 
+# --- INCREMENTAL REPORTING API ---
+try:
+    from services.report_drafter import ReportDrafter
+except ImportError:
+    try:
+        from backend.services.report_drafter import ReportDrafter
+    except ImportError:
+        logger.error("Could not import ReportDrafter service.")
+        ReportDrafter = None
+
+drafter = ReportDrafter(api_key=api_key) if ReportDrafter and api_key else None
+
+@app.post("/session/start")
+async def start_session_draft(request: Request):
+    if not drafter: return JSONResponse(status_code=503, content={"error": "Drafter not initialized"})
+    data = await request.json()
+    session_id = data.get("session_id")
+    success = await drafter.start_session(session_id)
+    return {"status": "started" if success else "error"}
+
+@app.post("/session/chunk")
+async def ingest_session_chunk(request: Request):
+    if not drafter: return JSONResponse(status_code=503, content={"error": "Drafter not initialized"})
+    data = await request.json()
+    session_id = data.get("session_id")
+    success = await drafter.ingest_chunk(session_id, data)
+    return {"status": "received" if success else "error"}
+
+@app.post("/session/end")
+async def finalize_session_draft(request: Request, db: SessionLocal = Depends(get_db)):
+    if not drafter: return JSONResponse(status_code=503, content={"error": "Drafter not initialized"})
+    data = await request.json()
+    session_id = data.get("session_id")
+    
+    # 1. Get Final Report from Shadow Brain
+    result = await drafter.finalize_report(session_id)
+    
+    # 2. Save to DB (Same logic as analyze_session)
+    if "report_markdown" in result:
+        try:
+             # Basic persistence - assuming transcript was sent in chunks or finalize body?
+             # For this hackathon MVP, we just save the Result JSON.
+             db_report = SessionReport(
+                 session_id=session_id,
+                 transcript="[Incremental Session]", 
+                 clinical_notes=[], # They are embedded in the report logic now
+                 report_json=result
+             )
+             db.add(db_report)
+             db.commit()
+        except Exception as e:
+            logger.error(f"DB Save Error: {e}")
+
+    return result
+
 @app.post("/analyze_session")
 async def analyze_session(request: Request, db: SessionLocal = Depends(get_db)):
     try:

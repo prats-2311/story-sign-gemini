@@ -67,7 +67,7 @@ function SessionRunner({ config, onExit }: { config: ExerciseConfig, onExit: () 
   const [shoulderY, setShoulderY] = useState(0.5); // Default Middle
 
   // Hook Init (FRESH INSTANCE)
-  const { isConnected, messages, connect, disconnect, startAudioStream, stopAudioStream, startVideoStream, stopVideoStream, getSessionStats, feedbackStatus, isCalibrating, clinicalNotes } = useGeminiLive({ 
+  const { isConnected, messages, connect, disconnect, startAudioStream, stopAudioStream, startVideoStream, stopVideoStream, getSessionStats, feedbackStatus, isCalibrating, clinicalNotes, sessionId } = useGeminiLive({ 
       mode: 'RECONNECT', 
       detectPose,
       videoRef,
@@ -110,41 +110,17 @@ function SessionRunner({ config, onExit }: { config: ExerciseConfig, onExit: () 
       console.log("Generating Report...");
       setIsGeneratingReport(true);
       try {
-           const stats = getSessionStats();
            
            // Inject logic based on Exercise Type?
            // For now, using the generalized backend endpoint
-           const poseSummary = JSON.stringify({
-               exercise: config.name,
-               reps: stats.repCount,
-               average_rom: ((stats.minRightElbowAngle + stats.maxRightElbowAngle) / 2).toFixed(1),
-               stability_metric: (stats.shoulderYSum / (stats.frameCount || 1)).toFixed(3),
-               recent_angles: stats.angleHistory.slice(-20) 
-           });
-
-           // [STRATEGY C] Downsampling Logic
-           // We want max ~100 points to keep context light.
-           const rawTelemetry = stats.telemetry || [];
-           const sampleRate = Math.ceil(Math.max(1, rawTelemetry.length / 100));
-           const sampledTelemetry = rawTelemetry.filter((_, i) => i % sampleRate === 0);
-           
-           console.log(`[Strategy C] Telemetry: Raw ${rawTelemetry.length} -> Sampled ${sampledTelemetry.length}`);
-
-           const payload = {
-            session_id: "demo_session_1",
-            duration_seconds: 45, 
-            transcript: messages.join("\n"),
-            clinical_notes: clinicalNotes, // Strategy A Input
-            pose_summary: poseSummary,
-            telemetry: sampledTelemetry,   // [STRATEGY C] Input
-            include_thoughts: true
-           };
-
-           console.log("[App] Generating Report payload:", payload);
-           const response = await fetch('/analyze_session', {
+           // [INCREMENTAL REPORTING]
+           // We just trigger the Shadow Brain to finalize.
+           // No need to send the huge payload anymore!
+           console.log(`[App] Finalizing Session Report: ${sessionId}`);
+           const response = await fetch('/session/end', {
                method: 'POST',
                headers: {'Content-Type': 'application/json'},
-               body: JSON.stringify(payload)
+               body: JSON.stringify({ session_id: sessionId })
            });
            
            const data = await response.json();

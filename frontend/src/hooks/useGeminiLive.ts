@@ -22,6 +22,7 @@ export function useGeminiLive({ mode, exerciseConfig, detectPose, onLandmarks, v
   const [isCalibrating, setIsCalibrating] = useState(false); // New Calibration State
   // Clinical Notes State (Strategy A)
   const [clinicalNotes, setClinicalNotes] = useState<string[]>([]);
+  const clinicalNotesRef = useRef<string[]>([]); // [FIX] Mirror for Interval Access
 
   const wsRef = useRef<WebSocket | null>(null);
   
@@ -51,6 +52,11 @@ export function useGeminiLive({ mode, exerciseConfig, detectPose, onLandmarks, v
       telemetry: [] as { t: number, val: number, vel: number }[], // [STRATEGY C]
       startTime: Date.now() 
   });
+
+  // [INCREMENTAL REPORTING] State
+  const sessionIdRef = useRef<string>(crypto.randomUUID());
+  const chunkIntervalRef = useRef<number | null>(null);
+  const lastChunkIndexRef = useRef({ telemetry: 0, notes: 0 });
 
   const getSessionStats = useCallback(() => {
      return sessionStatsRef.current;
@@ -415,10 +421,67 @@ export function useGeminiLive({ mode, exerciseConfig, detectPose, onLandmarks, v
         playbackContextRef.current.close();
         playbackContextRef.current = null;
     }
+    
+    // Clear Chunk Loop
+    if (chunkIntervalRef.current) {
+        clearInterval(chunkIntervalRef.current);
+        chunkIntervalRef.current = null;
+    }
   }, [stopAudioStream, stopVideoStream]);
 
   const connect = useCallback(() => {
     if (wsRef.current?.readyState === WebSocket.OPEN) return;
+
+    // Reset Session ID for new run
+    sessionIdRef.current = crypto.randomUUID();
+    lastChunkIndexRef.current = { telemetry: 0, notes: 0 };
+    sessionStatsRef.current.telemetry = [];
+    setClinicalNotes([]);
+    clinicalNotesRef.current = [];
+
+    // 1. Wake up Shadow Brain
+    fetch('/session/start', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ session_id: sessionIdRef.current })
+    }).catch(e => console.error("Start Session Error", e));
+
+    // 2. Start Chunk Loop (Every 10s)
+    chunkIntervalRef.current = window.setInterval(() => {
+        const stats = sessionStatsRef.current;
+        const allNotes = clinicalNotesRef.current; 
+        
+        const tStart = lastChunkIndexRef.current.telemetry;
+        const nStart = lastChunkIndexRef.current.notes;
+
+        const newTelemetry = stats.telemetry.slice(tStart);
+        const newNotes = allNotes.slice(nStart);
+        
+        // Skip if empty? No, keep heartbeat alive?
+        if (newTelemetry.length === 0 && newNotes.length === 0) return;
+
+        // Simple slice for telemetry
+        const payload = {
+            session_id: sessionIdRef.current,
+            timestamp_start: tStart > 0 ? stats.telemetry[tStart].t : 0,
+            timestamp_end: stats.telemetry.length > 0 ? stats.telemetry[stats.telemetry.length - 1].t : 0,
+            telemetry: newTelemetry,
+            notes: newNotes 
+        };
+
+        // Send Chunk
+        fetch('/session/chunk', {
+             method: 'POST',
+             headers: { 'Content-Type': 'application/json' },
+             body: JSON.stringify(payload)
+        }).then(res => {
+            if (res.ok) {
+                lastChunkIndexRef.current.telemetry = stats.telemetry.length;
+                lastChunkIndexRef.current.notes = allNotes.length;
+            }
+        });
+
+    }, 8000); // 8 seconds
 
     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
     const ws = new WebSocket(`${protocol}//${window.location.host}/ws/stream/${mode}`);
@@ -454,7 +517,11 @@ export function useGeminiLive({ mode, exerciseConfig, detectPose, onLandmarks, v
              if (msg.type === 'clinical_note') {
                  // [NEW] Handle Silent Tool Call Event
                  console.log("[GeminiLive] Received Silent Clinical Note:", msg.note);
-                 setClinicalNotes(prev => [...prev, msg.note]);
+                 setClinicalNotes(prev => {
+                     const updated = [...prev, msg.note];
+                     clinicalNotesRef.current = updated; // Sync Ref
+                     return updated;
+                 });
              } else if (msg.text) {
                  const lower = msg.text.toUpperCase();
                  // Standard UI Triggers
@@ -500,5 +567,5 @@ export function useGeminiLive({ mode, exerciseConfig, detectPose, onLandmarks, v
     };
   }, [disconnect]);
 
-  return { isConnected, messages, clinicalNotes, connect, disconnect, sendMessage, startAudioStream, stopAudioStream, startVideoStream, stopVideoStream, dataSentCount, getSessionStats, feedbackStatus, isCalibrating };
+  return { isConnected, messages, clinicalNotes, connect, disconnect, sendMessage, startAudioStream, stopAudioStream, startVideoStream, stopVideoStream, dataSentCount, getSessionStats, feedbackStatus, isCalibrating, sessionId: sessionIdRef.current };
 }

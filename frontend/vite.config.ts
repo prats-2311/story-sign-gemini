@@ -23,6 +23,10 @@ export default defineConfig({
       '/analyze_session': {
         target: 'http://0.0.0.0:8000',
         changeOrigin: true
+      },
+      '/session': {
+        target: 'http://0.0.0.0:8000',
+        changeOrigin: true
       }
     }
   }
