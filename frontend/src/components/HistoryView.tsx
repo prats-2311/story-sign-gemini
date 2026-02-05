@@ -117,7 +117,7 @@ export function HistoryView({ onBack }: HistoryViewProps) {
                         <div className="flex-1 overflow-y-auto p-8 space-y-8">
                             {/* CHART (If available in report_json) */}
                             {selectedSession.report_json?.chart_config && (
-                                <div className="animate-slide-in">
+                                <div className="animate-slide-in w-full h-[300px]">
                                     <AnalyticsChart config={selectedSession.report_json.chart_config} />
                                 </div>
                             )}

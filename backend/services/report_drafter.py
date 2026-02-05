@@ -3,6 +3,7 @@ import json
 from google import genai
 from google.genai import types
 import asyncio
+import time
 from utils.logging import logger
 
 class ReportDrafter:
@@ -99,6 +100,7 @@ class ReportDrafter:
         total_chunks = session_data["chunks"]
         
         logger.info(f"[ReportDrafter] Finalizing Report for {session_id}. Total Chunks Processed: {total_chunks}")
+        start_time = time.time()
         
         prompt = """
         [COMMAND: FINALIZE]
@@ -127,9 +129,13 @@ class ReportDrafter:
                 prompt,
                 config=types.GenerateContentConfig(
                     response_mime_type="application/json",
-                    temperature=0.2 # Lower temp for strict formatting
+                    temperature=0.2, # Lower temp for strict formatting
+                    thinking_config=types.ThinkingConfig(include_thoughts=True)
                 )
             )
+            
+            elapsed = time.time() - start_time
+            logger.info(f"[ReportDrafter] Report Generated in {elapsed:.2f}s. Usage: {response.usage_metadata}")
             
             # Cleanup
             del self.active_sessions[session_id]
