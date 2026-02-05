@@ -1,11 +1,9 @@
 import os
 import json
-import logging
 from google import genai
 from google.genai import types
 import asyncio
-
-logger = logging.getLogger("uvicorn.error")
+from utils.logging import logger
 
 class ReportDrafter:
     def __init__(self, api_key: str):
@@ -46,7 +44,8 @@ class ReportDrafter:
                     temperature=0.4 # Keep it analytical
                 )
             )
-            self.active_sessions[session_id] = chat
+            # Store chat AND a hunk counter
+            self.active_sessions[session_id] = {"chat": chat, "chunks": 0}
             self.locks[session_id] = asyncio.Lock()
             logger.info(f"[ReportDrafter] Started Shadow Session: {session_id}")
             return True
@@ -57,11 +56,17 @@ class ReportDrafter:
     async def ingest_chunk(self, session_id: str, chunk_data: dict):
         """Feeds a 10s slice of data to the shadow brain."""
         if session_id not in self.active_sessions:
-            logger.warning(f"[ReportDrafter] Session {session_id} not found. Auto-starting.")
+            # Auto-start if missing (resilience)
+            logger.warning(f"[ReportDrafter] Session {session_id} not found. Starting new.")
             await self.start_session(session_id)
         
-        chat = self.active_sessions[session_id]
+        session_data = self.active_sessions[session_id]
+        chat = session_data["chat"]
         lock = self.locks.get(session_id)
+        
+        # Increment Counter
+        session_data["chunks"] += 1
+        chunk_num = session_data["chunks"]
         
         # Format the prompt
         prompt = f"""
@@ -79,7 +84,7 @@ class ReportDrafter:
             # Concurrency Safety: Ensure we don't overlap turns in the same chat
             async with lock:
                 response = await chat.send_message(prompt)
-                logger.debug(f"[ReportDrafter] Chunk Ingested. Brain said: {response.text[:20]}...")
+                logger.debug(f"[ReportDrafter] Ingested Chunk #{chunk_num}. Brain said: {response.text[:20]}...")
             return True
         except Exception as e:
             logger.error(f"[ReportDrafter] Error ingesting chunk: {e}")
@@ -87,10 +92,13 @@ class ReportDrafter:
 
     async def finalize_report(self, session_id: str):
         """Triggers the final readout."""
-        if session_id not in self.active_sessions:
-            return {"error": "Session not active"}
-
-        chat = self.active_sessions[session_id]
+        if session_id not in self.active_sessions: return {"error": "Session not found"}
+        
+        session_data = self.active_sessions[session_id]
+        chat = session_data["chat"]
+        total_chunks = session_data["chunks"]
+        
+        logger.info(f"[ReportDrafter] Finalizing Report for {session_id}. Total Chunks Processed: {total_chunks}")
         
         prompt = """
         [COMMAND: FINALIZE]
