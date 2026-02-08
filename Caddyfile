@@ -1,12 +1,25 @@
 story-sign.34.56.135.222.nip.io {
-    reverse_proxy /ws/* backend:8000
+    log
+
+    # 1. WebSockets (Explicit Handle)
+    handle /ws/* {
+        reverse_proxy backend:8000
+    }
+
+    # 2. API (Strips /api prefix)
     handle_path /api/* {
         reverse_proxy backend:8000
     }
-    reverse_proxy /history backend:8000
-    reverse_proxy /analyze_session backend:8000
-    log
 
+    # 3. Direct Backend Routes (Legacy/Specific)
+    handle /history {
+        reverse_proxy backend:8000
+    }
+    handle /analyze_session {
+        reverse_proxy backend:8000
+    }
+
+    # 4. Frontend / Fallback (Catch-all)
     handle {
         reverse_proxy frontend:80
     }
