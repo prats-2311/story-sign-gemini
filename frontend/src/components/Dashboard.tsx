@@ -71,7 +71,7 @@ export function Dashboard({ onSelectExercise }: DashboardProps) {
                 // Hydrate the Universal Engine with the stored JSON config
                 engine: new UniversalPhysicsEngine(item.config as any),
                 systemPrompt: `You are monitoring ${item.name}. ${JSON.stringify((item.config as any).stages || [])}`,
-                _rawSchema: item.config // Attach raw schema for re-hydration in SessionRoute
+                _rawSchema: item.config as any // Attach raw schema for re-hydration in SessionRoute
             }));
             setCustomExercises(configs);
         } catch (e) {
