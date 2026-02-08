@@ -23,6 +23,7 @@ const BODY_MAP: Record<string, number> = {
 export class UniversalPhysicsEngine implements PhysicsEngine {
     private schema: UniversalSchema;
     private currentStateIndex: number; 
+    private lastRepTime: number = 0;
 
     constructor(schema: UniversalSchema) {
         this.schema = schema;
@@ -121,18 +122,24 @@ export class UniversalPhysicsEngine implements PhysicsEngine {
                     message = `Good! Now ${nextStageName}`;
                     feedbackStatus = 'success';
                     trigger = true;
+                    this.lastStateChangeTime = now;
                 } else {
                     // Exercise Complete (Round Trip)
-                    // [FIX] Prevent Infinite Loop: Only trigger if we haven't just triggered
-                    this.currentStateIndex = 0;
-                    message = "Rep Complete!";
-                    feedbackStatus = 'success';
-                    trigger = true;
-                    
-                    // Increment Rep Count
-                    updatedStats.repCount = (_currentStats.repCount || 0) + 1;
+                    // [FIX] Min Rep Interval (Prevent Rapid Cycling/Double Counting)
+                    if (now - this.lastRepTime > 1500) { // 1.5 seconds minimum per rep
+                        const newCount = (_currentStats.repCount || 0) + 1;
+                        
+                        this.currentStateIndex = 0;
+                        message = `Rep Complete! (Total: ${newCount})`;
+                        feedbackStatus = 'success';
+                        trigger = true;
+                        
+                        // Increment Rep Count
+                        updatedStats.repCount = newCount;
+                        this.lastRepTime = now;
+                        this.lastStateChangeTime = now;
+                    }
                 }
-                this.lastStateChangeTime = now;
             }
         } else {
             // Reset hold timer if conditions broken? 
