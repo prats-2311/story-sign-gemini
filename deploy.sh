@@ -3,7 +3,7 @@
 echo "🚀 Starting Deployment..."
 
 # 1. Pull Latest Changes
-git pull origin SSG-3
+git pull origin main
 
 # 2. Check for .env file
 if [ ! -f .env ]; then
