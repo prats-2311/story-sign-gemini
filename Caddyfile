@@ -1,4 +1,4 @@
-:80 {
+story-sign.34.56.135.222.nip.io {
     reverse_proxy /ws/* backend:8000
     handle_path /api/* {
         reverse_proxy backend:8000
