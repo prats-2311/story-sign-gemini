@@ -26,8 +26,8 @@ export function UniversalExerciseView() {
                     targetRom: { min: 0, max: 100 }, // Dummy generic
                     engine: engine, 
                     systemPrompt: `You are monitoring: ${schema.name}. ${schema.description}. 
-                    Focus on: ${schema.metrics.map(m => m.id).join(', ')}.
-                    Safety Rules: ${schema.safety_rules.map(r => r.message).join(', ')}.` 
+                    Focus on: ${Object.values(schema.metrics || {}).map(m => m.id).join(', ')}.
+                    Safety Rules: ${(schema.safety_rules || []).map(r => r.message).join(', ')}.` 
                 };
                 setExerciseConfig(config);
             } catch (e) {
