@@ -1,4 +1,4 @@
-localhost:80 {
+:80 {
     reverse_proxy /ws/* backend:8000
     handle_path /api/* {
         reverse_proxy backend:8000
