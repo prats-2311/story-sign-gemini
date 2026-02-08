@@ -42,7 +42,7 @@ class ReportDrafter:
         """Initializes a new 'Shadow Brain' chat session."""
         try:
             chat = self.client.aio.chats.create(
-                model="gemini-3-pro-preview", 
+                model="gemini-2.0-flash", 
                 config=types.GenerateContentConfig(
                     system_instruction=self.SYSTEM_INSTRUCTION,
                     temperature=0.4 # Keep it analytical
@@ -132,8 +132,7 @@ class ReportDrafter:
                 prompt,
                 config=types.GenerateContentConfig(
                     response_mime_type="application/json",
-                    temperature=0.7, # Higher temp often helps Thinking models explore better
-                    thinking_config=types.ThinkingConfig(include_thoughts=True)
+                    temperature=0.7, 
                 )
             )
             

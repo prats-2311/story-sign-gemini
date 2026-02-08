@@ -29,6 +29,9 @@ export interface ExerciseConfig {
   
   // Gemini Context
   systemPrompt: string; 
+  
+  // Optional raw schema for UI hydration
+  _rawSchema?: UniversalSchema;
 }
 
 // --- UNIVERSAL ENGINE TYPES ---

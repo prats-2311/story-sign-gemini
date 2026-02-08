@@ -56,8 +56,13 @@ Your goal is to convert a user's natural language description of an exercise int
     - Use correct MediaPipe landmarks (e.g., LEFT_SHOULDER, RIGHT_WRIST, NOSE).
     - Angles are typically 0-180 degrees.
     - "Extension" usually means ~180 degrees. "Flexion" usually means < 90 degrees.
-3. **Safety:** Always include a 'secondary_metric' for stability if applicable (e.g., Torso Lean for arm exercises).
-4. **Naming:** Give the exercise a clear, short name.
+3. **Cyclic Nature:**
+    - Exercises must be LOOPS.
+    - Stage 1: "Start Position" (e.g., Arm Down).
+    - Stage 2: "Action/Peak" (e.g., Arm Up).
+    - The engine automatically loops back to Stage 1.
+4. **Safety:** Always include a 'secondary_metric' for stability if applicable.
+5. **Naming:** Give the exercise a clear, short name.
 
 ### EXAMPLE
 Input: "A simple bicep curl"
@@ -70,11 +75,39 @@ Output:
     "torso_vertical": {{ "type": "VERTICAL_DIFF", "points": ["LEFT_SHOULDER", "LEFT_HIP"] }}
   }},
   "stages": [
-    {{ "name": "Start", "conditions": [{{ "metric": "elbow_angle", "op": "GT", "target": 160 }}] }},
-    {{ "name": "Curl", "conditions": [{{ "metric": "elbow_angle", "op": "LT", "target": 45 }}] }}
+    {{ "name": "Start (Extension)", "conditions": [{{ "metric": "elbow_angle", "op": "GT", "target": 160 }}], "hold_time": 0.5 }},
+    {{ "name": "Curl (Flexion)", "conditions": [{{ "metric": "elbow_angle", "op": "LT", "target": 45 }}], "hold_time": 0.5 }}
   ]
 }}
 """
+
+def validate_schema(schema: dict) -> dict:
+    """
+    Sanitizes and validates the generated schema.
+    """
+    if "metrics" not in schema or "stages" not in schema:
+        raise ValueError("Schema missing 'metrics' or 'stages'")
+    
+    # 1. Validate Metrics exist
+    valid_metrics = set(schema["metrics"].keys())
+    
+    # 2. Validate Stages
+    for i, stage in enumerate(schema["stages"]):
+        if "conditions" not in stage:
+            continue
+        for cond in stage["conditions"]:
+            if cond["metric"] not in valid_metrics:
+                # [Fix] If AI hallucinates a metric, try to find a close match or remove condition
+                logger.warning(f"Invalid metric {cond['metric']} in stage {i}. Removing condition.")
+                stage["conditions"].remove(cond)
+    
+    # 3. Ensure at least 2 stages for a dynamic exercise
+    if len(schema["stages"]) < 2:
+        # If AI only gave 1 stage, auto-generate a "Return" stage? 
+        # For now, just warn.
+        logger.warning("Exercise has fewer than 2 stages. Might not loop correctly.")
+
+    return schema
 
 async def generate_exercise_schema(description: str) -> dict:
     """
@@ -87,12 +120,6 @@ async def generate_exercise_schema(description: str) -> dict:
         # Initialize Client
         client = genai.Client(api_key=GEMINI_API_KEY, http_options={'api_version': 'v1alpha'})
         
-        # Generation Config
-        config = {
-            "temperature": 0.2, # Low temperature for strict schema adherence
-            "response_mime_type": "application/json"
-        }
-
         logger.info(f"Generating exercise for: {description}")
         
         response = client.models.generate_content(
@@ -107,8 +134,12 @@ async def generate_exercise_schema(description: str) -> dict:
 
         # Parse JSON
         result_json = json.loads(response.text)
-        logger.info("Successfully generated exercise schema")
-        return result_json
+        
+        # Validate
+        validated_json = validate_schema(result_json)
+        
+        logger.info("Successfully generated and validated exercise schema")
+        return validated_json
 
     except Exception as e:
         logger.error(f"Error generating exercise: {e}")

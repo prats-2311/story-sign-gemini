@@ -20,6 +20,7 @@ export function SessionRunner({ config, onExit, mode = 'BODY' }: SessionRunnerPr
   
   // Video Ref
   const videoRef = useRef<HTMLVideoElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
   // [ARCADE MODE STATE]
   const [arcadeMode, setArcadeMode] = useState(false);
@@ -27,19 +28,107 @@ export function SessionRunner({ config, onExit, mode = 'BODY' }: SessionRunnerPr
 
   // Hook Init (FRESH INSTANCE)
   const { isConnected, messages, connect, disconnect, startAudioStream, stopAudioStream, startVideoStream, stopVideoStream, getSessionStats, feedbackStatus, isCalibrating, clinicalNotes, sessionId, flushData, repCount } = useGeminiLive({ 
-      mode: 'RECONNECT',  // This is the Gemini System Instruction Mode. Might need to map 'mode' prop to this?
-      // Actually 'RECONNECT' is specifically for Physiotherapy. 
-      // If mode is 'HAND', maybe we want 'ASL' instruction?
-      // For now, keep hardcoded to RECONNECT or pass logic.
-      // Let's pass 'RECONNECT' for now as existing behavior.
+      mode: 'RECONNECT', 
       detectPose,
       videoRef,
       exerciseConfig: config, 
       onLandmarks: (landmarks) => {
           // [ARCADE INPUT]
-          // Index 12 is Right Shoulder
           if (landmarks && landmarks[12]) {
               setShoulderY(landmarks[12].y);
+          }
+
+          // [VISUAL GUIDANCE SYSTEM]
+          const canvas = canvasRef.current;
+          const ctx = canvas?.getContext('2d');
+          if (canvas && ctx && landmarks) {
+              // 1. Clear Canvas
+              ctx.clearRect(0, 0, canvas.width, canvas.height);
+              
+              // 2. Get Current Stage Guidance
+              // Check if engine supports stages (Universal Engine)
+              if (config.engine && 'getCurrentStage' in config.engine) {
+                  // @ts-ignore - Checked existence
+                  const stage = config.engine.getCurrentStage();
+                  
+                  if (stage && stage.conditions) {
+                      ctx.font = "bold 20px monospace";
+                      
+                      stage.conditions.forEach((cond: any) => {
+                          const metricDef = (config._rawSchema as any)?.metrics?.[cond.metric];
+                          if (!metricDef) return;
+                          
+                          // Draw Stage Name
+                          ctx.fillStyle = "rgba(0, 255, 255, 0.8)";
+                          ctx.fillText(`TARGET: ${stage.name.toUpperCase()}`, 50, 100);
+                          
+                          // Draw Metric Target
+                          ctx.fillStyle = "white";
+                          ctx.fillText(`${cond.metric}: ${cond.op} ${cond.target}`, 50, 130);
+                          
+                          // DRAW A SIMPLE SKELETON FOR THE ACTIVE METRIC
+                          // Only if we can map point names to indices safely. 
+                          // Let's implement a mini-map here.
+                          const BODY_INDICES: Record<string, number> = {
+                              'LEFT_SHOULDER': 11, 'RIGHT_SHOULDER': 12,
+                              'LEFT_ELBOW': 13, 'RIGHT_ELBOW': 14,
+                              'LEFT_WRIST': 15, 'RIGHT_WRIST': 16,
+                              'LEFT_PINKY': 17, 'RIGHT_PINKY': 18,
+                              'LEFT_INDEX': 19, 'RIGHT_INDEX': 20,
+                              'LEFT_THUMB': 21, 'RIGHT_THUMB': 22,
+                              'LEFT_HIP': 23, 'RIGHT_HIP': 24,
+                              'LEFT_KNEE': 25, 'RIGHT_KNEE': 26,
+                              'LEFT_ANKLE': 27, 'RIGHT_ANKLE': 28,
+                              'LEFT_HEEL': 29, 'RIGHT_HEEL': 30,
+                              'LEFT_FOOT_INDEX': 31, 'RIGHT_FOOT_INDEX': 32,
+                              'NOSE': 0 // Head anchor
+                          };
+
+                          if (metricDef.points) {
+                              // Draw Active Metric (Yellow)
+                              const drawPath = (points: string[], color: string, width: number) => {
+                                  ctx.beginPath();
+                                  ctx.lineWidth = width;
+                                  ctx.strokeStyle = color;
+                                  
+                                  let startDrawn = false;
+                                  points.forEach((pName: string) => {
+                                      const idx = BODY_INDICES[pName];
+                                      if (idx !== undefined && landmarks[idx]) {
+                                          const x = landmarks[idx].x * canvas.width;
+                                          const y = landmarks[idx].y * canvas.height;
+                                          if (!startDrawn) {
+                                              ctx.moveTo(x, y);
+                                              startDrawn = true;
+                                          } else {
+                                              ctx.lineTo(x, y);
+                                          }
+                                          // Joint Dot
+                                          ctx.fillStyle = "cyan";
+                                          ctx.fillRect(x - 3, y - 3, 6, 6);
+                                      }
+                                  });
+                                  ctx.stroke();
+                              };
+
+                              drawPath(metricDef.points as string[], "rgba(255, 255, 0, 0.8)", 4);
+
+                              // [SYMMETRY] Draw Mirror Limb (Dimmed)
+                              // If points are ["LEFT_SHOULDER",...], try ["RIGHT_SHOULDER",...]
+                              const mirrorPoints = (metricDef.points as string[]).map(p => {
+                                  if (p.includes('LEFT')) return p.replace('LEFT', 'RIGHT');
+                                  if (p.includes('RIGHT')) return p.replace('RIGHT', 'LEFT');
+                                  return p;
+                              });
+                              
+                              // Only draw if different
+                              if (JSON.stringify(mirrorPoints) !== JSON.stringify(metricDef.points)) {
+                                  drawPath(mirrorPoints, "rgba(255, 255, 255, 0.3)", 2);
+                              }
+                          }
+                      });
+                  }
+              }
           }
       }
   });
@@ -199,6 +288,14 @@ export function SessionRunner({ config, onExit, mode = 'BODY' }: SessionRunnerPr
                    {feedbackStatus === 'success' && (
                        <div className="absolute inset-0 border-[10px] border-green-500/50 mix-blend-overlay pointer-events-none"></div>
                    )}
+                   
+                   {/* GUIDANCE CANVAS overlay */}
+                   <canvas 
+                        ref={canvasRef}
+                        width={1280}
+                        height={720}
+                        className="absolute inset-0 w-full h-full object-cover pointer-events-none"
+                   />
                </div>
 
 

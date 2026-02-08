@@ -24,6 +24,7 @@ export class UniversalPhysicsEngine implements PhysicsEngine {
     private schema: UniversalSchema;
     private currentStateIndex: number; 
     private lastRepTime: number = 0;
+    private previousLandmarks: any = null;
 
     constructor(schema: UniversalSchema) {
         this.schema = schema;
@@ -76,6 +77,29 @@ export class UniversalPhysicsEngine implements PhysicsEngine {
 
         // 1. Calculate Metrics
         const metrics: Record<string, number> = {};
+        
+        // [VELOCITY TRACKING]
+        let velocity = 0;
+        if (this.previousLandmarks && landmarks) {
+            // Track key joints (Wrists, Ankles, Hips) for general body movement
+            const indices = [15, 16, 23, 24, 27, 28]; 
+            let totalDisp = 0;
+            let count = 0;
+            indices.forEach(idx => {
+                const p1 = this.previousLandmarks[idx];
+                const p2 = landmarks[idx];
+                if (p1 && p2) {
+                    const dx = p1.x - p2.x;
+                    const dy = p1.y - p2.y;
+                    totalDisp += Math.sqrt(dx*dx + dy*dy);
+                    count++;
+                }
+            });
+            if (count > 0) velocity = totalDisp / count * 100; // Scale up for readability
+        }
+        metrics['velocity'] = velocity;
+        this.previousLandmarks = landmarks; // Store for next frame
+
         if (this.schema.metrics) {
             for (const [key, def] of Object.entries(this.schema.metrics)) {
                 const val = this.computeMetric(landmarks, def as MetricDef);
@@ -111,8 +135,8 @@ export class UniversalPhysicsEngine implements PhysicsEngine {
         };
 
         if (allMet) {
-            // Check Hold Time (Default 500ms debounce if not specified)
-            const requiredHold = (stage.hold_time || 0.5) * 1000;
+            // Check Hold Time (Optimized to 150ms for snappy feel)
+            const requiredHold = (stage.hold_time || 0.15) * 1000;
             
             if (now - this.lastStateChangeTime > requiredHold) {
                 // Advance Stage
@@ -126,7 +150,7 @@ export class UniversalPhysicsEngine implements PhysicsEngine {
                 } else {
                     // Exercise Complete (Round Trip)
                     // [FIX] Min Rep Interval (Prevent Rapid Cycling/Double Counting)
-                    if (now - this.lastRepTime > 1500) { // 1.5 seconds minimum per rep
+                    if (now - this.lastRepTime > 1000) { // 1.0 seconds minimum per rep (Optimized)
                         const newCount = (_currentStats.repCount || 0) + 1;
                         
                         this.currentStateIndex = 0;
@@ -155,5 +179,9 @@ export class UniversalPhysicsEngine implements PhysicsEngine {
             feedbackStatus,
             statsUpdate: updatedStats
         };
+    }
+
+    public getCurrentStage() {
+        return this.schema.stages?.[this.currentStateIndex];
     }
 }
