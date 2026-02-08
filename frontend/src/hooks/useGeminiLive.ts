@@ -59,6 +59,8 @@ export function useGeminiLive({ mode, exerciseConfig, detectPose, onLandmarks, v
   const chunkIntervalRef = useRef<number | null>(null);
   const lastChunkIndexRef = useRef({ telemetry: 0, notes: 0 });
 
+  const [repCount, setRepCount] = useState(0); // [FIX] UI State for Reps
+
   const getSessionStats = useCallback(() => {
      return sessionStatsRef.current;
   }, []);
@@ -366,7 +368,13 @@ export function useGeminiLive({ mode, exerciseConfig, detectPose, onLandmarks, v
                       
                       // Merge Stats
                       if (engineOutput.statsUpdate) {
+                          const prevRepCount = sessionStatsRef.current.repCount;
                           sessionStatsRef.current = { ...sessionStatsRef.current, ...engineOutput.statsUpdate };
+                          
+                          // [FIX] Trigger UI Update if Rep Count Changed
+                          if (sessionStatsRef.current.repCount > prevRepCount) {
+                               setRepCount(sessionStatsRef.current.repCount);
+                          }
                       }
                       
                       // Increment Frame
@@ -679,5 +687,5 @@ export function useGeminiLive({ mode, exerciseConfig, detectPose, onLandmarks, v
     };
   }, [disconnect]);
 
-  return { isConnected, messages, clinicalNotes, connect, disconnect, sendMessage, startAudioStream, stopAudioStream, startVideoStream, stopVideoStream, dataSentCount, getSessionStats, feedbackStatus, isCalibrating, sessionId: sessionIdRef.current, flushData };
+  return { isConnected, messages, clinicalNotes, connect, disconnect, sendMessage, startAudioStream, stopAudioStream, startVideoStream, stopVideoStream, dataSentCount, getSessionStats, feedbackStatus, isCalibrating, sessionId: sessionIdRef.current, flushData, repCount };
 }

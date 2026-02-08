@@ -31,6 +31,9 @@ import { Layout } from './components/Layout';
 // --- WRAPPER FOR SESSION RUNNER ---
 import { useParams } from 'react-router-dom';
 
+
+import { UniversalPhysicsEngine } from './exercises/UniversalPhysicsEngine';
+
 function SessionRoute() {
     const navigate = useNavigate();
     const { exerciseId } = useParams(); 
@@ -44,8 +47,35 @@ function SessionRoute() {
           'rotation': ExternalRotationConfig
     };
     
-    const config = REGISTRY[exerciseId || ''] || location.state?.config;
+    let config = REGISTRY[exerciseId || ''] || location.state?.config;
     const planIndex = location.state?.planIndex as number | undefined; 
+    
+    console.log("SessionRoute Init. ExerciseID:", exerciseId);
+    if (config) {
+        console.log("Config found:", config.name);
+        console.log("Has Engine:", !!config.engine);
+        console.log("Calculate Type:", config.engine ? typeof config.engine.calculate : 'N/A');
+        console.log("Has Raw Schema:", !!(config as any)._rawSchema);
+    } else {
+        console.log("Config NOT found in Registry or State");
+        console.log("Location State:", location.state);
+    }
+
+    // [HYDRATION FIX]
+    // When passing objects via React Router state, class methods are stripped.
+    // We need to re-instantiate the UniversalPhysicsEngine if it's missing the 'calculate' method.
+    if (config && config.engine && typeof config.engine.calculate !== 'function' && (config as any)._rawSchema) {
+        console.log("Hydrating Universal Engine for:", config.name);
+        try {
+            config = {
+                ...config,
+                engine: new UniversalPhysicsEngine((config as any)._rawSchema)
+            };
+            console.log("Hydration Successful. Calculate is now:", typeof config.engine.calculate);
+        } catch (err) {
+            console.error("Hydration Failed:", err);
+        }
+    }
 
     if (!config) {
         console.warn("Invalid Exercise ID:", exerciseId);
@@ -121,8 +151,8 @@ function DashboardWrapper() {
     const navigate = useNavigate();
     return (
         <Dashboard 
-            // [NEW] Pass string ID, not config object
-            onSelectExercise={(config) => navigate(`/reconnect/session/${config.id}`)} 
+            // [NEW] Pass config in state for dynamic exercises
+            onSelectExercise={(config) => navigate(`/reconnect/session/${config.id}`, { state: { config } })} 
         />
     );
 }

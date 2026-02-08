@@ -1,18 +1,21 @@
 import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import type { ExerciseConfig } from '../types/Exercise';
 import { ExerciseCard } from './ExerciseCard';
 import { AbductionPhysics } from '../exercises/AbductionPhysics';
 import { BicepCurlPhysics } from '../exercises/BicepCurlPhysics';
 import { WallSlidePhysics } from '../exercises/WallSlidePhysics';
 import { ExternalRotationPhysics } from '../exercises/ExternalRotationPhysics';
+import { ExerciseCreator } from './ExerciseCreator';
+import { exercisesApi } from '../api/exercises';
+import { UniversalPhysicsEngine } from '../exercises/UniversalPhysicsEngine';
 
 interface DashboardProps {
     onSelectExercise: (config: ExerciseConfig) => void;
 }
 
-// [MOCK] Library Configs (Existing...)
-const library: ExerciseConfig[] = [
-    // ... (Keep existing library array logic same...) 
+// [MOCK] Library Configs
+const STATIC_LIBRARY: ExerciseConfig[] = [
     {
         id: 'abduction',
         name: 'Shoulder Abduction',
@@ -49,9 +52,45 @@ const library: ExerciseConfig[] = [
 
 export function Dashboard({ onSelectExercise }: DashboardProps) {
     const navigate = useNavigate();
+    const [showCreator, setShowCreator] = useState(false);
+    const [customExercises, setCustomExercises] = useState<ExerciseConfig[]>([]);
+
+    useEffect(() => {
+        loadCustomExercises();
+    }, []);
+
+    const loadCustomExercises = async () => {
+        try {
+            const data = await exercisesApi.list();
+            // Convert to ExerciseConfig objects with Universal Engine
+            const configs = data.map(item => ({
+                id: item.id,
+                name: item.name,
+                description: "Custom AI Generated Exercise",
+                targetRom: { min: 0, max: 180 },
+                // Hydrate the Universal Engine with the stored JSON config
+                engine: new UniversalPhysicsEngine(item.config as any),
+                systemPrompt: `You are monitoring ${item.name}. ${JSON.stringify((item.config as any).stages || [])}`,
+                _rawSchema: item.config // Attach raw schema for re-hydration in SessionRoute
+            }));
+            setCustomExercises(configs);
+        } catch (e) {
+            console.error("Failed to load custom exercises", e);
+        }
+    };
+
+    const handleDeleteExercise = async (id: string) => {
+        try {
+            await exercisesApi.delete(id);
+            setCustomExercises(prev => prev.filter(e => e.id !== id));
+        } catch (e) {
+            console.error("Failed to delete exercise", e);
+            alert("Failed to delete exercise");
+        }
+    };
 
     return (
-        <div className="w-full h-full"> 
+        <div className="w-full h-full relative"> 
             {/* Header Area */}
             <div className="mb-12 flex justify-between items-end animate-fade-in-up">
                 <div>
@@ -63,6 +102,13 @@ export function Dashboard({ onSelectExercise }: DashboardProps) {
                     </p>
                 </div>
                 <div className="flex gap-4">
+                    <button 
+                      onClick={() => setShowCreator(true)}
+                      className="px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white rounded-lg transition-all font-mono uppercase tracking-wider text-sm shadow-lg hover:shadow-pink-500/20 flex items-center gap-2"
+                    >
+                        <span>+</span> New Exercise
+                    </button>
+
                     <button 
                       id="btn-generate-plan"
                       onClick={() => navigate('/reconnect/plan')}
@@ -81,38 +127,45 @@ export function Dashboard({ onSelectExercise }: DashboardProps) {
             </div>
 
             {/* Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-fade-in-up delay-200">
-                
-                {/* Active Card: Abduction */}
-                <ExerciseCard 
-                    id="card-abduction"
-                    config={library[0]}
-                    statusQuery={{ setsDone: 1, setsTotal: 3, stability: 0.08 }}
-                    onStart={onSelectExercise}
-                />
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-fade-in-up delay-200 pb-20">
+                {/* Custom Exercises (With Delete) */}
+                {customExercises.map((config) => (
+                    <ExerciseCard 
+                        key={config.id}
+                        id={`card-${config.id}`}
+                        config={config}
+                        statusQuery={{ setsDone: 0, setsTotal: 3 }} 
+                        onStart={onSelectExercise}
+                        onDelete={handleDeleteExercise}
+                    />
+                ))}
 
-                 {/* Active Card: Bicep */}
-                 <ExerciseCard 
-                    config={library[1]}
-                    statusQuery={{ setsDone: 0, setsTotal: 3 }}
-                    onStart={onSelectExercise}
-                />
-
-                {/* Card 3: Wall Slide */}
-                <ExerciseCard 
-                    config={library[2]}
-                    statusQuery={{ setsDone: 0, setsTotal: 2 }}
-                    onStart={onSelectExercise}
-                />
-
-                {/* Card 4: Rotation */}
-                <ExerciseCard 
-                    config={library[3]}
-                    statusQuery={{ setsDone: 0, setsTotal: 3 }}
-                    onStart={onSelectExercise}
-                />
-
+                {/* Static Library (No Delete) */}
+                {STATIC_LIBRARY.map((config) => (
+                    <ExerciseCard 
+                        key={config.id}
+                        id={`card-${config.id}`}
+                        config={config}
+                        statusQuery={{ setsDone: 0, setsTotal: 3 }} 
+                        onStart={onSelectExercise}
+                    />
+                ))}
             </div>
+
+            {/* CREATOR MODAL */}
+            {showCreator && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-8 animate-fade-in">
+                    <div className="w-full max-w-6xl h-[90vh] bg-gray-950 border border-gray-800 rounded-2xl overflow-hidden shadow-2xl relative">
+                        <ExerciseCreator 
+                            onSuccess={() => {
+                                setShowCreator(false);
+                                loadCustomExercises(); // Refresh list
+                            }}
+                            onCancel={() => setShowCreator(false)}
+                        />
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

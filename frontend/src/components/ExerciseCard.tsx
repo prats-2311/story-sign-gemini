@@ -6,9 +6,10 @@ interface ExerciseCardProps {
     isLocked?: boolean;
     statusQuery?: { setsDone: number, setsTotal: number, stability?: number };
     onStart: (config: ExerciseConfig) => void;
+    onDelete?: (id: string) => void;
 }
 
-export function ExerciseCard({ id, config, isLocked = false, statusQuery, onStart }: ExerciseCardProps) {
+export function ExerciseCard({ id, config, isLocked = false, statusQuery, onStart, onDelete }: ExerciseCardProps) {
     return (
         <div 
             id={id}
@@ -30,9 +31,29 @@ export function ExerciseCard({ id, config, isLocked = false, statusQuery, onStar
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                     </svg>
                 </div>
-                {isLocked && (
-                    <span className="text-gray-500 text-xs font-mono uppercase tracking-widest border border-gray-700 px-2 py-1 rounded">Locked</span>
-                )}
+                
+                <div className="flex gap-2">
+                    {onDelete && !isLocked && (
+                        <button 
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                if (window.confirm("Delete this exercise?")) {
+                                    onDelete(config.id);
+                                }
+                            }}
+                            className="p-2 text-gray-500 hover:text-red-500 transition-colors z-10"
+                            title="Delete Exercise"
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                        </button>
+                    )}
+                    
+                    {isLocked && (
+                        <span className="text-gray-500 text-xs font-mono uppercase tracking-widest border border-gray-700 px-2 py-1 rounded">Locked</span>
+                    )}
+                </div>
             </div>
 
             <h3 className="text-xl font-bold text-white mb-2 font-mono">{config.name}</h3>

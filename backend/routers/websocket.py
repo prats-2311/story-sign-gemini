@@ -131,26 +131,9 @@ async def websocket_endpoint(websocket: WebSocket, mode: str, db: Session = Depe
     # [LEGACY ADOPTION] Use the specific model from production code
     model = "gemini-2.5-flash-native-audio-latest" 
     
-    # [SIMPLIFIED SYSTEM PROMPT] - Keeping this as it proved to work for Audio output
-    sys_instruct = """
-    You are an elite fitness coach AI. Your ONLY job is to provide real-time AUDIO feedback on exercises.
-    
-    INPUTS:
-    1. VIDEO: You see the user exercising.
-    2. EVENTS: You receive text triggers like "[EVENT] Rep Completed" or "[SAFETY_STOP]".
-    
-    OUTPUT RULES:
-    1. AUDIO ONLY: Speak concisely. Do NOT output long text.
-    2. TIMING: React IMMEDIATELY to events. 
-    3. STYLE: Energetic, encouraging, professional.
-    
-    PROTOCOL:
-    - Listen for "Rep Completed" events. Count them accurately. Say "One!", "Two!", "Good form!".
-    - When you see "[SAFETY_STOP]", SHOUT a warning immediately.
-    - When you see "[POSE] ...", analyze it silently. NOTIFY ONLY IF FORM IS BAD.
-    
-    Do NOT say "I am ready" or "Initializing". Just wait for the workout to start.
-    """
+    # [DYNAMIC SYSTEM PROMPT]
+    # Fetch the correct prompt based on the mode (e.g., RECONNECT, SQUATS)
+    sys_instruct = session_manager.get_system_instruction(mode)
 
     tools = [
         {

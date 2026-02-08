@@ -41,10 +41,16 @@ export interface MetricDef {
     points: (number | string)[]; // Landmark indices or names
 }
 
-export interface StateDef {
+export interface StageDef {
     name: string;
-    condition: string; // e.g. "elbow_angle > 160"
-    instruction?: string;
+    description?: string;
+    conditions: {
+        metric: string;
+        op: 'GT' | 'LT' | 'BETWEEN';
+        target: number;
+        tolerance?: number;
+    }[];
+    hold_time?: number;
 }
 
 export interface SafetyRule {
@@ -58,9 +64,9 @@ export interface UniversalSchema {
     name: string;
     description: string;
     domain: 'BODY' | 'HAND' | 'FACE' | 'HYBRID';
-    metrics: MetricDef[];
-    states: StateDef[];
-    safety_rules: SafetyRule[];
+    metrics: Record<string, MetricDef>; // Changed to Record for ID lookup
+    stages: StageDef[];
+    safety_rules?: SafetyRule[];
     counting_logic?: {
         trigger_state: string;
         reset_state: string;

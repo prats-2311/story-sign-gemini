@@ -48,7 +48,8 @@ export class UniversalPhysicsEngine implements PhysicsEngine {
         }
         
         if (metric.type === 'VERTICAL_DIFF') {
-            // A.y - B.y (Positive means separation in Y)
+             // A.y - B.y (Positive means separation in Y)
+             if (points.length < 2) return null;
              const [A, B] = points as any[];
              return Math.abs(A.y - B.y); 
         }
@@ -56,122 +57,96 @@ export class UniversalPhysicsEngine implements PhysicsEngine {
         return null;
     }
 
-    private parseCondition(condition: string): { varName: string, operator: string, value: number } | null {
-         const match = condition.match(/^([a-zA-Z0-9_]+)\s*(<|>|<=|>=)\s*([\d\.]+)/);
-         if (!match) return null;
-         return { varName: match[1], operator: match[2], value: parseFloat(match[3]) };
-    }
+    private lastStateChangeTime: number = 0;
 
-    calculate(landmarks: any, currentStats: any, _calibration?: any): PhysicsOutput {
-        const output: PhysicsOutput = {
-            trigger: false,
-            message: "",
-            feedbackStatus: 'neutral',
-            statsUpdate: {}
-        };
-
-        // 1. Compute Metrics
-        const variables: Record<string, number> = {};
-        for (const m of this.schema.metrics) {
-            const val = this.computeMetric(landmarks, m);
-            if (val !== null) variables[m.id] = val;
+    public calculate(landmarks: any, _currentStats: any, _calibration?: any): PhysicsOutput {
+        const now = Date.now();
+        const stage = this.schema.stages?.[this.currentStateIndex];
+        
+        // Safety Fallback if schema is malformed
+        if (!stage) {
+            return { 
+                trigger: false, 
+                message: "", 
+                feedbackStatus: 'neutral', 
+                statsUpdate: {} 
+            };
         }
 
-        // 2. Evaluate Safety Rules
-        for (const rule of this.schema.safety_rules || []) {
-             if (rule.metric_id && variables[rule.metric_id] !== undefined) {
-                 const parsed = this.parseCondition(rule.condition); 
-                 // If condition is just "> 160", we assume variable is implicit rule.metric_id
-                 // If condition contains var name, we use that.
-                 
-                 let met = false;
-                 // Handle "Short Form" condition if metric_id is provided
-                 if (!parsed && rule.metric_id) {
-                      // fallback simple parse "> 50"
-                      const simpleMatch = rule.condition.match(/^\s*(<|>)\s*([\d\.]+)/);
-                      if (simpleMatch) {
-                          const op = simpleMatch[1];
-                          const val = parseFloat(simpleMatch[2]);
-                          const currentVal = variables[rule.metric_id];
-                          if (op === '>') met = currentVal > val;
-                          if (op === '<') met = currentVal < val;
-                      }
-                 } else if (parsed) {
-                     // Full form in condition string
-                     const currentVal = variables[parsed.varName];
-                     if (currentVal !== undefined) {
-                         if (parsed.operator === '>') met = currentVal > parsed.value;
-                         if (parsed.operator === '<') met = currentVal < parsed.value;
-                     }
-                 }
-
-                 if (met) {
-                     output.trigger = true;
-                     output.message = `[SAFETY] ${rule.message}`;
-                     output.feedbackStatus = 'critical';
-                     return output; 
-                 }
-             }
-        }
-
-        // 3. State Machine Transition
-        if (this.schema.states.length > 0) {
-            // const currentState = this.schema.states[this.currentStateIndex]; // Unused
-            const nextIndex = (this.currentStateIndex + 1) % this.schema.states.length;
-            const nextState = this.schema.states[nextIndex];
-            
-            // Logic: We check if we satisfy the condition to ENTER the NEXT state
-            // (Standard Finite State Machine transition logic)
-            
-            // Does next state have a condition?
-            const conditionStr = nextState.condition; 
-            const parsed = this.parseCondition(conditionStr);
-            
-            if (parsed) {
-                const val = variables[parsed.varName];
-                if (val !== undefined) {
-                    let transitionMet = false;
-                    if (parsed.operator === '>') transitionMet = val > parsed.value;
-                    if (parsed.operator === '<') transitionMet = val < parsed.value;
-                    
-                    if (transitionMet) {
-                        this.currentStateIndex = nextIndex;
-                        
-                        // Check for Rep Completion (Reset State Reached)
-                        // Assuming Cycle: START -> MIDDLE -> START (Rep Trigger on return to START)
-                        
-                        const counting = this.schema.counting_logic;
-                        if (counting) {
-                            if (nextState.name === counting.trigger_state) {
-                                // e.g. "MIDDLE" - halfway there
-                            }
-                            if (nextState.name === counting.reset_state) {
-                                // "START" - completed loop
-                                currentStats.repCount += 1;
-                                output.trigger = true;
-                                output.message = `[EVENT] Rep ${currentStats.repCount} Completed.`;
-                                output.feedbackStatus = 'success';
-                            }
-                        } else {
-                            // Default: If loop completes (Index 0)
-                            if (nextIndex === 0 && currentStats.repCount !== undefined) {
-                                currentStats.repCount += 1;
-                                output.trigger = true;
-                                output.message = `[EVENT] Rep ${currentStats.repCount} Completed.`;
-                                output.feedbackStatus = 'success';
-                            }
-                        }
-                    }
-                }
+        // 1. Calculate Metrics
+        const metrics: Record<string, number> = {};
+        if (this.schema.metrics) {
+            for (const [key, def] of Object.entries(this.schema.metrics)) {
+                const val = this.computeMetric(landmarks, def as MetricDef);
+                if (val !== null) metrics[key] = val;
             }
         }
 
-        // Update Stats for Graphs
-        output.statsUpdate = {
-             ...currentStats,
-             universalVariables: variables 
+        // 2. Check Conditions for Current Stage
+        let allMet = true;
+        if (stage.conditions) {
+            for (const cond of stage.conditions) {
+                const val = metrics[cond.metric];
+                if (val === undefined) { allMet = false; continue; }
+
+                let met = false;
+                const tolerance = cond.tolerance || 0;
+                
+                if (cond.op === 'GT') met = val > cond.target;
+                else if (cond.op === 'LT') met = val < cond.target;
+                else if (cond.op === 'BETWEEN') met = val >= (cond.target - tolerance) && val <= (cond.target + tolerance);
+                
+                if (!met) allMet = false;
+            }
+        }
+
+        // 3. State Transition
+        let trigger = false;
+        let message = "";
+        let feedbackStatus: 'neutral' | 'success' | 'warning' = 'neutral';
+        const updatedStats: any = { 
+            currentStage: this.currentStateIndex,
+            ...metrics 
         };
 
-        return output;
+        if (allMet) {
+            // Check Hold Time (Default 500ms debounce if not specified)
+            const requiredHold = (stage.hold_time || 0.5) * 1000;
+            
+            if (now - this.lastStateChangeTime > requiredHold) {
+                // Advance Stage
+                if (this.currentStateIndex < (this.schema.stages?.length || 0) - 1) {
+                    this.currentStateIndex++;
+                    const nextStageName = this.schema.stages?.[this.currentStateIndex].name || "Next Stage";
+                    message = `Good! Now ${nextStageName}`;
+                    feedbackStatus = 'success';
+                    trigger = true;
+                } else {
+                    // Exercise Complete (Round Trip)
+                    // [FIX] Prevent Infinite Loop: Only trigger if we haven't just triggered
+                    this.currentStateIndex = 0;
+                    message = "Rep Complete!";
+                    feedbackStatus = 'success';
+                    trigger = true;
+                    
+                    // Increment Rep Count
+                    updatedStats.repCount = (_currentStats.repCount || 0) + 1;
+                }
+                this.lastStateChangeTime = now;
+            }
+        } else {
+            // Reset hold timer if conditions broken? 
+            // Actually, we usually want to wait until conditions ARE met for X time.
+            // For now, simple debounce is "Last Change was > X ago" AND "Conditions Met Now".
+            // A better "Hold" implementation requires tracking "First Cond Met Time".
+            // Implementation detail: Let's stick to simple State Debounce for now to fix rapid fire.
+        }
+
+        return {
+            trigger,
+            message,
+            feedbackStatus,
+            statsUpdate: updatedStats
+        };
     }
 }

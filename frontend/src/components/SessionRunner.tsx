@@ -26,8 +26,8 @@ export function SessionRunner({ config, onExit, mode = 'BODY' }: SessionRunnerPr
   const [shoulderY, setShoulderY] = useState(0.5); // Default Middle
 
   // Hook Init (FRESH INSTANCE)
-  const { isConnected, messages, connect, disconnect, startAudioStream, stopAudioStream, startVideoStream, stopVideoStream, getSessionStats, feedbackStatus, isCalibrating, clinicalNotes, sessionId, flushData } = useGeminiLive({ 
-      mode: 'RECONNECT', // This is the Gemini System Instruction Mode. Might need to map 'mode' prop to this?
+  const { isConnected, messages, connect, disconnect, startAudioStream, stopAudioStream, startVideoStream, stopVideoStream, getSessionStats, feedbackStatus, isCalibrating, clinicalNotes, sessionId, flushData, repCount } = useGeminiLive({ 
+      mode: 'RECONNECT',  // This is the Gemini System Instruction Mode. Might need to map 'mode' prop to this?
       // Actually 'RECONNECT' is specifically for Physiotherapy. 
       // If mode is 'HAND', maybe we want 'ASL' instruction?
       // For now, keep hardcoded to RECONNECT or pass logic.
@@ -109,9 +109,6 @@ export function SessionRunner({ config, onExit, mode = 'BODY' }: SessionRunnerPr
       }
   };
 
-  // Extract Rep Count for UI
-  const repCount = getSessionStats().repCount || 0;
-
   return (
       <div className="relative h-screen flex flex-col overflow-hidden bg-gray-900">
           
@@ -143,12 +140,7 @@ export function SessionRunner({ config, onExit, mode = 'BODY' }: SessionRunnerPr
                      ← DASHBOARD
                   </button>
 
-                  <button 
-                    onClick={() => window.location.href = '/create-exercise'}
-                    className="flex items-center gap-2 font-mono text-xs border border-purple-500/50 text-purple-400 hover:text-white px-4 py-2 rounded bg-purple-900/20 hover:bg-purple-900/40 transition-all"
-                  >
-                      ✨ NEW EXERCISE
-                  </button>
+
 
                   {!isConnected ? (
                       <button 

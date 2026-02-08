@@ -1,10 +1,15 @@
 
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { toolsApi } from '../api/tools';
 import { exercisesApi } from '../api/exercises';
+import type { ExerciseConfig } from '../types/Exercise';
 
-export function ExerciseCreator() {
+interface ExerciseCreatorProps {
+    onSuccess?: (config: ExerciseConfig) => void;
+    onCancel?: () => void;
+}
+
+export function ExerciseCreator({ onSuccess, onCancel }: ExerciseCreatorProps) {
     const [prompt, setPrompt] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
@@ -15,10 +20,11 @@ export function ExerciseCreator() {
         setIsLoading(true);
         setError('');
         try {
-            const data = await toolsApi.generateExercise(prompt);
-            setGeneratedConfig(data); // API returns the config directly
+            const config = await exercisesApi.generate(prompt);
+            setGeneratedConfig(config);
         } catch (e: any) {
-            setError(e.message);
+            console.error("Generation failed:", e);
+            setError(e.message || "Failed to generate exercise");
         } finally {
             setIsLoading(false);
         }
@@ -70,7 +76,6 @@ export function ExerciseCreator() {
                         <div className="flex gap-4">
                             <button
                                 onClick={async () => {
-                                    // Save to Backend
                                     try {
                                         const res = await exercisesApi.create(
                                             generatedConfig.name, 
@@ -78,8 +83,12 @@ export function ExerciseCreator() {
                                             generatedConfig.domain || 'BODY'
                                         );
                                         console.log("Saved:", res);
-                                        // Start with persisted ID if possible, but for now just start preview
-                                        handleStart();
+                                        
+                                        if (onSuccess) {
+                                            onSuccess(generatedConfig);
+                                        } else {
+                                            handleStart();
+                                        }
                                     } catch (e: any) {
                                         console.error("Failed to save", e);
                                         setError("Save Failed: " + e.message);
@@ -87,7 +96,7 @@ export function ExerciseCreator() {
                                 }}
                                 className="flex-1 py-3 bg-green-600 hover:bg-green-500 text-white font-bold rounded-xl shadow-lg shadow-green-500/20"
                             >
-                                SAVE & START
+                                SAVE & ADD TO LIBRARY
                             </button>
                              <button
                                 onClick={handleStart}
@@ -96,6 +105,15 @@ export function ExerciseCreator() {
                                 PREVIEW ONLY
                             </button>
                         </div>
+                    )}
+
+                    {onCancel && (
+                        <button 
+                            onClick={onCancel}
+                            className="absolute top-4 right-4 text-gray-400 hover:text-white"
+                        >
+                            ✕
+                        </button>
                     )}
                 </div>
             </div>

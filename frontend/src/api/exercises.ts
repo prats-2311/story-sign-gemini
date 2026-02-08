@@ -17,6 +17,13 @@ export const exercisesApi = {
         });
     },
 
+    generate: (description: string) => {
+        return apiClient<ExerciseConfig>('/exercises/generate', {
+            method: 'POST',
+            body: JSON.stringify({ description }),
+        });
+    },
+
     list: () => {
         return apiClient<CustomExercise[]>('/exercises/custom');
     },

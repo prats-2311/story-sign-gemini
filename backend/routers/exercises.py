@@ -3,6 +3,8 @@ from sqlalchemy.orm import Session
 from database import SessionLocal, CustomExercise
 import uuid
 import logging
+from pydantic import BaseModel
+from services.exercise_generator import generate_exercise_schema
 
 logger = logging.getLogger(__name__)
 
@@ -45,6 +47,25 @@ async def create_custom_exercise(request: Request, db: Session = Depends(get_db)
         }}
     except Exception as e:
         logger.error(f"Error creating custom exercise: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+class GenerateRequest(BaseModel):
+    description: str
+
+@router.post("/generate")
+async def generate_exercise(request: GenerateRequest):
+    try:
+        if not request.description:
+            raise HTTPException(status_code=400, detail="Description is required")
+            
+        schema = await generate_exercise_schema(request.description)
+        
+        if "error" in schema:
+             raise HTTPException(status_code=500, detail=schema["error"])
+             
+        return schema
+    except Exception as e:
+        logger.error(f"Error generating exercise: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.get("/custom")
