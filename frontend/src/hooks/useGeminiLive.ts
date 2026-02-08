@@ -284,7 +284,8 @@ export function useGeminiLive({ mode, exerciseConfig, detectPose, onLandmarks, v
                       const rightWrist = landmarks[16];
 
                       // --- PHASE 1: CALIBRATION ---
-                      if (calibrationRef.current === null) {
+                      // [HARMONY SKIP] No calibration needed for hand tracking
+                      if (mode !== 'HARMONY' && calibrationRef.current === null) {
                           if (rightHip && rightShoulder) {
                               const torsoVec = getVector(rightHip, rightShoulder);
                               const upVec = { x: 0, y: -1 };

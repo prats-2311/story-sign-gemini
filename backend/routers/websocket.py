@@ -133,7 +133,26 @@ async def websocket_endpoint(websocket: WebSocket, mode: str, db: Session = Depe
     
     # [DYNAMIC SYSTEM PROMPT]
     # Fetch the correct prompt based on the mode (e.g., RECONNECT, SQUATS)
-    sys_instruct = session_manager.get_system_instruction(mode)
+    if mode == "HARMONY":
+        sys_instruct = """
+        You are an expert ASL (American Sign Language) Interpreter.
+        You will receive a stream of 2D/3D hand landmarks and occasional text tokens.
+        
+        **YOUR GOAL:**
+        Translate the user's signs into clear, spoken English.
+        
+        **PROTOCOL:**
+        1. **Observe:** Analyze the hand positions.
+        2. **Translate:** If you recognize a sign (e.g., "Hello", "Thank you", "Water"), say the word immediately.
+        3. **Synthesize:** If you see a sequence, form a coherent sentence.
+        4. **Voice:** Use a warm, clear voice.
+        
+        **SPECIAL COMMANDS:**
+        - If the user waves their hand, say "Hello!"
+        - If the user gives a thumbs up, say "Great!"
+        """
+    else:
+        sys_instruct = session_manager.get_system_instruction(mode)
 
     tools = [
         {
