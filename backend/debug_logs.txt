@@ -1,0 +1,23 @@
+2026-02-08 00:02:39,056 - story_sign - INFO - Loaded GEMINI_API_KEY: AIza...DBxE
+INFO:     Started server process [1]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+INFO:     172.65.46.172:28918 - "WebSocket /ws/stream/RECONNECT" [accepted]
+2026-02-08 00:03:21,904 - story_sign - INFO - Client connected in mode: RECONNECT
+2026-02-08 00:03:21,904 - story_sign - INFO -  Selected Model for RECONNECT: gemini-2.5-flash-native-audio-latest
+2026-02-08 00:03:21,907 - story_sign - INFO - Connecting to Gemini with model: gemini-2.5-flash-native-audio-latest
+INFO:     connection open
+2026-02-08 00:03:21,928 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 3fadfbd1-c48d-4e22-8785-b32eedcd49f8
+INFO:     172.65.46.172:63189 - "POST /session/start HTTP/1.1" 200 OK
+2026-02-08 00:03:22,892 - story_sign - ERROR - Gemini connection error: 1007 None. Request contains an invalid argument.
+INFO:     connection closed
+INFO:     172.65.46.172:54261 - "WebSocket /ws/stream/RECONNECT" [accepted]
+2026-02-08 00:05:34,906 - story_sign - INFO - Client connected in mode: RECONNECT
+2026-02-08 00:05:34,912 - story_sign - INFO -  Selected Model for RECONNECT: gemini-2.5-flash-native-audio-latest
+2026-02-08 00:05:34,918 - story_sign - INFO - Connecting to Gemini with model: gemini-2.5-flash-native-audio-latest
+INFO:     connection open
+2026-02-08 00:05:34,930 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 80d31eff-b7db-489f-ac20-13c6de779e67
+INFO:     172.65.46.172:18356 - "POST /session/start HTTP/1.1" 200 OK
+2026-02-08 00:05:35,727 - story_sign - ERROR - Gemini connection error: 1007 None. Request contains an invalid argument.
+INFO:     connection closed

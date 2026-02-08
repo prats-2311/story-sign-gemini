@@ -1,7 +1,10 @@
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 export const AnalyticsChart = ({ config }: { config: any }) => {
-  if (!config || !config.data) return null;
+  if (!config || !config.data || !Array.isArray(config.data)) {
+      console.warn("AnalyticsChart: Invalid or missing data array", config);
+      return null;
+  }
 
   return (
     <div className="h-64 w-full bg-gray-900/50 rounded-xl p-4 border border-gray-800 backdrop-blur-sm shadow-xl">
@@ -9,7 +12,7 @@ export const AnalyticsChart = ({ config }: { config: any }) => {
          <span className="w-2 h-2 bg-cyber-cyan rounded-full animate-pulse"/>
          {config.title}
       </h4>
-      <div className="h-56 w-full">
+      <div className="h-56 w-full min-h-[220px] min-w-[300px]">
         <ResponsiveContainer width="100%" height="100%">
             <LineChart data={config.data}>
             <CartesianGrid strokeDasharray="3 3" stroke="#374151" opacity={0.3} />

@@ -4,6 +4,6 @@
 
 @layer base {
   body {
-    @apply bg-neural-900 text-white font-sans overflow-hidden m-0 p-0;
+    @apply bg-neural-900 text-white font-sans m-0 p-0;
   }
 }

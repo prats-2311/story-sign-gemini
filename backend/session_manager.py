@@ -21,8 +21,8 @@ class SessionManager:
     def get_model_config(self, mode: str):
         # Can be customized per mode if needed (e.g., temperature)
         return {
-            "generation_config": {
-                "response_modalities": ["TEXT", "AUDIO"],
-                "temperature": 0.7
+            "response_modalities": ["AUDIO"],
+            "speech_config": {
+                "voice_config": {"prebuilt_voice_config": {"voice_name": "Puck"}} 
             }
         }

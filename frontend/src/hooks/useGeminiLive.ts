@@ -22,6 +22,7 @@ export function useGeminiLive({ mode, exerciseConfig, detectPose, onLandmarks, v
   const [isCalibrating, setIsCalibrating] = useState(false); // New Calibration State
   // Clinical Notes State (Strategy A)
   const [clinicalNotes, setClinicalNotes] = useState<string[]>([]);
+  const clinicalNotesRef = useRef<string[]>([]); // [FIX] Mirror for Interval Access
 
   const wsRef = useRef<WebSocket | null>(null);
   
@@ -49,8 +50,16 @@ export function useGeminiLive({ mode, exerciseConfig, detectPose, onLandmarks, v
       lastWristPos: null as any, // [FIX] Added for Velocity Check
       lastShoulderY: null as number | null, // [FIX] For Stability
       telemetry: [] as { t: number, val: number, vel: number }[], // [STRATEGY C]
+      universalVariables: {} as Record<string, number>, // [NEW] For Debugging
       startTime: Date.now() 
   });
+
+  // [INCREMENTAL REPORTING] State
+  const sessionIdRef = useRef<string>(crypto.randomUUID());
+  const chunkIntervalRef = useRef<number | null>(null);
+  const lastChunkIndexRef = useRef({ telemetry: 0, notes: 0 });
+
+  const [repCount, setRepCount] = useState(0); // [FIX] UI State for Reps
 
   const getSessionStats = useCallback(() => {
      return sessionStatsRef.current;
@@ -72,6 +81,12 @@ export function useGeminiLive({ mode, exerciseConfig, detectPose, onLandmarks, v
              playbackContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
         }
         const ctx = playbackContextRef.current;
+        
+        // [FIX] Auto-resume if suspended (browser policy)
+        if (ctx.state === 'suspended') {
+            await ctx.resume();
+        }
+
         const binaryString = window.atob(base64Audio);
         const len = binaryString.length;
         const bytes = new Uint8Array(len);
@@ -130,6 +145,7 @@ export function useGeminiLive({ mode, exerciseConfig, detectPose, onLandmarks, v
                 sampleRate: 16000, 
             });
             audioContextRef.current = audioContext;
+            console.log("[GeminiLive] AudioContext started at:", audioContext.sampleRate, "Hz");
 
             const source = audioContext.createMediaStreamSource(stream);
             sourceRef.current = source; // Store reference
@@ -140,25 +156,36 @@ export function useGeminiLive({ mode, exerciseConfig, detectPose, onLandmarks, v
             processor.onaudioprocess = (e) => {
                 // Double check if we should be processing
                 if (!wsRef.current || wsRef.current.readyState !== WebSocket.OPEN) return;
-                
                 const inputData = e.inputBuffer.getChannelData(0);
-                // ... encoding ...
+                
+                // Simple Downsampling/Encoding 
+                // (Assuming 16kHz context as set above, so just converting Float32 -> Int16)
                 const pcmData = new Int16Array(inputData.length);
                 for (let i = 0; i < inputData.length; i++) {
                     const s = Math.max(-1, Math.min(1, inputData[i]));
                     pcmData[i] = s < 0 ? s * 0x8000 : s * 0x7FFF;
                 }
+                
                 let binary = '';
                 const bytes = new Uint8Array(pcmData.buffer);
                 const len = bytes.byteLength;
                 for (let i = 0; i < len; i++) {
                     binary += String.fromCharCode(bytes[i]);
                 }
+                
                 const base64Data =  window.btoa(binary);
-                wsRef.current.send(JSON.stringify({
-                    mime_type: "audio/pcm;rate=16000",
-                    data: base64Data
-                }));
+                
+                if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
+                    // [CRITICAL FIX] Match Backend Schema: realtimeInput -> mediaChunks -> mimeType
+                    wsRef.current.send(JSON.stringify({
+                        realtimeInput: {
+                            mediaChunks: [{
+                                mimeType: "audio/pcm",
+                                data: base64Data
+                            }]
+                        }
+                    }));
+                }
             };
 
             source.connect(processor);
@@ -257,7 +284,8 @@ export function useGeminiLive({ mode, exerciseConfig, detectPose, onLandmarks, v
                       const rightWrist = landmarks[16];
 
                       // --- PHASE 1: CALIBRATION ---
-                      if (calibrationRef.current === null) {
+                      // [HARMONY SKIP] No calibration needed for hand tracking
+                      if (mode !== 'HARMONY' && calibrationRef.current === null) {
                           if (rightHip && rightShoulder) {
                               const torsoVec = getVector(rightHip, rightShoulder);
                               const upVec = { x: 0, y: -1 };
@@ -299,6 +327,10 @@ export function useGeminiLive({ mode, exerciseConfig, detectPose, onLandmarks, v
                            
                            // [FIX] Threshold: > 0.5 (Restored for testing safety stops)
                            if (velocity > 0.5) {
+                               // [FIX] Immediate Local Note
+                               const note = `[SAFETY_STOP] High Velocity Detected (Speed: ${velocity.toFixed(2)}).`;
+                               setClinicalNotes(prev => [...prev, note]);
+                               clinicalNotesRef.current.push(note);
                                 shouldTrigger = true;
                                 triggerMessage = `[SAFETY_STOP] High Velocity Detected (Speed: ${velocity.toFixed(2)}). Possible Spasm or Drop. STOP IMMEDIATELY.`;
                                 console.warn("🚨 SAFETY STOP: High Velocity Detected", velocity);
@@ -324,6 +356,11 @@ export function useGeminiLive({ mode, exerciseConfig, detectPose, onLandmarks, v
                       if (engineOutput.trigger) {
                           shouldTrigger = true;
                           triggerMessage = engineOutput.message;
+                          
+                          // [UX FIX] Show "Good Form" events in the UI immediately
+                          setClinicalNotes(prev => [...prev, engineOutput.message]);
+                          clinicalNotesRef.current.push(engineOutput.message);
+
                           setFeedbackStatus(engineOutput.feedbackStatus);
                           if (engineOutput.feedbackStatus !== 'neutral') {
                              setTimeout(() => setFeedbackStatus('neutral'), 2000);
@@ -332,7 +369,13 @@ export function useGeminiLive({ mode, exerciseConfig, detectPose, onLandmarks, v
                       
                       // Merge Stats
                       if (engineOutput.statsUpdate) {
+                          const prevRepCount = sessionStatsRef.current.repCount;
                           sessionStatsRef.current = { ...sessionStatsRef.current, ...engineOutput.statsUpdate };
+                          
+                          // [FIX] Trigger UI Update if Rep Count Changed
+                          if (sessionStatsRef.current.repCount > prevRepCount) {
+                               setRepCount(sessionStatsRef.current.repCount);
+                          }
                       }
                       
                       // Increment Frame
@@ -360,12 +403,14 @@ export function useGeminiLive({ mode, exerciseConfig, detectPose, onLandmarks, v
 
                        // 3. Send Data
                        if (shouldTrigger) {
+                           // [LOG] Proactive Turn
+                           console.log("[GeminiLive] Triggering Response:", triggerMessage);
                            wsRef.current.send(JSON.stringify({
                                text: triggerMessage,
                                trigger: true
                            }));
                        } else {
-                           // [RESTORE] Passive Stream (Context is needed)
+                           // [RESTORE] Passive Stream
                            wsRef.current.send(JSON.stringify({
                                text: `[POSE_DATA] ${JSON.stringify(landmarks)}`,
                                trigger: false
@@ -405,6 +450,41 @@ export function useGeminiLive({ mode, exerciseConfig, detectPose, onLandmarks, v
   }, [videoRef]);
 
   const disconnect = useCallback(() => {
+    // [FLUSH] Send any pending data before closing (The "Trailing" Chunk)
+    const stats = sessionStatsRef.current;
+    const allNotes = clinicalNotesRef.current;
+    
+    // Check what hasn't been sent yet
+    const tStart = lastChunkIndexRef.current.telemetry;
+    const nStart = lastChunkIndexRef.current.notes;
+    
+    // If there is NEW data
+    if (stats.telemetry.length > tStart || allNotes.length > nStart) {
+        console.log("[GeminiLive] Flushing final chunk...", { 
+            telemetryCount: stats.telemetry.length - tStart, 
+            notesCount: allNotes.length - nStart 
+        });
+        
+        const newTelemetry = stats.telemetry.slice(tStart);
+        const newNotes = allNotes.slice(nStart);
+        
+        const payload = {
+            session_id: sessionIdRef.current,
+            timestamp_start: tStart > 0 ? stats.telemetry[tStart].t : 0,
+            timestamp_end: Date.now(), // Approximate end time for flush
+            telemetry: newTelemetry,
+            notes: newNotes 
+        };
+        
+        // Fire and Forget (using keepalive if possible, but standard fetch usually works for small payloads)
+        fetch('/session/chunk', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload),
+                keepalive: true // Crucial for requests during unload
+        }).catch(e => console.error("Flush Error", e));
+    }
+
     if (wsRef.current) {
       wsRef.current.close();
       wsRef.current = null;
@@ -415,27 +495,84 @@ export function useGeminiLive({ mode, exerciseConfig, detectPose, onLandmarks, v
         playbackContextRef.current.close();
         playbackContextRef.current = null;
     }
+    
+    // Clear Chunk Loop
+    if (chunkIntervalRef.current) {
+        clearInterval(chunkIntervalRef.current);
+        chunkIntervalRef.current = null;
+    }
   }, [stopAudioStream, stopVideoStream]);
 
   const connect = useCallback(() => {
-    if (wsRef.current?.readyState === WebSocket.OPEN) return;
+    if (wsRef.current && (wsRef.current.readyState === WebSocket.OPEN || wsRef.current.readyState === WebSocket.CONNECTING)) return;
+
+    // Reset Session ID for new run
+    sessionIdRef.current = crypto.randomUUID();
+    lastChunkIndexRef.current = { telemetry: 0, notes: 0 };
+    sessionStatsRef.current.telemetry = [];
+    setClinicalNotes([]);
+    clinicalNotesRef.current = [];
+
+    // 1. Wake up Shadow Brain
+    fetch('/session/start', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ session_id: sessionIdRef.current })
+    }).catch(e => console.error("Start Session Error", e));
+
+    // 2. Start Chunk Loop (Every 10s)
+    chunkIntervalRef.current = window.setInterval(() => {
+        const stats = sessionStatsRef.current;
+        const allNotes = clinicalNotesRef.current; 
+        
+        const tStart = lastChunkIndexRef.current.telemetry;
+        const nStart = lastChunkIndexRef.current.notes;
+
+        const newTelemetry = stats.telemetry.slice(tStart);
+        const newNotes = allNotes.slice(nStart);
+        
+        // Skip if empty? No, keep heartbeat alive?
+        if (newTelemetry.length === 0 && newNotes.length === 0) return;
+
+        // Simple slice for telemetry
+        const payload = {
+            session_id: sessionIdRef.current,
+            timestamp_start: tStart > 0 ? stats.telemetry[tStart].t : 0,
+            timestamp_end: stats.telemetry.length > 0 ? stats.telemetry[stats.telemetry.length - 1].t : 0,
+            telemetry: newTelemetry,
+            notes: newNotes 
+        };
+
+        // Send Chunk
+        fetch('/session/chunk', {
+             method: 'POST',
+             headers: { 'Content-Type': 'application/json' },
+             body: JSON.stringify(payload)
+        }).then(res => {
+            if (res.ok) {
+                lastChunkIndexRef.current.telemetry = stats.telemetry.length;
+                lastChunkIndexRef.current.notes = allNotes.length;
+            }
+        });
+
+    }, 8000); // 8 seconds
 
     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
     const ws = new WebSocket(`${protocol}//${window.location.host}/ws/stream/${mode}`);
 
     ws.onopen = () => {
+      if (ws !== wsRef.current) return; // Ignore stale
       console.log('Connected to Gemini Tunnel');
       setIsConnected(true);
-      // [FORCE STARTUP] Send immediate context
+      // [SILENT STARTUP] Don't provoke the model
       ws.send(JSON.stringify({
-          text: "[SYSTEM] SESSION STARTED. EXECUTE STARTUP CHECKS (HEARTBEAT).",
-          trigger: true 
+          text: "[SYSTEM] Session Connected. Ready for stream.",
+          trigger: false 
       }));
     };
 
-
-
     ws.onmessage = (event) => {
+      if (ws !== wsRef.current) return; // Ignore stale
       // Handle server messages (JSON or Text)
       // [DEBUG] Log Raw Message
       // console.log("[WS IN]", event.data.substring(0, 100)); // Print first 100 chars
@@ -446,33 +583,37 @@ export function useGeminiLive({ mode, exerciseConfig, detectPose, onLandmarks, v
         if (msg.type) console.log("[WS MSG TYPE]", msg.type);
         
         // --- 1. Audio Stream ---
-        if (msg.audio) {
-            playAudioChunk(msg.audio);
+        if (msg.type === 'audio') {
+            playAudioChunk(msg.content);
         }
 
-             // --- 2. Text/JSON Stream ---
-             if (msg.type === 'clinical_note') {
-                 // [NEW] Handle Silent Tool Call Event
-                 console.log("[GeminiLive] Received Silent Clinical Note:", msg.note);
-                 setClinicalNotes(prev => [...prev, msg.note]);
-             } else if (msg.text) {
-                 const lower = msg.text.toUpperCase();
-                 // Standard UI Triggers
-                 if (lower.includes("[SAFETY_STOP]")) {
-                     setFeedbackStatus('critical');
-                     setTimeout(() => setFeedbackStatus('neutral'), 4000);
-                 } else if (lower.includes("[CORRECTION]") || lower.includes("TORSO LEAN")) {
-                     setFeedbackStatus('warning');
-                     setTimeout(() => setFeedbackStatus('neutral'), 3000);
-                 } else if (lower.includes("[EVENT]")) {
-                     setFeedbackStatus('success'); // Good Rep
-                     setTimeout(() => setFeedbackStatus('neutral'), 2000);
-                 }
-
-                 // [CLEANUP] No more Regex Buffering. The text is just text (Audio transcript).
-                 // We display it all, assuming the backend prompt ensures no "JSON_NOTE" text leaks.
-                 setMessages((prev) => [...prev, `Gemini: ${msg.text}`]);
+         // --- 2. Text/JSON Stream ---
+         if (msg.type === 'clinical_note') {
+             // [NEW] Handle Silent Tool Call Event
+             console.log("[GeminiLive] Received Silent Clinical Note:", msg.note);
+             setClinicalNotes(prev => {
+                 const updated = [...prev, msg.note];
+                 clinicalNotesRef.current = updated; // Sync Ref
+                 return updated;
+             });
+         } else if (msg.type === 'text') {
+             const textContent = msg.content;
+             const lower = textContent.toUpperCase();
+             // Standard UI Triggers
+             if (lower.includes("[SAFETY_STOP]")) {
+                 setFeedbackStatus('critical');
+                 setTimeout(() => setFeedbackStatus('neutral'), 4000);
+             } else if (lower.includes("[CORRECTION]") || lower.includes("TORSO LEAN")) {
+                 setFeedbackStatus('warning');
+                 setTimeout(() => setFeedbackStatus('neutral'), 3000);
+             } else if (lower.includes("[EVENT]")) {
+                 setFeedbackStatus('success'); // Good Rep
+                 setTimeout(() => setFeedbackStatus('neutral'), 2000);
              }
+
+             // [CLEANUP] No more Regex Buffering. The text is just text (Audio transcript).
+             setMessages((prev) => [...prev, `Gemini: ${textContent}`]);
+         }
        } catch (e) {
          // Fallback for plain text
          setMessages((prev) => [...prev, `Gemini: ${event.data}`]);
@@ -480,6 +621,10 @@ export function useGeminiLive({ mode, exerciseConfig, detectPose, onLandmarks, v
     };
     
     ws.onclose = () => {
+      if (ws !== wsRef.current) {
+          console.log('Ignoring onclose from stale socket');
+          return;
+      }
       console.log('Disconnected');
       setIsConnected(false);
       wsRef.current = null;
@@ -488,11 +633,54 @@ export function useGeminiLive({ mode, exerciseConfig, detectPose, onLandmarks, v
     };
 
     ws.onerror = (error) => {
+      if (ws !== wsRef.current) return; // Ignore stale
       console.error('WebSocket Error:', error);
     };
 
     wsRef.current = ws;
   }, [mode, playAudioChunk, stopAudioStream, stopVideoStream]);
+
+  // Expose flushData for manual triggering
+  const flushData = async () => {
+        const stats = getSessionStats();
+        const allNotes = clinicalNotesRef.current;
+
+        if (lastChunkIndexRef.current.telemetry >= stats.telemetry.length && 
+            lastChunkIndexRef.current.notes >= allNotes.length) {
+             console.log("[GeminiLive] No new data to flush.");
+             return;
+        }
+
+        console.log("[GeminiLive] Flushing final chunk...");
+        
+        // Slice new data
+        const tStart = lastChunkIndexRef.current.telemetry;
+        const newTelemetry = stats.telemetry.slice(tStart);
+        const newNotes = allNotes.slice(lastChunkIndexRef.current.notes);
+        
+        const payload = {
+            session_id: sessionIdRef.current,
+            timestamp_start: tStart > 0 ? stats.telemetry[tStart].t : 0,
+            timestamp_end: stats.telemetry.length > 0 ? stats.telemetry[stats.telemetry.length - 1].t : 0,
+            telemetry: newTelemetry,
+            notes: newNotes 
+        };
+
+        // Send Chunk and Wait
+        try {
+            const res = await fetch('/session/chunk', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            if (res.ok) {
+                lastChunkIndexRef.current.telemetry = stats.telemetry.length;
+                lastChunkIndexRef.current.notes = allNotes.length;
+            }
+        } catch (e) {
+            console.error("Flush Failed", e);
+        }
+  };
 
   useEffect(() => {
     return () => {
@@ -500,5 +688,5 @@ export function useGeminiLive({ mode, exerciseConfig, detectPose, onLandmarks, v
     };
   }, [disconnect]);
 
-  return { isConnected, messages, clinicalNotes, connect, disconnect, sendMessage, startAudioStream, stopAudioStream, startVideoStream, stopVideoStream, dataSentCount, getSessionStats, feedbackStatus, isCalibrating };
+  return { isConnected, messages, clinicalNotes, connect, disconnect, sendMessage, startAudioStream, stopAudioStream, startVideoStream, stopVideoStream, dataSentCount, getSessionStats, feedbackStatus, isCalibrating, sessionId: sessionIdRef.current, flushData, repCount };
 }

@@ -1,4 +1,4 @@
-export type ExerciseType = 'abduction' | 'bicep_curl' | 'wall_slide' | 'rotation';
+export type ExerciseType = string; // Relaxed to support dynamic IDs
 
 export interface PhysicsOutput {
     trigger: boolean;
@@ -29,4 +29,49 @@ export interface ExerciseConfig {
   
   // Gemini Context
   systemPrompt: string; 
+  
+  // Optional raw schema for UI hydration
+  _rawSchema?: UniversalSchema;
+}
+
+// --- UNIVERSAL ENGINE TYPES ---
+
+export type MetricType = 'ANGLE' | 'DISTANCE' | 'VERTICAL_DIFF' | 'HORIZONTAL_DIFF';
+
+export interface MetricDef {
+    id: string;
+    type: MetricType;
+    points: (number | string)[]; // Landmark indices or names
+}
+
+export interface StageDef {
+    name: string;
+    description?: string;
+    conditions: {
+        metric: string;
+        op: 'GT' | 'LT' | 'BETWEEN';
+        target: number;
+        tolerance?: number;
+    }[];
+    hold_time?: number;
+}
+
+export interface SafetyRule {
+    metric_id?: string;
+    type: 'VELOCITY' | 'ANGLE';
+    condition: string; // "> 2.0"
+    message: string;
+}
+
+export interface UniversalSchema {
+    name: string;
+    description: string;
+    domain: 'BODY' | 'HAND' | 'FACE' | 'HYBRID';
+    metrics: Record<string, MetricDef>; // Changed to Record for ID lookup
+    stages: StageDef[];
+    safety_rules?: SafetyRule[];
+    counting_logic?: {
+        trigger_state: string;
+        reset_state: string;
+    };
 }
