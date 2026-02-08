@@ -11,10 +11,11 @@ This guide walks you through deploying a fresh instance of StorySign Gemini on a
 2. Click **Create Instance**.
 3. **Name**: `storysign-v2`
 4. **Region**: `us-central1` (or your preferred region).
-5. **Machine Type**: `e2-standard-2` (2 vCPU, 8 GB memory) is recommended for building. `e2-medium` may run out of memory during `npm run build`.
+5. **Machine Type**: **`e2-medium`** (2 vCPUs, 4 GB memory) or **`e2-standard-2`** (8 GB).
+   * *Recommendation*: Since you have $300 credits, use **`e2-medium`** or larger. `e2-small` (2GB RAM) often crashes during `npm run build` due to running out of memory. Save yourself the headache!
 6. **Boot Disk**: 
    - OS: **Ubuntu 22.04 LTS** (x86/64).
-   - Size: **20 GB** (Standard Persistent Disk).
+   - Size: **30 GB** (Standard Persistent Disk) - extra space ensures Docker layers and logs don't fill up the drive.
 7. **Firewall**: 
    - Check **Allow HTTP traffic**.
    - Check **Allow HTTPS traffic**.
@@ -58,7 +59,7 @@ nano backend/.env
 
 Paste the following (replace with your ACTUAL key):
 ```ini
-GEMINI_API_KEY=your_new_api_key_here
+GEMINI_API_KEY=AIzaSyCYaAzp8bbsDjWbPDaGrv_mtyHjEfvp9rA
 DATABASE_URL=postgresql://user:password@db:5432/storysign
 ```
 *Press `Ctrl+O`, `Enter`, `Ctrl+X` to save and exit.*
