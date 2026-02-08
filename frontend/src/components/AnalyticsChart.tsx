@@ -12,7 +12,7 @@ export const AnalyticsChart = ({ config }: { config: any }) => {
          <span className="w-2 h-2 bg-cyber-cyan rounded-full animate-pulse"/>
          {config.title}
       </h4>
-      <div className="h-56 w-full">
+      <div className="h-56 w-full min-h-[220px] min-w-[300px]">
         <ResponsiveContainer width="100%" height="100%">
             <LineChart data={config.data}>
             <CartesianGrid strokeDasharray="3 3" stroke="#374151" opacity={0.3} />

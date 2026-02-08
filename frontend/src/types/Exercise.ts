@@ -1,4 +1,4 @@
-export type ExerciseType = 'abduction' | 'bicep_curl' | 'wall_slide' | 'rotation';
+export type ExerciseType = string; // Relaxed to support dynamic IDs
 
 export interface PhysicsOutput {
     trigger: boolean;
@@ -29,4 +29,40 @@ export interface ExerciseConfig {
   
   // Gemini Context
   systemPrompt: string; 
+}
+
+// --- UNIVERSAL ENGINE TYPES ---
+
+export type MetricType = 'ANGLE' | 'DISTANCE' | 'VERTICAL_DIFF' | 'HORIZONTAL_DIFF';
+
+export interface MetricDef {
+    id: string;
+    type: MetricType;
+    points: (number | string)[]; // Landmark indices or names
+}
+
+export interface StateDef {
+    name: string;
+    condition: string; // e.g. "elbow_angle > 160"
+    instruction?: string;
+}
+
+export interface SafetyRule {
+    metric_id?: string;
+    type: 'VELOCITY' | 'ANGLE';
+    condition: string; // "> 2.0"
+    message: string;
+}
+
+export interface UniversalSchema {
+    name: string;
+    description: string;
+    domain: 'BODY' | 'HAND' | 'FACE' | 'HYBRID';
+    metrics: MetricDef[];
+    states: StateDef[];
+    safety_rules: SafetyRule[];
+    counting_logic?: {
+        trigger_state: string;
+        reset_state: string;
+    };
 }

@@ -80,7 +80,15 @@ export class AbductionPhysics implements PhysicsEngine {
             maxRightElbowAngle: Math.max(maxRightElbowAngle, avgAbduction),
             angleHistory: newHistory,
             currentAbduction: avgAbduction,
-            currentLean: leanAngle
+            currentLean: leanAngle,
+            // [DEBUG] Expose to UI
+            universalVariables: {
+                'Right Arm': parseFloat(abdR.toFixed(1)),
+                'Left Arm': parseFloat(abdL.toFixed(1)),
+                'Avg Abduction': parseFloat(avgAbduction.toFixed(1)),
+                'Torso Lean': parseFloat(leanAngle.toFixed(1)),
+                'Rep State': repState === 'UP' ? 1 : 0
+            }
         };
 
         return output;

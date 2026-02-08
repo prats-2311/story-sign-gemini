@@ -51,5 +51,14 @@ class SessionMetrics(Base):
     metric_type = Column(String) # 'rep', 'rom_peak', 'stability_alert'
     value = Column(JSON) # 90, 0.45, etc.
 
+class CustomExercise(Base):
+    __tablename__ = "custom_exercises"
+
+    id = Column(String, primary_key=True, index=True) # UUID
+    name = Column(String)
+    domain = Column(String) # BODY, HAND, FACE
+    config_json = Column(JSON)
+    created_at = Column(DateTime, default=datetime.datetime.utcnow)
+
 def init_db():
     Base.metadata.create_all(bind=engine)

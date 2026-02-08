@@ -50,6 +50,7 @@ export function useGeminiLive({ mode, exerciseConfig, detectPose, onLandmarks, v
       lastWristPos: null as any, // [FIX] Added for Velocity Check
       lastShoulderY: null as number | null, // [FIX] For Stability
       telemetry: [] as { t: number, val: number, vel: number }[], // [STRATEGY C]
+      universalVariables: {} as Record<string, number>, // [NEW] For Debugging
       startTime: Date.now() 
   });
 
@@ -78,6 +79,12 @@ export function useGeminiLive({ mode, exerciseConfig, detectPose, onLandmarks, v
              playbackContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
         }
         const ctx = playbackContextRef.current;
+        
+        // [FIX] Auto-resume if suspended (browser policy)
+        if (ctx.state === 'suspended') {
+            await ctx.resume();
+        }
+
         const binaryString = window.atob(base64Audio);
         const len = binaryString.length;
         const bytes = new Uint8Array(len);
@@ -136,6 +143,7 @@ export function useGeminiLive({ mode, exerciseConfig, detectPose, onLandmarks, v
                 sampleRate: 16000, 
             });
             audioContextRef.current = audioContext;
+            console.log("[GeminiLive] AudioContext started at:", audioContext.sampleRate, "Hz");
 
             const source = audioContext.createMediaStreamSource(stream);
             sourceRef.current = source; // Store reference
@@ -146,25 +154,36 @@ export function useGeminiLive({ mode, exerciseConfig, detectPose, onLandmarks, v
             processor.onaudioprocess = (e) => {
                 // Double check if we should be processing
                 if (!wsRef.current || wsRef.current.readyState !== WebSocket.OPEN) return;
-                
                 const inputData = e.inputBuffer.getChannelData(0);
-                // ... encoding ...
+                
+                // Simple Downsampling/Encoding 
+                // (Assuming 16kHz context as set above, so just converting Float32 -> Int16)
                 const pcmData = new Int16Array(inputData.length);
                 for (let i = 0; i < inputData.length; i++) {
                     const s = Math.max(-1, Math.min(1, inputData[i]));
                     pcmData[i] = s < 0 ? s * 0x8000 : s * 0x7FFF;
                 }
+                
                 let binary = '';
                 const bytes = new Uint8Array(pcmData.buffer);
                 const len = bytes.byteLength;
                 for (let i = 0; i < len; i++) {
                     binary += String.fromCharCode(bytes[i]);
                 }
+                
                 const base64Data =  window.btoa(binary);
-                wsRef.current.send(JSON.stringify({
-                    mime_type: "audio/pcm;rate=16000",
-                    data: base64Data
-                }));
+                
+                if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
+                    // [CRITICAL FIX] Match Backend Schema: realtimeInput -> mediaChunks -> mimeType
+                    wsRef.current.send(JSON.stringify({
+                        realtimeInput: {
+                            mediaChunks: [{
+                                mimeType: "audio/pcm",
+                                data: base64Data
+                            }]
+                        }
+                    }));
+                }
             };
 
             source.connect(processor);
@@ -334,6 +353,11 @@ export function useGeminiLive({ mode, exerciseConfig, detectPose, onLandmarks, v
                       if (engineOutput.trigger) {
                           shouldTrigger = true;
                           triggerMessage = engineOutput.message;
+                          
+                          // [UX FIX] Show "Good Form" events in the UI immediately
+                          setClinicalNotes(prev => [...prev, engineOutput.message]);
+                          clinicalNotesRef.current.push(engineOutput.message);
+
                           setFeedbackStatus(engineOutput.feedbackStatus);
                           if (engineOutput.feedbackStatus !== 'neutral') {
                              setTimeout(() => setFeedbackStatus('neutral'), 2000);
@@ -370,12 +394,14 @@ export function useGeminiLive({ mode, exerciseConfig, detectPose, onLandmarks, v
 
                        // 3. Send Data
                        if (shouldTrigger) {
+                           // [LOG] Proactive Turn
+                           console.log("[GeminiLive] Triggering Response:", triggerMessage);
                            wsRef.current.send(JSON.stringify({
                                text: triggerMessage,
                                trigger: true
                            }));
                        } else {
-                           // [RESTORE] Passive Stream (Context is needed)
+                           // [RESTORE] Passive Stream
                            wsRef.current.send(JSON.stringify({
                                text: `[POSE_DATA] ${JSON.stringify(landmarks)}`,
                                trigger: false
@@ -529,10 +555,10 @@ export function useGeminiLive({ mode, exerciseConfig, detectPose, onLandmarks, v
       if (ws !== wsRef.current) return; // Ignore stale
       console.log('Connected to Gemini Tunnel');
       setIsConnected(true);
-      // [FORCE STARTUP] Send immediate context
+      // [SILENT STARTUP] Don't provoke the model
       ws.send(JSON.stringify({
-          text: "[SYSTEM] SESSION STARTED. EXECUTE STARTUP CHECKS (HEARTBEAT).",
-          trigger: true 
+          text: "[SYSTEM] Session Connected. Ready for stream.",
+          trigger: false 
       }));
     };
 
@@ -548,39 +574,37 @@ export function useGeminiLive({ mode, exerciseConfig, detectPose, onLandmarks, v
         if (msg.type) console.log("[WS MSG TYPE]", msg.type);
         
         // --- 1. Audio Stream ---
-        if (msg.audio) {
-            playAudioChunk(msg.audio);
+        if (msg.type === 'audio') {
+            playAudioChunk(msg.content);
         }
 
-             // --- 2. Text/JSON Stream ---
-             if (msg.type === 'clinical_note') {
-                 // [NEW] Handle Silent Tool Call Event
-                 console.log("[GeminiLive] Received Silent Clinical Note:", msg.note);
-                 setClinicalNotes(prev => {
-                     const updated = [...prev, msg.note];
-                     clinicalNotesRef.current = updated; // Sync Ref
-                     return updated;
-                 });
-             } else if (msg.text) {
-                 const lower = msg.text.toUpperCase();
-                 // Standard UI Triggers
-                 if (lower.includes("[SAFETY_STOP]")) {
-                     setFeedbackStatus('critical');
-                     setTimeout(() => setFeedbackStatus('neutral'), 4000);
-                 } else if (lower.includes("[CORRECTION]") || lower.includes("TORSO LEAN")) {
-                     setFeedbackStatus('warning');
-                     setTimeout(() => setFeedbackStatus('neutral'), 3000);
-                 } else if (lower.includes("[EVENT]")) {
-                     setFeedbackStatus('success'); // Good Rep
-                     setTimeout(() => setFeedbackStatus('neutral'), 2000);
-                 }
-
-                 // [CLEANUP] No more Regex Buffering. The text is just text (Audio transcript).
-                 // We display it all, assuming the backend prompt ensures no "JSON_NOTE" text leaks.
-                 // NOTE: If Gemini says "One", this text log might show "One". 
-                 // If the user hears it twice, check if this text is being read by something else?
-                 setMessages((prev) => [...prev, `Gemini: ${msg.text}`]);
+         // --- 2. Text/JSON Stream ---
+         if (msg.type === 'clinical_note') {
+             // [NEW] Handle Silent Tool Call Event
+             console.log("[GeminiLive] Received Silent Clinical Note:", msg.note);
+             setClinicalNotes(prev => {
+                 const updated = [...prev, msg.note];
+                 clinicalNotesRef.current = updated; // Sync Ref
+                 return updated;
+             });
+         } else if (msg.type === 'text') {
+             const textContent = msg.content;
+             const lower = textContent.toUpperCase();
+             // Standard UI Triggers
+             if (lower.includes("[SAFETY_STOP]")) {
+                 setFeedbackStatus('critical');
+                 setTimeout(() => setFeedbackStatus('neutral'), 4000);
+             } else if (lower.includes("[CORRECTION]") || lower.includes("TORSO LEAN")) {
+                 setFeedbackStatus('warning');
+                 setTimeout(() => setFeedbackStatus('neutral'), 3000);
+             } else if (lower.includes("[EVENT]")) {
+                 setFeedbackStatus('success'); // Good Rep
+                 setTimeout(() => setFeedbackStatus('neutral'), 2000);
              }
+
+             // [CLEANUP] No more Regex Buffering. The text is just text (Audio transcript).
+             setMessages((prev) => [...prev, `Gemini: ${textContent}`]);
+         }
        } catch (e) {
          // Fallback for plain text
          setMessages((prev) => [...prev, `Gemini: ${event.data}`]);
@@ -609,14 +633,16 @@ export function useGeminiLive({ mode, exerciseConfig, detectPose, onLandmarks, v
 
   // Expose flushData for manual triggering
   const flushData = async () => {
-        if (lastChunkIndexRef.current.telemetry >= getSessionStats().telemetry.length) {
+        const stats = getSessionStats();
+        const allNotes = clinicalNotesRef.current;
+
+        if (lastChunkIndexRef.current.telemetry >= stats.telemetry.length && 
+            lastChunkIndexRef.current.notes >= allNotes.length) {
              console.log("[GeminiLive] No new data to flush.");
              return;
         }
 
         console.log("[GeminiLive] Flushing final chunk...");
-        const stats = getSessionStats();
-        const allNotes = clinicalNotesRef.current;
         
         // Slice new data
         const tStart = lastChunkIndexRef.current.telemetry;
