@@ -1,5 +1,6 @@
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect, Request, Depends, BackgroundTasks
 from fastapi.responses import JSONResponse
+from datetime import datetime
 from dotenv import load_dotenv
 import asyncio
 import os
@@ -36,11 +37,11 @@ app.add_middleware(
 try:
     # Try importing from current directory (Docker / Run inside backend)
     from session_manager import SessionManager
-    from database import init_db, SessionReport, SessionLocal, engine
+    from database import init_db, SessionReport, ExerciseSession, SessionLocal, engine
 except ImportError:
     # Try importing as package (Run from root)
     from backend.session_manager import SessionManager
-    from backend.database import init_db, SessionReport, SessionLocal, engine
+    from backend.database import init_db, SessionReport, ExerciseSession, SessionLocal, engine
 
 # Init DB on startup
 init_db()
@@ -60,22 +61,43 @@ async def health_check():
 # --- INCREMENTAL REPORTING API ---
 try:
     from services.report_drafter import ReportDrafter
+    from services.plan_generator import PlanGenerator
 except ImportError:
     try:
         from backend.services.report_drafter import ReportDrafter
-    except ImportError:
-        logger.error("Could not import ReportDrafter service.")
+        from backend.services.plan_generator import PlanGenerator
+    except ImportError as e:
+        logger.error(f"Could not import ReportDrafter or PlanGenerator service. Error: {e}")
         ReportDrafter = None
+        PlanGenerator = None
 
 drafter = ReportDrafter(api_key=api_key) if ReportDrafter and api_key else None
+planner = PlanGenerator(api_key=api_key) if PlanGenerator and api_key else None
 
 @app.post("/session/start")
-async def start_session_draft(request: Request):
+async def start_session_draft(request: Request, db: SessionLocal = Depends(get_db)):
     if not drafter: return JSONResponse(status_code=503, content={"error": "Drafter not initialized"})
+    
     data = await request.json()
     session_id = data.get("session_id")
+    exercise_id = data.get("exercise_id", "unknown")
+    
+    # 1. Start Shadow Brain Context
     success = await drafter.start_session(session_id)
-    return {"status": "started" if success else "error"}
+    
+    # 2. Create Persistent Record
+    try:
+        new_session = ExerciseSession(
+            session_uuid=session_id,
+            exercise_id=exercise_id,
+            status="started"
+        )
+        db.add(new_session)
+        db.commit()
+    except Exception as e:
+        logger.error(f"Failed to persist session start: {e}")
+
+    return {"status": "started" if success else "error", "session_id": session_id}
 
 @app.post("/session/chunk")
 async def ingest_session_chunk(request: Request, background_tasks: BackgroundTasks):
@@ -99,15 +121,25 @@ async def finalize_session_draft(request: Request, db: SessionLocal = Depends(ge
     # 1. Get Final Report from Shadow Brain
     result = await drafter.finalize_report(session_id)
     
-    # 2. Save to DB (Same logic as analyze_session)
+    # 2. Update Persisted Record (ExerciseSession)
+    try:
+        session_record = db.query(ExerciseSession).filter(ExerciseSession.session_uuid == session_id).first()
+        if session_record:
+            session_record.end_time = datetime.utcnow()
+            session_record.status = "completed"
+            # If metrics available in result, save them?
+            # session_record.metrics = result.get("stats", {}) 
+            db.commit()
+    except Exception as e:
+        logger.error(f"Failed to update session end: {e}")
+
+    # 3. Save Report (SessionReport - Legacy/Detail)
     if "report_markdown" in result:
         try:
-             # Basic persistence - assuming transcript was sent in chunks or finalize body?
-             # For this hackathon MVP, we just save the Result JSON.
              db_report = SessionReport(
                  session_id=session_id,
                  transcript="[Incremental Session]", 
-                 clinical_notes=[], # They are embedded in the report logic now
+                 clinical_notes=result.get("clinical_notes", []), 
                  report_json=result
              )
              db.add(db_report)
@@ -116,6 +148,33 @@ async def finalize_session_draft(request: Request, db: SessionLocal = Depends(ge
             logger.error(f"DB Save Error: {e}")
 
     return result
+
+@app.get("/history")
+async def get_history(db: SessionLocal = Depends(get_db)):
+    try:
+        # Fetch last 20 reports, joined with session info if needed
+        # For now, just getting the reports is enough for the frontend
+        reports = db.query(SessionReport).order_by(SessionReport.timestamp.desc()).limit(20).all()
+        
+        history = []
+        for r in reports:
+            # Parse metrics/JSON safely
+            try:
+                report_data = r.report_json if isinstance(r.report_json, dict) else json.loads(r.report_json)
+            except:
+                report_data = {}
+            
+            history.append({
+                "id": r.id,
+                "timestamp": r.timestamp.isoformat(),
+                "transcript": r.transcript,
+                "clinical_notes": r.clinical_notes, # This usually comes from the ReportDrafter finalization
+                "report_json": report_data
+            })
+        return history
+    except Exception as e:
+        logger.error(f"History Fetch Error: {e}")
+        return []
 
 @app.post("/analyze_session")
 async def analyze_session(request: Request, db: SessionLocal = Depends(get_db)):
@@ -145,6 +204,7 @@ async def analyze_session(request: Request, db: SessionLocal = Depends(get_db)):
 
         **Task:**
         1. **Progress Report**: Write a concise markdown report (max 150 words). 
+           - **CRITICAL**: If any note mentions "SAFETY_STOP" or "High Velocity", you MUST highlight it in the "Session Summary" as a safety concern, NOT "Successfully completed".
            - Synthesize the "Notes" with the "Telemetry". 
            - E.g. "The user fatigued at 30s" (Proof: Velocity dropped to 0.1).
         2. **Visual Evidence**: Generate a configuration for a line chart that best proves your point (e.g. "Fatigue Curve" or "Consistency Graph").
@@ -217,6 +277,36 @@ async def get_history(db: SessionLocal = Depends(get_db)):
         logger.error(f"Error fetching history: {e}")
         return JSONResponse(status_code=500, content={"error": str(e)})
 
+@app.get("/plan/daily")
+async def get_daily_plan(db: SessionLocal = Depends(get_db)):
+    if not planner:
+        return JSONResponse({"error": "Planner service not available"}, status_code=503)
+    
+    try:
+        plan = planner.generate_daily_plan(db)
+        return plan
+    except Exception as e:
+        logger.error(f"Error generating daily plan: {e}")
+        return JSONResponse(status_code=500, content={"error": str(e)})
+
+@app.post("/plan/complete")
+async def complete_exercise(request: Request, db: SessionLocal = Depends(get_db)):
+    if not planner:
+        return JSONResponse({"error": "Planner service not available"}, status_code=503)
+    
+    try:
+        data = await request.json()
+        index = data.get("exercise_index")
+        
+        if index is None:
+             return JSONResponse(status_code=400, content={"error": "Missing exercise_index"})
+
+        result = planner.mark_exercise_complete(db, index)
+        return result
+    except Exception as e:
+        logger.error(f"Error marking exercise complete: {e}")
+        return JSONResponse(status_code=500, content={"error": str(e)})
+
 # Instantiate Session Manager
 session_manager = SessionManager()
 
@@ -228,9 +318,12 @@ async def stream(websocket: WebSocket, mode: str):
     sys_instruct = session_manager.get_system_instruction(mode)
 
     # Configure the session
-    # Use the model identified by the user as supporting both Audio and Video
-    model = "gemini-2.5-flash-native-audio-latest" 
-    # Valid alternatives: "gemini-2.5-flash-native-audio-preview-12-2025"     
+    # Use gemini-2.5-flash-native-audio-latest for ALL modes as requested
+    # Use gemini-2.5-flash-native-audio-latest for ALL modes 
+    # (Docs confirm 2.5 supports tools, provided modalities are correct)
+    model = "gemini-2.5-flash-native-audio-latest"
+    
+    logger.info(f" Selected Model for {mode}: {model}")     
     clinical_tool_func = types.FunctionDeclaration(
         name="log_clinical_note",
         description="Log a clinical observation about the patient's form or progress. Silent.",
@@ -248,17 +341,30 @@ async def stream(websocket: WebSocket, mode: str):
         description="Call this immediately when the session starts to confirm tool connectivity.",
         parameters=types.Schema(
             type="OBJECT",
-            properties={},
+            properties={
+                "timestamp": types.Schema(type="STRING", description="Current ISO timestamp")
+            },
+            required=["timestamp"]
         )
     )
 
-    # Create the LiveConnectConfig with Tools
+    # Define Tools conditionally
+    if mode == "RECONNECT":
+        # GEMINI 2.0 SUPPORTS TOOLS:
+        tools = [types.Tool(function_declarations=[clinical_tool_func, heartbeat_tool])] 
+        # tools = [types.Tool(function_declarations=[clinical_tool_func, heartbeat_tool])]
+    elif mode == "ASL":
+        tools = None 
+    
+    # Create the LiveConnectConfig
     try:
         config = types.LiveConnectConfig(
-            response_modalities=["AUDIO"],
+            response_modalities=["AUDIO"], # "TEXT" removed per PDF Specs (Single Modality only)
             system_instruction=types.Content(parts=[types.Part(text=sys_instruct)]),
-            tools=[types.Tool(function_declarations=[clinical_tool_func, heartbeat_tool])]
+            tools=tools
         )
+        logger.info(f"LiveConnectConfig Created. Tools: {len(tools) if tools else 0}, Modalities: {config.response_modalities}")
+        logger.info(f"System Instruction Length: {len(sys_instruct) if sys_instruct else 0}")
     except Exception as config_err:
         logger.critical(f"Failed to create LiveConnectConfig: {config_err}")
         await websocket.close(code=1008, reason="Configuration Error")

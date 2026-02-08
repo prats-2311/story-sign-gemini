@@ -305,6 +305,10 @@ export function useGeminiLive({ mode, exerciseConfig, detectPose, onLandmarks, v
                            
                            // [FIX] Threshold: > 0.5 (Restored for testing safety stops)
                            if (velocity > 0.5) {
+                               // [FIX] Immediate Local Note
+                               const note = `[SAFETY_STOP] High Velocity Detected (Speed: ${velocity.toFixed(2)}).`;
+                               setClinicalNotes(prev => [...prev, note]);
+                               clinicalNotesRef.current.push(note);
                                 shouldTrigger = true;
                                 triggerMessage = `[SAFETY_STOP] High Velocity Detected (Speed: ${velocity.toFixed(2)}). Possible Spasm or Drop. STOP IMMEDIATELY.`;
                                 console.warn("🚨 SAFETY STOP: High Velocity Detected", velocity);
@@ -411,6 +415,41 @@ export function useGeminiLive({ mode, exerciseConfig, detectPose, onLandmarks, v
   }, [videoRef]);
 
   const disconnect = useCallback(() => {
+    // [FLUSH] Send any pending data before closing (The "Trailing" Chunk)
+    const stats = sessionStatsRef.current;
+    const allNotes = clinicalNotesRef.current;
+    
+    // Check what hasn't been sent yet
+    const tStart = lastChunkIndexRef.current.telemetry;
+    const nStart = lastChunkIndexRef.current.notes;
+    
+    // If there is NEW data
+    if (stats.telemetry.length > tStart || allNotes.length > nStart) {
+        console.log("[GeminiLive] Flushing final chunk...", { 
+            telemetryCount: stats.telemetry.length - tStart, 
+            notesCount: allNotes.length - nStart 
+        });
+        
+        const newTelemetry = stats.telemetry.slice(tStart);
+        const newNotes = allNotes.slice(nStart);
+        
+        const payload = {
+            session_id: sessionIdRef.current,
+            timestamp_start: tStart > 0 ? stats.telemetry[tStart].t : 0,
+            timestamp_end: Date.now(), // Approximate end time for flush
+            telemetry: newTelemetry,
+            notes: newNotes 
+        };
+        
+        // Fire and Forget (using keepalive if possible, but standard fetch usually works for small payloads)
+        fetch('/session/chunk', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload),
+                keepalive: true // Crucial for requests during unload
+        }).catch(e => console.error("Flush Error", e));
+    }
+
     if (wsRef.current) {
       wsRef.current.close();
       wsRef.current = null;
@@ -430,7 +469,7 @@ export function useGeminiLive({ mode, exerciseConfig, detectPose, onLandmarks, v
   }, [stopAudioStream, stopVideoStream]);
 
   const connect = useCallback(() => {
-    if (wsRef.current?.readyState === WebSocket.OPEN) return;
+    if (wsRef.current && (wsRef.current.readyState === WebSocket.OPEN || wsRef.current.readyState === WebSocket.CONNECTING)) return;
 
     // Reset Session ID for new run
     sessionIdRef.current = crypto.randomUUID();
@@ -487,6 +526,7 @@ export function useGeminiLive({ mode, exerciseConfig, detectPose, onLandmarks, v
     const ws = new WebSocket(`${protocol}//${window.location.host}/ws/stream/${mode}`);
 
     ws.onopen = () => {
+      if (ws !== wsRef.current) return; // Ignore stale
       console.log('Connected to Gemini Tunnel');
       setIsConnected(true);
       // [FORCE STARTUP] Send immediate context
@@ -496,9 +536,8 @@ export function useGeminiLive({ mode, exerciseConfig, detectPose, onLandmarks, v
       }));
     };
 
-
-
     ws.onmessage = (event) => {
+      if (ws !== wsRef.current) return; // Ignore stale
       // Handle server messages (JSON or Text)
       // [DEBUG] Log Raw Message
       // console.log("[WS IN]", event.data.substring(0, 100)); // Print first 100 chars
@@ -538,6 +577,8 @@ export function useGeminiLive({ mode, exerciseConfig, detectPose, onLandmarks, v
 
                  // [CLEANUP] No more Regex Buffering. The text is just text (Audio transcript).
                  // We display it all, assuming the backend prompt ensures no "JSON_NOTE" text leaks.
+                 // NOTE: If Gemini says "One", this text log might show "One". 
+                 // If the user hears it twice, check if this text is being read by something else?
                  setMessages((prev) => [...prev, `Gemini: ${msg.text}`]);
              }
        } catch (e) {
@@ -547,6 +588,10 @@ export function useGeminiLive({ mode, exerciseConfig, detectPose, onLandmarks, v
     };
     
     ws.onclose = () => {
+      if (ws !== wsRef.current) {
+          console.log('Ignoring onclose from stale socket');
+          return;
+      }
       console.log('Disconnected');
       setIsConnected(false);
       wsRef.current = null;
@@ -555,11 +600,52 @@ export function useGeminiLive({ mode, exerciseConfig, detectPose, onLandmarks, v
     };
 
     ws.onerror = (error) => {
+      if (ws !== wsRef.current) return; // Ignore stale
       console.error('WebSocket Error:', error);
     };
 
     wsRef.current = ws;
   }, [mode, playAudioChunk, stopAudioStream, stopVideoStream]);
+
+  // Expose flushData for manual triggering
+  const flushData = async () => {
+        if (lastChunkIndexRef.current.telemetry >= getSessionStats().telemetry.length) {
+             console.log("[GeminiLive] No new data to flush.");
+             return;
+        }
+
+        console.log("[GeminiLive] Flushing final chunk...");
+        const stats = getSessionStats();
+        const allNotes = clinicalNotesRef.current;
+        
+        // Slice new data
+        const tStart = lastChunkIndexRef.current.telemetry;
+        const newTelemetry = stats.telemetry.slice(tStart);
+        const newNotes = allNotes.slice(lastChunkIndexRef.current.notes);
+        
+        const payload = {
+            session_id: sessionIdRef.current,
+            timestamp_start: tStart > 0 ? stats.telemetry[tStart].t : 0,
+            timestamp_end: stats.telemetry.length > 0 ? stats.telemetry[stats.telemetry.length - 1].t : 0,
+            telemetry: newTelemetry,
+            notes: newNotes 
+        };
+
+        // Send Chunk and Wait
+        try {
+            const res = await fetch('/session/chunk', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            if (res.ok) {
+                lastChunkIndexRef.current.telemetry = stats.telemetry.length;
+                lastChunkIndexRef.current.notes = allNotes.length;
+            }
+        } catch (e) {
+            console.error("Flush Failed", e);
+        }
+  };
 
   useEffect(() => {
     return () => {
@@ -567,5 +653,5 @@ export function useGeminiLive({ mode, exerciseConfig, detectPose, onLandmarks, v
     };
   }, [disconnect]);
 
-  return { isConnected, messages, clinicalNotes, connect, disconnect, sendMessage, startAudioStream, stopAudioStream, startVideoStream, stopVideoStream, dataSentCount, getSessionStats, feedbackStatus, isCalibrating, sessionId: sessionIdRef.current };
+  return { isConnected, messages, clinicalNotes, connect, disconnect, sendMessage, startAudioStream, stopAudioStream, startVideoStream, stopVideoStream, dataSentCount, getSessionStats, feedbackStatus, isCalibrating, sessionId: sessionIdRef.current, flushData };
 }

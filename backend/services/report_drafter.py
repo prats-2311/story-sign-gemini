@@ -4,7 +4,10 @@ from google import genai
 from google.genai import types
 import asyncio
 import time
-from utils.logging import logger
+try:
+    from utils.logging import logger
+except ImportError:
+    from backend.utils.logging import logger
 
 class ReportDrafter:
     def __init__(self, api_key: str):
@@ -129,18 +132,34 @@ class ReportDrafter:
                 prompt,
                 config=types.GenerateContentConfig(
                     response_mime_type="application/json",
-                    temperature=0.2, # Lower temp for strict formatting
+                    temperature=0.7, # Higher temp often helps Thinking models explore better
                     thinking_config=types.ThinkingConfig(include_thoughts=True)
                 )
             )
             
             elapsed = time.time() - start_time
+            
+            # Extract Thoughts if available (Start of the content usually)
+            try:
+                for part in response.candidates[0].content.parts:
+                    if hasattr(part, 'thought') and part.thought:
+                         # Log the thought process (truncated to avoid log spam if massive)
+                        logger.info(f"[ReportDrafter] 🧠 Model Thought: {part.thought[:500]}...")
+            except Exception:
+                pass
+
             logger.info(f"[ReportDrafter] Report Generated in {elapsed:.2f}s. Usage: {response.usage_metadata}")
             
             # Cleanup
             del self.active_sessions[session_id]
             
-            return json.loads(response.text)
+            try:
+                result = json.loads(response.text)
+                # [FIX] Return the raw clinical notes too
+                result["clinical_notes"] = list(session_data.get("notes", []))
+                return result
+            except json.JSONDecodeError:
+                return {"report_markdown": response.text, "chart_config": None, "clinical_notes": []}
         except Exception as e:
             logger.error(f"[ReportDrafter] Error finalizing: {e}")
-            return {"report_markdown": "Error generating report.", "chart_config": None}
+            return {"report_markdown": "Error generating report.", "chart_config": None, "clinical_notes": []}

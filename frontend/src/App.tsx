@@ -9,49 +9,151 @@ import { AnalyticsChart } from './components/AnalyticsChart';
 import './App.css';
 
 import { HistoryView } from './components/HistoryView'; // New Import
+import { DailyPlanView } from './components/DailyPlanView'; // [NEW]
+import { LandingPage } from './components/LandingPage'; // [NEW]
+// import { TourOverlay, type TourStep } from './components/TourOverlay'; // [NEW] - Commented out for now
+// import type { RoutineItem } from './types/Plan'; // [FIX] Type import - Commented out for now
+import { ShoulderAbductionConfig, BicepCurlConfig, WallSlideConfig, ExternalRotationConfig } from './ExerciseConfigs'; // [FIX] New centralized import
 
 import { ArcadeOverlay } from './components/ArcadeOverlay'; // New Import
 
+// --- TOUR DATA ---
+// const RECONNECT_TOUR: TourStep[] = [
+//     {
+//         targetId: 'btn-generate-plan',
+//         title: 'Daily AI Plan',
+//         content: 'Start here! Click this to generate a personalized recovery routine for today tailored to your previous sessions.'
+//     },
+//     {
+//         targetId: 'btn-view-history',
+//         title: 'Track Progress',
+//         content: 'View detailed clinical reports and charts from your past sessions to see your improvement over time.'
+//     },
+//     {
+//         targetId: 'card-abduction', 
+//         title: 'Individual Modules',
+//         content: 'Or, select a specific exercise module here to practice independently.'
+//     }
+// ];
+
+import { BrowserRouter, Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
+import { Layout } from './components/Layout';
+
+// ... (Imports remain)
+
+// --- WRAPPER FOR SESSION RUNNER ---
+import { useParams } from 'react-router-dom';
+
+function SessionRoute() {
+    const navigate = useNavigate();
+    const { exerciseId } = useParams(); // [NEW] Get ID from URL
+    const location = useLocation();
+    
+    // Fallback Config Lookup (Ideally moved to a separate Registry file)
+    const REGISTRY: Record<string, ExerciseConfig> = {
+          'abduction': ShoulderAbductionConfig,
+          'bicep_curl': BicepCurlConfig,
+          'wall_slide': WallSlideConfig,
+          'rotation': ExternalRotationConfig
+    };
+    
+    const config = REGISTRY[exerciseId || ''] || location.state?.config;
+    const planIndex = location.state?.planIndex as number | undefined; 
+
+    if (!config) {
+        console.warn("Invalid Exercise ID:", exerciseId);
+        return <Navigate to="/reconnect" replace />;
+    }
+
+    const handleExit = async () => {
+         // Logic to mark complete if planIndex exists
+          if (planIndex !== undefined && planIndex !== null) {
+              // ... (keep existing completion logic)
+               try {
+                 await fetch('/plan/complete', {
+                     method: 'POST',
+                     headers: {'Content-Type': 'application/json'},
+                     body: JSON.stringify({ exercise_index: planIndex })
+                 });
+              } catch (e) { console.error(e); }
+              navigate('/reconnect/plan');
+          } else {
+              navigate('/reconnect');
+          }
+    };
+
+    return <SessionRunner config={config} onExit={handleExit} />;
+}
+
+// --- ASL COMPONENTS ---
+import { ASLDashboard } from './components/ASL/ASLDashboard';
+import { ASLGameView } from './components/ASL/ASLGameView';
+
+// --- HARMONY COMPONENTS ---
+import { HarmonyDashboard } from './components/Harmony/HarmonyDashboard';
+import { HarmonyMirror } from './components/Harmony/HarmonyMirror';
+
 // --- APP COMPONENT ---
 function App() {
-  // --- NAVIGATION STATE ---
-  const [view, setView] = useState<'dashboard' | 'session' | 'history'>('dashboard');
-  const [currentConfig, setCurrentConfig] = useState<ExerciseConfig | null>(null);
-
-  const handleStartSession = (config: ExerciseConfig) => {
-      setCurrentConfig(config);
-      setView('session');
-  };
-
-  const handleExitSession = () => {
-      setView('dashboard');
-      setCurrentConfig(null);
-  };
-
   return (
-    <div className="bg-black min-h-screen font-sans selection:bg-cyber-cyan selection:text-black">
-      
-      {/* VIEW: DASHBOARD */}
-      {view === 'dashboard' && (
-          <Dashboard 
-            onSelectExercise={handleStartSession} 
-            onViewHistory={() => setView('history')} 
-           />
-      )}
+    <BrowserRouter>
+        <Routes>
+            {/* PUBLIC LAYOUT ROUTES */}
+            <Route element={<Layout />}>
+                <Route path="/" element={<LandingPage />} />
+                
+                {/* RECONNECT MODULE - Standard Views */}
+                <Route path="/reconnect" element={<DashboardWrapper />} />
+                <Route path="/reconnect/history" element={<HistoryView onBack={() => window.history.back()} />} />
+                <Route path="/reconnect/plan" element={<DailyPlanViewWrapper />} />
 
-      {/* VIEW: HISTORY */}
-      {view === 'history' && (
-          <HistoryView onBack={() => setView('dashboard')} />
-      )}
-
-      {/* VIEW: SESSION (Only mounts when active) */}
-      {view === 'session' && currentConfig && (
-          <SessionRunner config={currentConfig} onExit={handleExitSession} />
-      )}
-
-    </div>
+                {/* ASL MODULE - Dashboard */}
+                <Route path="/asl" element={<ASLDashboard />} />
+                
+                {/* HARMONY MODULE - Dashboard */}
+                <Route path="/harmony" element={<HarmonyDashboard />} />
+            </Route>
+            
+            {/* FULLSCREEN ROUTES */}
+            <Route path="/reconnect/session/:exerciseId" element={<SessionRoute />} />
+            <Route path="/asl/level/:levelId" element={<ASLGameView />} />
+            <Route path="/harmony/mirror" element={<HarmonyMirror />} />
+        </Routes>
+    </BrowserRouter>
   );
 }
+
+// --- WRAPPERS FOR PROPS ---
+function DashboardWrapper() {
+    const navigate = useNavigate();
+    return (
+        <Dashboard 
+            // [NEW] Pass string ID, not config object
+            onSelectExercise={(config) => navigate(`/reconnect/session/${config.id}`)} 
+        />
+    );
+}
+
+function DailyPlanViewWrapper() {
+    const navigate = useNavigate();
+    return (
+        <DailyPlanView 
+            onSelectExercise={(item, index) => {
+                 // Registry Lookup (Duplicated logic from previous App.tsx, ideally moved to util)
+                 const REGISTRY: Record<string, ExerciseConfig> = {
+                      'abduction': ShoulderAbductionConfig,
+                      'bicep_curl': BicepCurlConfig,
+                      'wall_slide': WallSlideConfig,
+                      'rotation': ExternalRotationConfig
+                 };
+                 const config = REGISTRY[item.exercise_id] || ShoulderAbductionConfig;
+                 navigate('/session', { state: { config, planIndex: index } });
+            }} 
+        />
+    );
+}
+
+// ... (Keep SessionRunner implementation below) ...
 
 // --- SUB-COMPONENT: SESSION RUNNER ---
 // This contains the logic that used to be in the main App. 
@@ -67,7 +169,7 @@ function SessionRunner({ config, onExit }: { config: ExerciseConfig, onExit: () 
   const [shoulderY, setShoulderY] = useState(0.5); // Default Middle
 
   // Hook Init (FRESH INSTANCE)
-  const { isConnected, messages, connect, disconnect, startAudioStream, stopAudioStream, startVideoStream, stopVideoStream, getSessionStats, feedbackStatus, isCalibrating, clinicalNotes, sessionId } = useGeminiLive({ 
+  const { isConnected, messages, connect, disconnect, startAudioStream, stopAudioStream, startVideoStream, stopVideoStream, getSessionStats, feedbackStatus, isCalibrating, clinicalNotes, sessionId, flushData } = useGeminiLive({ 
       mode: 'RECONNECT', 
       detectPose,
       videoRef,
@@ -110,8 +212,11 @@ function SessionRunner({ config, onExit }: { config: ExerciseConfig, onExit: () 
       console.log("Generating Report...");
       setIsGeneratingReport(true);
       try {
+           // [CRITICAL FIX] Flush pending data first!
+           // This ensures the "Safety Stop" or final events are sent to backend before we ask for the report.
+           await flushData();
            
-           // Inject logic based on Exercise Type?
+           console.log(`[App] Finalizing Session Report: ${sessionId}`);
            // For now, using the generalized backend endpoint
            // [INCREMENTAL REPORTING]
            // We just trigger the Shadow Brain to finalize.
@@ -265,8 +370,13 @@ function SessionRunner({ config, onExit }: { config: ExerciseConfig, onExit: () 
                     <div className="absolute left-10 top-1/2 -translate-y-1/2 w-64 pointer-events-auto">
                         <div className="bg-black/50 backdrop-blur border border-gray-800 p-4 rounded-xl">
                             <h3 className="text-xs text-gray-500 font-bold mb-2 uppercase tracking-widest">ROM / Stability</h3>
-                            <HistoryGraph data={[0]} color="#06b6d4" label="ROM" /> 
-                            {/* NOTE: Stats need to be piped via context or hook to be real */}
+                            <HistoryGraph 
+                                data={getSessionStats().telemetry.length > 0 
+                                    ? getSessionStats().telemetry.slice(-50).map(d => d.val) 
+                                    : [0]} 
+                                color="#06b6d4" 
+                                label="ELBOW FLEXION" 
+                            /> 
                         </div>
                     </div>
 

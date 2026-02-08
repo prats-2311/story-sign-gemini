@@ -1,15 +1,18 @@
 import type { ExerciseConfig } from '../types/Exercise';
 
 interface ExerciseCardProps {
+    id?: string;
     config: ExerciseConfig;
     isLocked?: boolean;
     statusQuery?: { setsDone: number, setsTotal: number, stability?: number };
     onStart: (config: ExerciseConfig) => void;
 }
 
-export function ExerciseCard({ config, isLocked = false, statusQuery, onStart }: ExerciseCardProps) {
+export function ExerciseCard({ id, config, isLocked = false, statusQuery, onStart }: ExerciseCardProps) {
     return (
-        <div className={`
+        <div 
+            id={id}
+            className={`
             relative p-6 rounded-2xl border transition-all duration-300
             ${isLocked 
                 ? 'border-gray-800 bg-gray-900/50 opacity-60 cursor-not-allowed' 

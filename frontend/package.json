@@ -13,8 +13,11 @@
     "@mediapipe/pose": "^0.5.1675469404",
     "@mediapipe/tasks-vision": "^0.10.22-rc.20250304",
     "clsx": "^2.1.1",
+    "framer-motion": "^12.33.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
+    "react-icons": "^5.5.0",
+    "react-router-dom": "^7.13.0",
     "recharts": "^3.7.0",
     "tailwind-merge": "^3.4.0"
   },
@@ -33,7 +36,8 @@
     "tailwindcss": "^3.4.17",
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.46.4",
-    "vite": "npm:rolldown-vite@7.2.5"
+    "vite": "npm:rolldown-vite@7.2.5",
+    "vite-plugin-pwa": "^1.2.0"
   },
   "overrides": {
     "vite": "npm:rolldown-vite@7.2.5"
