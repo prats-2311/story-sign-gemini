@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import type { ExerciseConfig, CalibrationData } from '../types/Exercise';
 import { getVector, getVectorAngle } from '../utils/vectorMath';
+import { apiClient } from '../api/client';
 
 type InteractionMode = 'ASL' | 'HARMONY' | 'RECONNECT';
 
@@ -477,7 +478,8 @@ export function useGeminiLive({ mode, exerciseConfig, detectPose, onLandmarks, v
         };
         
         // Fire and Forget (using keepalive if possible, but standard fetch usually works for small payloads)
-        fetch('/session/chunk', {
+        // [FIX] Use absolute path /api/session/chunk
+        fetch('/api/session/chunk', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload),
@@ -514,9 +516,8 @@ export function useGeminiLive({ mode, exerciseConfig, detectPose, onLandmarks, v
     clinicalNotesRef.current = [];
 
     // 1. Wake up Shadow Brain
-    fetch('/session/start', {
+    apiClient('/session/start', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ session_id: sessionIdRef.current })
     }).catch(e => console.error("Start Session Error", e));
 
@@ -544,16 +545,14 @@ export function useGeminiLive({ mode, exerciseConfig, detectPose, onLandmarks, v
         };
 
         // Send Chunk
-        fetch('/session/chunk', {
+        apiClient('/session/chunk', {
              method: 'POST',
-             headers: { 'Content-Type': 'application/json' },
              body: JSON.stringify(payload)
-        }).then(res => {
-            if (res.ok) {
-                lastChunkIndexRef.current.telemetry = stats.telemetry.length;
-                lastChunkIndexRef.current.notes = allNotes.length;
-            }
-        });
+        }).then(() => {
+             // Success
+             lastChunkIndexRef.current.telemetry = stats.telemetry.length;
+             lastChunkIndexRef.current.notes = allNotes.length;
+        }).catch(e => console.error("Chunk Error", e));
 
     }, 8000); // 8 seconds
 
@@ -668,15 +667,13 @@ export function useGeminiLive({ mode, exerciseConfig, detectPose, onLandmarks, v
 
         // Send Chunk and Wait
         try {
-            const res = await fetch('/session/chunk', {
+            await apiClient('/session/chunk', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
-            if (res.ok) {
-                lastChunkIndexRef.current.telemetry = stats.telemetry.length;
-                lastChunkIndexRef.current.notes = allNotes.length;
-            }
+            // Success
+            lastChunkIndexRef.current.telemetry = stats.telemetry.length;
+            lastChunkIndexRef.current.notes = allNotes.length;
         } catch (e) {
             console.error("Flush Failed", e);
         }
