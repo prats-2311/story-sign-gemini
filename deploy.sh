@@ -3,6 +3,9 @@
 echo "🚀 Starting Deployment..."
 
 # 1. Pull Latest Changes
+echo "📥 Stashing local changes (logs, etc.)..."
+git stash
+echo "⬇️  Pulling latest from main..."
 git pull origin main
 
 # 2. Check for .env file
