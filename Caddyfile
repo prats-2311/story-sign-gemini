@@ -18,6 +18,9 @@
     handle /analyze_session {
         reverse_proxy backend:8000
     }
+    handle /plan/* {
+        reverse_proxy backend:8000
+    }
 
     # 4. Frontend / Fallback (Catch-all)
     handle {
