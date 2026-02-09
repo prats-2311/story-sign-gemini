@@ -112,7 +112,7 @@ class ReportDrafter:
         **Requirements:**
         1. **Speed:** Be concise. Bullet points over paragraphs.
         2. **Chart Data:** You MUST output the chart data as a SIMPLE ARRAY of objects.
-        3. **SAMPLING:** If the session was long, **DOWNSAMPLE** the data to max 30 points to keep the JSON small.
+        3. **SAMPLING:** You MUST downsample the data to **EXACTLY 20 POINTS**. Do NOT output raw high-frequency data.
         
         **Output Schema (Strict JSON):**
         {
@@ -180,7 +180,35 @@ class ReportDrafter:
 
                 return result
             except json.JSONDecodeError:
-                logger.error(f"[ReportDrafter] JSON Parse Error. Raw: {response.text}")
+                logger.warning(f"[ReportDrafter] JSON Parse Error. Attempting Repair.")
+                
+                # [REPAIR] Attempt to salvage truncated JSON
+                try:
+                    # 1. Find the last complete data point closure "}," inside the data array
+                    last_obj_idx = clean_text.rfind("},")
+                    if last_obj_idx != -1:
+                        # Trim to that point and close the JSON structure
+                        # Assumes structure: { ..., "chart_config": { ..., "data": [ { ... }, { ... } <TRUNCATED>
+                        repaired_text = clean_text[:last_obj_idx+1] + "]}}" 
+                        logger.info(f"[ReportDrafter] Repaired JSON: {repaired_text[-50:]}")
+                        
+                        result = json.loads(repaired_text)
+                        
+                        # Apply same schema fix to repaired result
+                        if result.get("chart_config") and result["chart_config"].get("data"):
+                            raw_data = result["chart_config"]["data"]
+                            mapped_data = []
+                            for pt in raw_data:
+                                x = pt.get("x") or pt.get("t") or pt.get("time") or 0
+                                y = pt.get("y") or pt.get("val") or pt.get("value") or 0
+                                mapped_data.append({"x": x, "y": y})
+                            result["chart_config"]["data"] = mapped_data
+                            
+                        result["clinical_notes"] = list(session_data.get("notes", []))
+                        return result
+                except Exception as repair_err:
+                    logger.error(f"[ReportDrafter] Repair Failed: {repair_err}")
+
                 return {"report_markdown": response.text, "chart_config": None, "clinical_notes": []}
         except Exception as e:
             logger.error(f"[ReportDrafter] Error finalizing: {e}")
