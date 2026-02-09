@@ -173,16 +173,55 @@ async def websocket_endpoint(websocket: WebSocket, mode: str, db: Session = Depe
         }
     ]
 
-    # Create Gemini Config
-    # [FIX] Manually construct the config dict structure expected by the SDK
-    config = {
-        "response_modalities": ["AUDIO"], # Force Audio
-        "system_instruction": {"parts": [{"text": sys_instruct}]},
-        "tools": tools,
-        "speech_config": {
-            "voice_config": {"prebuilt_voice_config": {"voice_name": "Aoede"}} # Energetic voice
-        }
-    }
+    # Create the LiveConnectConfig
+    try:
+        if GEMINI_AVAILABLE:
+            clinical_tool_func = types.FunctionDeclaration(
+                name="log_clinical_note",
+                description="Log a clinical observation about the user's performance, pain, or improvement.",
+                parameters=types.Schema(
+                    type="OBJECT",
+                    properties={
+                        "note": types.Schema(type="STRING", description="The observation text."),
+                        "category": types.Schema(type="STRING", enum=["FORM", "PAIN", "PROGRESS", "GENERAL"])
+                    },
+                    required=["note"]
+                )
+            )
+            
+            heartbeat_tool = types.FunctionDeclaration(
+                name="log_heartbeat",
+                description="Call this immediately when the session starts to confirm tool connectivity.",
+                parameters=types.Schema(
+                    type="OBJECT",
+                    properties={},
+                )
+            )
+
+            # Define Tools conditionally
+            tools_list = [types.Tool(function_declarations=[clinical_tool_func, heartbeat_tool])]
+            
+            # Create Config
+            config = types.LiveConnectConfig(
+                response_modalities=["AUDIO"],
+                system_instruction=types.Content(parts=[types.Part(text=sys_instruct)]),
+                tools=tools_list
+            )
+            logger.info("Created LiveConnectConfig with Tools")
+        else:
+            # Fallback for SDK missing (Should not happen if SDK_INSTALLED is true)
+            config = {
+                 "response_modalities": ["AUDIO"],
+                 "system_instruction": {"parts": [{"text": sys_instruct}]},
+                 "speech_config": {
+                    "voice_config": {"prebuilt_voice_config": {"voice_name": "Aoede"}}
+                }
+            }
+
+    except Exception as config_err:
+        logger.critical(f"Failed to create LiveConnectConfig: {config_err}")
+        await websocket.close(code=1008, reason="Configuration Error")
+        return
 
     try:
         # --- GEMINI LIVE LOOP ---

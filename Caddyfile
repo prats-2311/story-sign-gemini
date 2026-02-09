@@ -1,4 +1,4 @@
-story-sign.34.56.135.222.nip.io {
+{$DOMAIN_NAME} {
     log
 
     # 1. WebSockets (Explicit Handle)
