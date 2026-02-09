@@ -111,7 +111,8 @@ class ReportDrafter:
         
         **Requirements:**
         1. **Speed:** Be concise. Bullet points over paragraphs.
-        2. **Chart Data:** You MUST output the chart data as a SIMPLE ARRAY of objects, matching the exact schema below. Do NOT use Vega-Lite or complex schemas.
+        2. **Chart Data:** You MUST output the chart data as a SIMPLE ARRAY of objects.
+        3. **SAMPLING:** If the session was long, **DOWNSAMPLE** the data to max 30 points to keep the JSON small.
         
         **Output Schema (Strict JSON):**
         {
@@ -132,6 +133,7 @@ class ReportDrafter:
                 prompt,
                 config=types.GenerateContentConfig(
                     response_mime_type="application/json",
+                    max_output_tokens=8192, # [FIX] Prevent Truncation
                     temperature=0.7, 
                 )
             )
