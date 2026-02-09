@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Request, Depends
 from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
-from database import SessionLocal, SessionReport
+from database import SessionLocal, SessionReport, get_db
 from services.plan_generator import PlanGenerator
 from google import genai
 from google.genai import types
@@ -20,12 +20,6 @@ api_key = os.getenv("GEMINI_API_KEY")
 planner = PlanGenerator(api_key=api_key) if api_key else None
 client = genai.Client(api_key=api_key, http_options={"api_version": "v1alpha"}) if api_key else None
 
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
 
 @router.get("/history")
 async def get_history(db: Session = Depends(get_db)):
@@ -130,23 +124,3 @@ async def analyze_session(request: Request, db: Session = Depends(get_db)):
         logger.error(f"Error in deep think analysis: {e}")
         return JSONResponse(status_code=500, content={"error": str(e)})
 
-@router.get("/plan/daily")
-async def get_daily_plan(db: Session = Depends(get_db)):
-    if not planner: return JSONResponse({"error": "Planner service not available"}, status_code=503)
-    try:
-        return planner.generate_daily_plan(db)
-    except Exception as e:
-        logger.error(f"Error generating daily plan: {e}")
-        return JSONResponse(status_code=500, content={"error": str(e)})
-
-@router.post("/plan/complete")
-async def complete_exercise(request: Request, db: Session = Depends(get_db)):
-    if not planner: return JSONResponse({"error": "Planner service not available"}, status_code=503)
-    try:
-        data = await request.json()
-        index = data.get("exercise_index")
-        if index is None: return JSONResponse(status_code=400, content={"error": "Missing exercise_index"})
-        return planner.mark_exercise_complete(db, index)
-    except Exception as e:
-        logger.error(f"Error marking exercise complete: {e}")
-        return JSONResponse(status_code=500, content={"error": str(e)})

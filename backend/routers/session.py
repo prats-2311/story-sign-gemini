@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Request, Depends, BackgroundTasks
 from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
-from database import SessionLocal, ExerciseSession, SessionReport
+from database import SessionLocal, ExerciseSession, SessionReport, get_db
 from services.report_drafter import ReportDrafter
 from datetime import datetime
 import os
@@ -20,12 +20,6 @@ if not drafter:
     logger.warning("ReportDrafter could not be initialized (Missing API Key).")
 
 # Dependency
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
 
 @router.post("/start")
 async def start_session_draft(request: Request, db: Session = Depends(get_db)):

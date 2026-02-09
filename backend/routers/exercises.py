@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Request, Depends, HTTPException
 from sqlalchemy.orm import Session
-from database import SessionLocal, CustomExercise
+from database import SessionLocal, CustomExercise, get_db
 import uuid
 import logging
 from pydantic import BaseModel
@@ -10,12 +10,6 @@ logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/exercises", tags=["exercises"])
 
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
 
 @router.post("/custom")
 async def create_custom_exercise(request: Request, db: Session = Depends(get_db)):
