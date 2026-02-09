@@ -31,7 +31,7 @@ app.include_router(session.router)
 app.include_router(history.router)
 app.include_router(tools.router)
 app.include_router(exercises.router)
-app.include_router(exercises.router)
+
 app.include_router(websocket.router)
 app.include_router(plan.router)
 
