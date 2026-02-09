@@ -59,7 +59,7 @@ nano backend/.env
 
 Paste the following (replace with your ACTUAL key):
 ```ini
-GEMINI_API_KEY=AIzaSyCYaAzp8bbsDjWbPDaGrv_mtyHjEfvp9rA
+GEMINI_API_KEY=
 DATABASE_URL=postgresql://user:password@db:5432/storysign
 ```
 *Press `Ctrl+O`, `Enter`, `Ctrl+X` to save and exit.*

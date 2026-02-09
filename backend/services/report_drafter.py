@@ -42,7 +42,7 @@ class ReportDrafter:
         """Initializes a new 'Shadow Brain' chat session."""
         try:
             chat = self.client.aio.chats.create(
-                model="gemini-2.0-flash", 
+                model="gemini-3-flash-preview", 
                 config=types.GenerateContentConfig(
                     system_instruction=self.SYSTEM_INSTRUCTION,
                     temperature=0.4 # Keep it analytical
