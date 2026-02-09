@@ -134,7 +134,7 @@ class ReportDrafter:
                 config=types.GenerateContentConfig(
                     response_mime_type="application/json",
                     max_output_tokens=8192, # [FIX] Prevent Truncation
-                    temperature=0.7, 
+                    temperature=0.2, # Lower temp for strict formatting (from legacy)
                 )
             )
             
