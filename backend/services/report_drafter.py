@@ -153,11 +153,32 @@ class ReportDrafter:
             del self.active_sessions[session_id]
             
             try:
-                result = json.loads(response.text)
+                # [FIX] Strip Markdown Code Blocks
+                clean_text = response.text.strip()
+                if clean_text.startswith("```"):
+                    clean_text = clean_text.split("```json")[-1].split("```")[0].strip()
+                elif clean_text.startswith("`"): # sometimes single ticks
+                    clean_text = clean_text.replace("`", "")
+                
+                result = json.loads(clean_text)
+                
                 # [FIX] Return the raw clinical notes too
                 result["clinical_notes"] = list(session_data.get("notes", []))
+
+                # [FIX] Enforce Chart Schema (x, y) if model returns t, val or others
+                if result.get("chart_config") and result["chart_config"].get("data"):
+                    raw_data = result["chart_config"]["data"]
+                    mapped_data = []
+                    for pt in raw_data:
+                        # Map known aliases to x, y
+                        x = pt.get("x") or pt.get("t") or pt.get("time") or 0
+                        y = pt.get("y") or pt.get("val") or pt.get("value") or 0
+                        mapped_data.append({"x": x, "y": y})
+                    result["chart_config"]["data"] = mapped_data
+
                 return result
             except json.JSONDecodeError:
+                logger.error(f"[ReportDrafter] JSON Parse Error. Raw: {response.text}")
                 return {"report_markdown": response.text, "chart_config": None, "clinical_notes": []}
         except Exception as e:
             logger.error(f"[ReportDrafter] Error finalizing: {e}")
