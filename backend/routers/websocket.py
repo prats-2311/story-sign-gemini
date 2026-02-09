@@ -129,7 +129,7 @@ async def websocket_endpoint(websocket: WebSocket, mode: str, db: Session = Depe
 
     # --- CONFIGURATION ---
     # [LEGACY ADOPTION] Use the specific model from production code
-    model = "gemini-2.5-flash-native-audio-latest" 
+    model = "gemini-2.5-flash-native-audio-preview-12-2025" 
     
     # [DYNAMIC SYSTEM PROMPT]
     # Fetch the correct prompt based on the mode (e.g., RECONNECT, SQUATS)
