@@ -414,7 +414,7 @@ export function SessionRunner({ config, onExit, mode = 'BODY' }: SessionRunnerPr
                     <div className="flex-1 overflow-y-auto p-8 space-y-8">
                         {/* CHART SECTION (Strategy C) */}
                         {chartConfig && (
-                            <div className="animate-slide-in">
+                            <div className="w-full h-auto">
                                 <AnalyticsChart config={chartConfig} />
                             </div>
                         )}
