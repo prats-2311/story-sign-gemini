@@ -86,28 +86,73 @@ class PlanGenerator:
 
     def _get_session_context(self, db: Session):
         """
-        Summarizes the last 7 days of activity from ExerciseSession.
+        Summarizes the last 7 days of activity.
+        Primary Source: ExerciseSession (Raw Log)
+        Secondary Source: SessionReport (Detailed Analysis) - used if primary is empty.
         """
         seven_days_ago = datetime.datetime.utcnow() - datetime.timedelta(days=7)
+        history = []
+        
+        # 1. Fetch from ExerciseSession (Raw)
         try:
-            sessions = db.query(ExerciseSession).filter(
+            raw_sessions = db.query(ExerciseSession).filter(
                 ExerciseSession.start_time >= seven_days_ago
             ).order_by(ExerciseSession.start_time.asc()).all()
             
-            history = []
-            for s in sessions:
+            for s in raw_sessions:
                 # Calculate simple volume if metrics exist
                 reps = s.metrics.get("reps", 0) if s.metrics else 0
                 history.append({
                     "date": s.start_time.strftime("%Y-%m-%d"),
                     "exercise_id": s.exercise_id,
+                    "source": "raw_log",
                     "status": s.status,
                     "reps": reps
                 })
-            return history
         except Exception as e:
-            logger.warning(f"Failed to fetch session history: {e}")
-            return []
+            logger.warning(f"Failed to fetch exercise sessions: {e}")
+
+        # 2. Fetch from SessionReport (Analysis) if history is sparse (< 3)
+        if len(history) < 3:
+            try:
+                reports = db.query(SessionReport).filter(
+                    SessionReport.timestamp >= seven_days_ago
+                ).order_by(SessionReport.timestamp.asc()).all()
+
+                for r in reports:
+                    # Parse JSON
+                    data = r.report_json if isinstance(r.report_json, dict) else json.loads(r.report_json)
+                    
+                    # Extract Activity Name from various paths
+                    activity = "Unknown"
+                    if "activity_name" in data: activity = data["activity_name"]
+                    elif "session_overview" in data:
+                        if isinstance(data["session_overview"], dict):
+                            activity = data["session_overview"].get("activity", "Unknown")
+                        elif isinstance(data["session_overview"], list):
+                            for line in data["session_overview"]:
+                                if "Activity:" in line:
+                                    activity = line.split(":", 1)[1].strip()
+                                    break
+                    
+                    # Deduplicate: Only add if we don't have a raw log for this time (approx match)
+                    # For simplicity, we just check if this date is already in history
+                    r_date = r.timestamp.strftime("%Y-%m-%d")
+                    if not any(h["date"] == r_date and h["exercise_id"] == activity for h in history):
+                         history.append({
+                            "date": r_date,
+                            "exercise_id": activity, # Use name as ID for fallback
+                            "source": "session_report",
+                            "status": "completed",
+                            "reps": "unknown"
+                        })
+
+            except Exception as e:
+                logger.warning(f"Failed to fetch session reports: {e}")
+
+        # Sort combined history by date
+        history.sort(key=lambda x: x["date"])
+        return history
 
     def _generate_from_gemini(self, db: Session):
         # 1. Gather Data

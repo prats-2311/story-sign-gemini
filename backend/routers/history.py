@@ -33,11 +33,28 @@ async def get_history(db: Session = Depends(get_db)):
             except:
                 report_data = {}
             
+            # Extract Exercise Name (Try multiple paths)
+            activity_name = "Unknown Exercise"
+            if isinstance(report_data, dict):
+                # Path 1: Top-level (some versions)
+                if "activity_name" in report_data:
+                    activity_name = report_data["activity_name"]
+                # Path 2: Session Overview (older versions)
+                elif "session_overview" in report_data and isinstance(report_data["session_overview"], dict):
+                    activity_name = report_data["session_overview"].get("activity", "Unknown Exercise")
+                # Path 3: Session Overview text (if string)
+                elif "session_overview" in report_data and isinstance(report_data["session_overview"], list):
+                     for line in report_data["session_overview"]:
+                         if "Activity:" in line:
+                             activity_name = line.split(":", 1)[1].strip()
+                             break
+
             history.append({
                 "id": r.id,
                 "timestamp": r.timestamp.isoformat(),
                 "transcript": r.transcript,
                 "clinical_notes": r.clinical_notes, 
+                "activity_name": activity_name, # Added field
                 "report_json": report_data
             })
         return history
