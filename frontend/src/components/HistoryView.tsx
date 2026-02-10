@@ -1,28 +1,22 @@
 import { useEffect, useState } from 'react';
 import { AnalyticsChart } from './AnalyticsChart';
-
-interface SessionRecord {
-    id: number;
-    timestamp: string;
-    transcript: string;
-    clinical_notes: string[];
-    report_json: any; 
-}
+import { apiClient } from '../api/client';
+import type { SessionLog } from '../types/SessionLog';
 
 interface HistoryViewProps {
     onBack: () => void;
 }
 
 export function HistoryView({ onBack }: HistoryViewProps) {
-    const [sessions, setSessions] = useState<SessionRecord[]>([]);
+    const [sessions, setSessions] = useState<SessionLog[]>([]);
     const [loading, setLoading] = useState(true);
-    const [selectedSession, setSelectedSession] = useState<SessionRecord | null>(null);
+    const [selectedSession, setSelectedSession] = useState<SessionLog | null>(null);
 
     useEffect(() => {
-        fetch('/history')
-            .then(res => res.json())
+        // [MODULE-FIRST] Fetch Reconnect (BODY) History
+        apiClient('/reconnect/history')
             .then(data => {
-                setSessions(data);
+                setSessions(data as SessionLog[]);
                 setLoading(false);
             })
             .catch(err => {
@@ -53,11 +47,12 @@ export function HistoryView({ onBack }: HistoryViewProps) {
                         <div key={session.id} className="bg-neural-900 border border-neural-700 p-6 rounded-xl hover:border-cyber-cyan transition-colors">
                             <div className="flex justify-between mb-4">
                                 <div>
-                                    <div className="text-cyber-cyan font-mono text-sm">
+                                    <h3 className="text-xl font-bold text-cyber-cyan">{session.title}</h3>
+                                    <div className="text-cyber-cyan/50 font-mono text-xs mt-1">
                                         {new Date(session.timestamp).toLocaleString()}
                                     </div>
-                                    <div className="text-gray-400 font-mono text-xs uppercase tracking-widest mt-1">
-                                        SESSION #{session.id}
+                                    <div className="text-gray-500 font-mono text-[10px] uppercase tracking-widest mt-1 truncate max-w-xs">
+                                        ID: {session.id}
                                     </div>
                                 </div>
                                 <div>
@@ -74,15 +69,19 @@ export function HistoryView({ onBack }: HistoryViewProps) {
                                 <div>
                                     <h3 className="text-gray-400 text-xs uppercase mb-2">Clinical Notes</h3>
                                     <ul className="text-sm text-gray-300 list-disc pl-4 space-y-1">
-                                        {session.clinical_notes?.slice(0, 3).map((note, i) => (
+                                        {session.report_summary?.clinical_notes?.slice(0, 3).map((note: string, i: number) => (
                                             <li key={i}>{note}</li>
-                                        ))}
+                                        )) || (
+                                            <li className="text-gray-600 italic">No notes recorded.</li>
+                                        )}
                                     </ul>
                                 </div>
                                 <div>
                                     <h3 className="text-gray-400 text-xs uppercase mb-2">Metrics</h3>
                                     <div className="text-sm text-white">
-                                        <span className="text-gray-500 italic">Analysis Archived</span>
+                                        <span className={`px-2 py-1 rounded text-xs font-bold uppercase ${session.status === 'completed' ? 'bg-green-500/20 text-green-400' : 'bg-yellow-500/20 text-yellow-400'}`}>
+                                            {session.status}
+                                        </span>
                                     </div>
                                 </div>
                             </div>
@@ -115,17 +114,17 @@ export function HistoryView({ onBack }: HistoryViewProps) {
                         </div>
                         
                         <div className="flex-1 overflow-y-auto p-8 space-y-8">
-                            {/* CHART (If available in report_json) */}
-                            {selectedSession.report_json?.chart_config && (
+                            {/* CHART (If available in report_summary) */}
+                            {selectedSession.report_summary?.chart_config && (
                                 <div className="animate-slide-in w-full h-[300px]">
-                                    <AnalyticsChart config={selectedSession.report_json.chart_config} />
+                                    <AnalyticsChart config={selectedSession.report_summary.chart_config} />
                                 </div>
                             )}
 
                             {/* TEXT REPORT */}
                             <div className="prose prose-invert max-w-none">
                                  <div className="whitespace-pre-wrap font-mono text-sm text-gray-300 leading-relaxed border-l-2 border-cyber-cyan/30 pl-6">
-                                     {selectedSession.report_json?.report_markdown || selectedSession.report_json?.report || "No report text content found."}
+                                     {selectedSession.report_summary?.report_markdown || selectedSession.report_summary?.report || "No report text content found."}
                                  </div>
                             </div>
                         </div>      

@@ -41,16 +41,18 @@ export const usePoseDetection = (mode: DetectionMode = 'BODY') => {
                 landmarker = await FaceLandmarker.createFromOptions(vision, {
                     baseOptions: {
                         modelAssetPath: "https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task",
-                        delegate: "GPU"
+                        delegate: "CPU"
                     },
                     runningMode: "VIDEO",
                     numFaces: 1,
-                    outputFaceBlendshapes: true
+                    outputFaceBlendshapes: false
                 });
             }
 
+            console.time("MediaPipe Load");
             setDetector(landmarker);
             setIsModelLoaded(true);
+            console.timeEnd("MediaPipe Load");
             console.log(`✅ MediaPipe ${mode} Model Loaded`);
         };
         loadModel();

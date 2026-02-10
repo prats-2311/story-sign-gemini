@@ -63,9 +63,12 @@ async def generate_exercise(request: GenerateRequest):
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.get("/custom")
-async def get_custom_exercises(db: Session = Depends(get_db)):
+async def get_custom_exercises(domain: str = "BODY", db: Session = Depends(get_db)):
     try:
-        exercises = db.query(CustomExercise).order_by(CustomExercise.created_at.desc()).all()
+        query = db.query(CustomExercise)
+        if domain:
+            query = query.filter(CustomExercise.domain == domain)
+        exercises = query.order_by(CustomExercise.created_at.desc()).all()
         return [{
             "id": ex.id,
             "name": ex.name,

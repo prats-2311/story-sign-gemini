@@ -24,7 +24,8 @@ app.add_middleware(
 )
 
 # --- IMPORT ROUTERS ---
-from routers import session, history, tools, websocket, exercises, plan
+# --- IMPORT ROUTERS ---
+from routers import session, history, tools, websocket, exercises, plan, harmony, reconnect
 
 # --- INCLUDE ROUTERS ---
 app.include_router(session.router)
@@ -34,6 +35,8 @@ app.include_router(exercises.router)
 
 app.include_router(websocket.router)
 app.include_router(plan.router)
+app.include_router(harmony.router)
+app.include_router(reconnect.router)
 
 @app.get("/")
 async def health_check():

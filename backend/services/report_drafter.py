@@ -37,19 +37,38 @@ class ReportDrafter:
          - Cite specific telemetry evidence (e.g. "At 15s, velocity spiked to 0.5").
          - Include a "Chart Config" for a visualization that best tells the story.
         """
+        
+        self.EMOTION_COACH_INSTRUCTION = """
+        You are an Expert Emotion Coach and Behavioral Analyst.
+        You are observing a user practicing facial expressions.
+        
+        **Your Goal:**
+        Track the user's progress in matching target emotions.
+        I will send you data chunks.
+        
+        **Data Format:**
+        - Telemetry: "[FACE_DATA] Target: HAPPY | ..."
+        - Notes: "User smiled successfully."
+        
+        **Protocol:**
+        - Analyze confidence and success rate.
+        - **Response: "Ack"**.
+        """
 
-    async def start_session(self, session_id: str):
+    async def start_session(self, session_id: str, domain: str = "BODY"):
         """Initializes a new 'Shadow Brain' chat session."""
         try:
+            instruction = self.EMOTION_COACH_INSTRUCTION if domain == "FACE" else self.SYSTEM_INSTRUCTION
+            
             chat = self.client.aio.chats.create(
                 model="gemini-3-flash-preview", 
                 config=types.GenerateContentConfig(
-                    system_instruction=self.SYSTEM_INSTRUCTION,
-                    temperature=0.4 # Keep it analytical
+                    system_instruction=instruction,
+                    temperature=0.4 
                 )
             )
-            # Store chat AND a hunk counter
-            self.active_sessions[session_id] = {"chat": chat, "chunks": 0}
+            # Store chat AND a hunk counter AND domain
+            self.active_sessions[session_id] = {"chat": chat, "chunks": 0, "domain": domain}
             self.locks[session_id] = asyncio.Lock()
             logger.info(f"[ReportDrafter] Started Shadow Session: {session_id}")
             return True
@@ -105,7 +124,10 @@ class ReportDrafter:
         logger.info(f"[ReportDrafter] Finalizing Report for {session_id}. Total Chunks Processed: {total_chunks}")
         start_time = time.time()
         
-        prompt = """
+        domain = session_data.get("domain", "BODY")
+        chart_title = "Confidence vs Time" if domain == "FACE" else "Performance vs Time"
+        
+        prompt = f"""
         [COMMAND: FINALIZE]
         Output the FINAL REPORT based on the chunks received.
         
@@ -115,17 +137,17 @@ class ReportDrafter:
         3. **SAMPLING:** You MUST downsample the data to **EXACTLY 20 POINTS**. Do NOT output raw high-frequency data.
         
         **Output Schema (Strict JSON):**
-        {
-            "report_markdown": "# Clinical Report\n...",
-            "chart_config": {
-                "title": "Range of Motion vs Time",
+        {{
+            "report_markdown": "# Clinical Report\\n...",
+            "chart_config": {{
+                "title": "{chart_title}",
                 "data": [
-                    {"x": 10, "y": 45},
-                    {"x": 20, "y": 90}
+                    {{"x": 10, "y": 45}},
+                    {{"x": 20, "y": 90}}
                 ]
-            },
+            }},
             "thoughts": "Brief analysis summary"
-        }
+        }}
         """
         
         try:

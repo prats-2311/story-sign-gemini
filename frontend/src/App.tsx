@@ -107,7 +107,7 @@ import { ASLDashboard } from './components/ASL/ASLDashboard';
 import { ASLGameView } from './components/ASL/ASLGameView';
 
 // --- HARMONY COMPONENTS ---
-import { HarmonyDashboard } from './components/Harmony/HarmonyDashboard';
+import { HarmonyDashboard } from './components/HarmonyDashboard';
 import { HarmonyMirror } from './components/Harmony/HarmonyMirror';
 import { ExerciseCreator } from './components/ExerciseCreator';
 import { UniversalExerciseView } from './components/UniversalExerciseView';

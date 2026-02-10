@@ -108,7 +108,7 @@ async def analyze_session(request: Request, db: Session = Depends(get_db)):
         """
 
         response = client.models.generate_content(
-            model="gemini-2.0-flash-exp", # Using standard stable model
+            model="gemini-3-flash-preview", # Using standard stable model
             contents=prompt,
             config=types.GenerateContentConfig(response_mime_type="application/json")
         )

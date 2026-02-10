@@ -196,7 +196,7 @@ class PlanGenerator:
 
         try:
             response = self.client.models.generate_content(
-                model="gemini-2.0-flash", # Flash is fast enough for planning
+                model="gemini-3-flash-preview", # Flash is fast enough for planning
                 contents=Prompt_Context,
                 config=types.GenerateContentConfig(
                     system_instruction=system_instruction,

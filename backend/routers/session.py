@@ -28,15 +28,21 @@ async def start_session_draft(request: Request, db: Session = Depends(get_db)):
     data = await request.json()
     session_id = data.get("session_id")
     exercise_id = data.get("exercise_id", "unknown")
+    domain = data.get("domain", "BODY") # Default to BODY if not specified
+    
+    # [STRICT VALIDATION] Ensure domain is valid
+    if domain not in ["BODY", "FACE", "HAND"]:
+        domain = "BODY" # Fallback
     
     # 1. Start Shadow Brain Context
-    success = await drafter.start_session(session_id)
+    success = await drafter.start_session(session_id, domain=domain)
     
     # 2. Create Persistent Record
     try:
         new_session = ExerciseSession(
             session_uuid=session_id,
             exercise_id=exercise_id,
+            domain=domain,
             status="started"
         )
         db.add(new_session)
@@ -91,3 +97,37 @@ async def finalize_session_draft(request: Request, db: Session = Depends(get_db)
             logger.error(f"DB Save Error: {e}")
 
     return result
+
+@router.get("/history")
+@router.get("/logs")
+async def get_session_logs(search: str = None, limit: int = 10, db: Session = Depends(get_db)):
+    try:
+        # Join SessionReport and ExerciseSession
+        query = db.query(SessionReport, ExerciseSession).join(
+            ExerciseSession, SessionReport.session_id == ExerciseSession.session_uuid
+        ).order_by(SessionReport.timestamp.desc())
+        
+        if search:
+            search_query = f"%{search}%"
+            # Filter by exercise_id or transcript (Avoid complex JSON cast for now if buggy)
+            query = query.filter(
+                (ExerciseSession.exercise_id.ilike(search_query)) | 
+                (SessionReport.transcript.ilike(search_query))
+            )
+        
+        results = query.limit(limit).all()
+        
+        history = []
+        for report, session in results:
+             history.append({
+                 "session_id": session.session_uuid,
+                 "exercise_id": session.exercise_id,
+                 "timestamp": report.timestamp.isoformat() if report.timestamp else None,
+                 "report": report.report_json,
+                 "domain": "HARMONY" if session.exercise_id.isupper() and "-" not in session.exercise_id else "RECONNECT"
+             })
+             
+        return history
+    except Exception as e:
+        logger.error(f"History Fetch Error: {e}")
+        return []
