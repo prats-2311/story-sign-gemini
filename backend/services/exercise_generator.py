@@ -123,7 +123,7 @@ async def generate_exercise_schema(description: str) -> dict:
         logger.info(f"Generating exercise for: {description}")
         
         response = client.models.generate_content(
-            model="gemini-2.5-flash",
+            model="gemini-3-flash-preview",
             contents=[description],
             config=types.GenerateContentConfig(
                 system_instruction=SYSTEM_INSTRUCTION,
