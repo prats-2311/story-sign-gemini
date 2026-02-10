@@ -27,7 +27,7 @@ export function SessionRunner({ config, onExit, mode = 'BODY' }: SessionRunnerPr
   const [shoulderY, setShoulderY] = useState(0.5); // Default Middle
 
   // Hook Init (FRESH INSTANCE)
-  const { isConnected, messages, connect, disconnect, startAudioStream, stopAudioStream, startVideoStream, stopVideoStream, getSessionStats, feedbackStatus, isCalibrating, clinicalNotes, sessionId, flushData, repCount } = useGeminiLive({ 
+  const { isConnected, messages, connect, disconnect, startAudioStream, stopAudioStream, startVideoStream, stopVideoStream, getSessionStats, feedbackStatus, isCalibrating, clinicalNotes, sessionId, flushData, repCount, initializeAudio } = useGeminiLive({ 
       mode: 'RECONNECT', 
       detectPose,
       videoRef,
@@ -141,6 +141,9 @@ export function SessionRunner({ config, onExit, mode = 'BODY' }: SessionRunnerPr
 
   // Handlers
   const handleStart = async () => {
+    // [FIX] Initialize AudioContext immediately on User Gesture to allow playback
+    await initializeAudio();
+    
     connect(); // Connects to /ws/stream/RECONNECT (or whatever mode is passed to hook)
     // Wait for connection... 
     setTimeout(async () => {

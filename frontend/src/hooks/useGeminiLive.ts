@@ -134,6 +134,33 @@ export function useGeminiLive({ mode, exerciseConfig, detectPose, onLandmarks, v
           console.error("Error playing audio:", e);
       }
   }, []);
+  // [FIX] Audio Gesture Handler
+  const initializeAudio = useCallback(async () => {
+      if (!playbackContextRef.current) {
+           playbackContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 24000 });
+      }
+      if (playbackContextRef.current.state === 'suspended') {
+          await playbackContextRef.current.resume();
+          console.log("[GeminiLive] AudioContext Resumed by User Gesture");
+      }
+  }, []);
+
+  // [GLOBAL FIX] Auto-Recover Audio on Any Interaction
+  useEffect(() => {
+      const handleInteraction = () => {
+          initializeAudio().catch(e => console.error("Audio Recovery Failed", e));
+      };
+      
+      window.addEventListener('click', handleInteraction, { once: true });
+      window.addEventListener('keydown', handleInteraction, { once: true });
+      window.addEventListener('touchstart', handleInteraction, { once: true }); // Mobile support
+      
+      return () => {
+          window.removeEventListener('click', handleInteraction);
+          window.removeEventListener('keydown', handleInteraction);
+          window.removeEventListener('touchstart', handleInteraction);
+      };
+  }, [initializeAudio]);
 
   /* New State for Optimistic UI */
   const [dataSentCount, setDataSentCount] = useState(0);
@@ -799,5 +826,5 @@ export function useGeminiLive({ mode, exerciseConfig, detectPose, onLandmarks, v
     };
   }, [disconnect]);
 
-  return { isConnected, messages, clinicalNotes, connect, disconnect, sendMessage, startAudioStream, stopAudioStream, startVideoStream, stopVideoStream, dataSentCount, getSessionStats, feedbackStatus, isCalibrating, sessionId: sessionIdRef.current, flushData, repCount, emotionData, triggerInstantAnalysis };
+  return { isConnected, messages, clinicalNotes, connect, disconnect, sendMessage, startAudioStream, stopAudioStream, startVideoStream, stopVideoStream, dataSentCount, getSessionStats, feedbackStatus, isCalibrating, sessionId: sessionIdRef.current, flushData, repCount, emotionData, triggerInstantAnalysis, initializeAudio };
 }
