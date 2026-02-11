@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { AnalyticsChart } from './AnalyticsChart';
 import { apiClient } from '../api/client';
 import type { SessionLog } from '../types/SessionLog';
+import { PortalModal } from './PortalModal';
 
 interface HistoryViewProps {
     onBack: () => void;
@@ -12,6 +13,7 @@ export function HistoryView({ onBack, initialDomain }: HistoryViewProps) {
     const [sessions, setSessions] = useState<SessionLog[]>([]);
     const [loading, setLoading] = useState(true);
     const [selectedSession, setSelectedSession] = useState<SessionLog | null>(null);
+    const [selectedReport, setSelectedReport] = useState<any | null>(null); // [RESTORED]
     
     // [NEW] Search & Filter State
     const [searchTerm, setSearchTerm] = useState("");
@@ -44,7 +46,7 @@ export function HistoryView({ onBack, initialDomain }: HistoryViewProps) {
     }, [searchTerm, domainFilter, startDate, endDate, initialDomain]); // Re-fetch on change
 
     return (
-        <div className="w-full max-w-6xl mx-auto p-8 pt-20">
+        <div className="w-full max-w-6xl mx-auto p-4 pt-24 md:p-8 md:pt-20">
              <div className="mb-8 flex items-center gap-4">
                 <button 
                     onClick={onBack}
@@ -58,7 +60,7 @@ export function HistoryView({ onBack, initialDomain }: HistoryViewProps) {
             </div>
 
             {/* [NEW] Search & Filter Controls */}
-            <div className="mb-6 flex flex-col lg:flex-row gap-4">
+            <div className="mb-6 flex flex-col md:flex-row gap-4">
                 <input 
                     type="text" 
                     placeholder="Search by exercise or notes..." 
@@ -156,10 +158,13 @@ export function HistoryView({ onBack, initialDomain }: HistoryViewProps) {
             )}
 
             {/* REPORT MODAL */}
-            {selectedSession && (
-                <div className="fixed inset-0 bg-black/90 backdrop-blur-xl z-[100] flex items-center justify-center p-20 animate-in fade-in duration-300">
-                    <div className="max-w-5xl w-full h-full bg-black border border-gray-800 rounded-3xl overflow-hidden flex flex-col shadow-[0_0_50px_rgba(6,182,212,0.1)]">
-                        
+            <PortalModal
+                isOpen={!!selectedReport}
+                onClose={() => setSelectedReport(null)}
+                className="max-w-5xl h-[90vh]"
+            >
+                {selectedReport && selectedSession && ( 
+                    <div className="w-full h-full bg-black border border-gray-800 rounded-3xl overflow-hidden flex flex-col shadow-[0_0_50px_rgba(6,182,212,0.1)]">
                         <div className="p-8 border-b border-gray-800 flex justify-between items-center bg-gray-900/50">
                             <div>
                                 <h2 className="text-2xl font-bold text-white flex items-center gap-2">
@@ -169,7 +174,7 @@ export function HistoryView({ onBack, initialDomain }: HistoryViewProps) {
                                     {new Date(selectedSession.timestamp).toLocaleString()}
                                 </div>
                             </div>
-                            <button onClick={() => setSelectedSession(null)} className="text-gray-400 hover:text-white">✕ CLOSE</button>
+                            <button onClick={() => setSelectedReport(null)} className="text-gray-400 hover:text-white">✕ CLOSE</button>
                         </div>
                         
                         <div className="flex-1 overflow-y-auto p-8 space-y-8">
@@ -188,8 +193,8 @@ export function HistoryView({ onBack, initialDomain }: HistoryViewProps) {
                             </div>
                         </div>      
                     </div>
-                </div>
-            )}
+                )}
+            </PortalModal>
         </div>
     );
 }

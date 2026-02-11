@@ -75,10 +75,10 @@ export function ExerciseCard({ id, config, isLocked = false, statusQuery, onStar
                 </div>
             )}
             
-            {/* Hover Action */}
+            {/* Hover Action (Mobile: Always Visible / Desktop: Hover) */}
             {!isLocked && (
-                <div className="absolute bottom-6 right-6 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <button className="bg-cyber-cyan text-black font-bold px-4 py-2 rounded-lg text-sm tracking-wide">
+                <div className="absolute bottom-6 right-6 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
+                    <button className="bg-cyber-cyan text-black font-bold px-4 py-2 rounded-lg text-sm tracking-wide shadow-lg shadow-cyber-cyan/20">
                         START SESSION →
                     </button>
                 </div>

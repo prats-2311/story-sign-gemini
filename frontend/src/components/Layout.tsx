@@ -1,29 +1,13 @@
 import { Outlet, Link, useLocation } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import { usePWA } from '../hooks/usePWA';
+import { PWAInstallPrompt } from './PWAInstallPrompt';
 
 export function Layout() {
     const [theme, setTheme] = useState<'midnight' | 'twilight'>('midnight');
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
     const location = useLocation();
-
-    useEffect(() => {
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            setDeferredPrompt(e);
-        });
-    }, []);
-
-    const handleInstall = () => {
-        if (deferredPrompt) {
-            deferredPrompt.prompt();
-            deferredPrompt.userChoice.then((choiceResult: any) => {
-                if (choiceResult.outcome === 'accepted') {
-                    setDeferredPrompt(null);
-                }
-            });
-        }
-    };
+    const { isInstallable, install } = usePWA();
 
     // Determine current module for header highlight? (Optional polish)
     
@@ -64,14 +48,7 @@ export function Layout() {
                         </button>
 
                         {/* INSTALL PWA BUTTON */}
-                        {deferredPrompt && (
-                            <button 
-                                onClick={handleInstall}
-                                className="px-4 py-2 rounded-full bg-cyber-cyan/10 text-cyber-cyan border border-cyber-cyan/30 text-xs font-mono uppercase tracking-widest hover:bg-cyber-cyan/20 transition-all flex items-center gap-2"
-                            >
-                                📲 Install App
-                            </button>
-                        )}
+                        <PWAInstallPrompt isInstallable={isInstallable} onInstall={install} />
                     </div>
 
                     {/* MOBILE HAMBURGER BUTTON */}
@@ -122,14 +99,10 @@ export function Layout() {
                              Switch Theme ({theme})
                         </button>
 
-                        {deferredPrompt && (
-                            <button 
-                                onClick={() => { handleInstall(); setIsMenuOpen(false); }}
-                                className="text-sm font-mono uppercase tracking-widest text-cyber-cyan flex items-center gap-3"
-                            >
-                                 📲 Install App
-                            </button>
-                        )}
+                        {/* MOBILE INSTALL BUTTON */}
+                         <div onClick={() => setIsMenuOpen(false)}>
+                            <PWAInstallPrompt isInstallable={isInstallable} onInstall={install} />
+                         </div>
                     </div>
                 )}
             </header>

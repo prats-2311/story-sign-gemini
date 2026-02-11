@@ -63,6 +63,13 @@ export function ASLDashboard() {
                                         </div>
                                     )}
                                 </button>
+                                
+                                {/* MOBILE TITLE (Always Visible) */}
+                                <div className="md:hidden mt-2 text-center">
+                                    <span className={`text-sm font-bold tracking-widest uppercase ${isLocked ? 'text-gray-600' : 'text-white'}`}>
+                                        {level.title}
+                                    </span>
+                                </div>
 
                                 {/* LEVEL INFO POPUP (Hover) */}
                                 <div className="absolute top-1/2 left-40 -translate-y-1/2 w-64 bg-gray-900/90 backdrop-blur border border-white/10 p-4 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-20">

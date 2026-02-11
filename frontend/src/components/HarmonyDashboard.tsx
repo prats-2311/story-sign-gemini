@@ -1,10 +1,12 @@
+
 import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { HarmonySession } from './HarmonySession';
 import { apiClient } from '../api/client';
 import { Plus, X, Heart, Smile, Frown, ShieldAlert, Zap } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { createPortal } from 'react-dom';
+import { PortalModal } from './PortalModal'; // Added this import
 import { StorySignReportModal } from './StorySignReportModal';
 
 interface CustomExercise {
@@ -141,54 +143,49 @@ export function HarmonyDashboard() {
                  ))}
 
                  {/* 3. CREATE NEW (Dynamic) */}
-                 <motion.button
-                    whileHover={{ scale: 1.05, borderColor: 'rgba(168, 85, 247, 0.8)' }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={() => setIsCreating(true)}
-                    className="aspect-square rounded-3xl bg-transparent border-2 border-dashed border-white/20 flex flex-col items-center justify-center gap-4 text-white/40 hover:text-purple-400 hover:bg-purple-500/5 transition-all"
-                 >
-                     <Plus className="w-16 h-16" />
-                     <span className="text-sm font-mono uppercase tracking-widest">Create New</span>
-                 </motion.button>
-
-             </div>
+                <motion.button
+                     whileHover={{ scale: 1.05, borderColor: 'rgba(168, 85, 247, 0.8)' }}
+                     whileTap={{ scale: 0.95 }}
+                     onClick={() => setIsCreating(true)}
+                     className="aspect-square rounded-3xl bg-transparent border-2 border-dashed border-white/20 flex flex-col items-center justify-center gap-4 text-white/40 hover:text-purple-400 hover:bg-purple-500/5 transition-all"
+                  >
+                      <Plus className="w-16 h-16" />
+                      <span className="text-sm font-mono uppercase tracking-widest">Create New</span>
+                  </motion.button>
+ 
+              </div>
 
              {/* DYNAMIC CREATION MODAL */}
-             <AnimatePresence>
-                 {isCreating && (
-                     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm">
-                         <motion.div 
-                            initial={{ scale: 0.9, opacity: 0 }}
-                            animate={{ scale: 1, opacity: 1 }}
-                            exit={{ scale: 0.9, opacity: 0 }}
-                            className="bg-gray-900 border border-purple-500/30 p-8 rounded-2xl w-full max-w-md shadow-2xl"
-                         >
-                             <div className="flex justify-between items-center mb-6">
-                                 <h3 className="text-xl font-bold text-white">New Emotion Card</h3>
-                                 <button onClick={() => setIsCreating(false)}><X className="text-gray-500 hover:text-white" /></button>
-                             </div>
-                             
-                             <input 
-                                autoFocus
-                                type="text" 
-                                placeholder="E.g. FRUSTRATED, EXCITED..." 
-                                value={newEmotionName}
-                                onChange={e => setNewEmotionName(e.target.value)}
-                                onKeyDown={e => e.key === 'Enter' && handleCreateDynamic()}
-                                className="w-full bg-black/50 border border-white/10 rounded-lg p-4 text-white placeholder-gray-600 focus:border-purple-500 focus:outline-none mb-6 text-lg"
-                             />
-                             
-                             <button 
-                                onClick={handleCreateDynamic}
-                                disabled={!newEmotionName.trim()}
-                                className="w-full bg-purple-600 hover:bg-purple-500 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold py-4 rounded-xl transition-all"
-                             >
-                                 START SESSION
-                             </button>
-                         </motion.div>
-                     </div>
-                 )}
-             </AnimatePresence>
+             <PortalModal 
+                isOpen={isCreating} 
+                onClose={() => setIsCreating(false)}
+                className="max-w-md h-auto"
+             >
+                  <div className="p-8">
+                      <div className="flex justify-between items-center mb-6">
+                          <h3 className="text-xl font-bold text-white">New Emotion Card</h3>
+                          <button onClick={() => setIsCreating(false)}><X className="text-gray-500 hover:text-white" /></button>
+                      </div>
+                      
+                      <input 
+                         autoFocus
+                         type="text" 
+                         placeholder="E.g. FRUSTRATED, EXCITED..." 
+                         value={newEmotionName}
+                         onChange={e => setNewEmotionName(e.target.value)}
+                         onKeyDown={e => e.key === 'Enter' && handleCreateDynamic()}
+                         className="w-full bg-black/50 border border-white/10 rounded-lg p-4 text-white placeholder-gray-600 focus:border-purple-500 focus:outline-none mb-6 text-lg"
+                      />
+                      
+                      <button 
+                         onClick={handleCreateDynamic}
+                         disabled={!newEmotionName.trim()}
+                         className="w-full bg-purple-600 hover:bg-purple-500 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold py-4 rounded-xl transition-all"
+                      >
+                          START SESSION
+                      </button>
+                  </div>
+             </PortalModal>
 
 
 

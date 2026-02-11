@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import type { DailyPlan, RoutineItem } from '../types/Plan';
-import { apiClient } from '../api/client'; // [FIX] Import apiClient
+import { apiClient } from '../api/client';
+import ReactMarkdown from 'react-markdown';
 
 interface DailyPlanViewProps {
     onSelectExercise: (item: RoutineItem, index: number) => void;
@@ -50,14 +51,14 @@ export function DailyPlanView({ onSelectExercise }: DailyPlanViewProps) {
             </div>
 
             {/* AI Reasoning Card */}
-            <div className="bg-gray-800/50 border border-purple-500/30 p-6 rounded-xl max-w-2xl w-full backdrop-blur-sm">
+            <div className="bg-gray-800/50 border border-purple-500/30 p-6 rounded-xl max-w-5xl w-full backdrop-blur-sm">
                 <div className="flex items-center gap-2 mb-3">
                     <span className="text-2xl">🩺</span>
                     <h3 className="text-xl font-semibold text-purple-200">Therapist's Note</h3>
                 </div>
-                <p className="text-gray-300 italic text-lg leading-relaxed">
-                    "{plan.reasoning}"
-                </p>
+                <div className="text-gray-300 italic text-lg leading-relaxed prose prose-invert prose-p:text-gray-300 prose-strong:text-purple-300 max-w-none">
+                    <ReactMarkdown>{plan.reasoning}</ReactMarkdown>
+                </div>
             </div>
 
             {/* Routine List */}
