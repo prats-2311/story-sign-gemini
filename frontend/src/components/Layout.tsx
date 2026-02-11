@@ -1,29 +1,13 @@
 import { Outlet, Link, useLocation } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import { usePWA } from '../hooks/usePWA';
+import { PWAInstallPrompt } from './PWAInstallPrompt';
 
 export function Layout() {
     const [theme, setTheme] = useState<'midnight' | 'twilight'>('midnight');
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
     const location = useLocation();
-
-    useEffect(() => {
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            setDeferredPrompt(e);
-        });
-    }, []);
-
-    const handleInstall = () => {
-        if (deferredPrompt) {
-            deferredPrompt.prompt();
-            deferredPrompt.userChoice.then((choiceResult: any) => {
-                if (choiceResult.outcome === 'accepted') {
-                    setDeferredPrompt(null);
-                }
-            });
-        }
-    };
+    const { isInstallable, install } = usePWA();
 
     // Determine current module for header highlight? (Optional polish)
     
@@ -42,7 +26,7 @@ export function Layout() {
                 <div className="max-w-7xl mx-auto px-6 h-24 flex items-center justify-between">
                     <Link to="/" className="flex items-center gap-4 group cursor-pointer">
                          {/* NEW LOGO */}
-                         <img src="/logo.svg" alt="StorySign Logo" className="w-12 h-12 drop-shadow-[0_0_15px_rgba(168,85,247,0.4)] group-hover:scale-110 transition-transform duration-300" />
+                         <img src="/story-sign.jpg" alt="StorySign Logo" className="w-12 h-12 drop-shadow-[0_0_15px_rgba(168,85,247,0.4)] group-hover:scale-110 transition-transform duration-300 rounded-lg" />
                         <span className="text-3xl font-bold tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400">StorySign</span>
                     </Link>
 
@@ -64,14 +48,7 @@ export function Layout() {
                         </button>
 
                         {/* INSTALL PWA BUTTON */}
-                        {deferredPrompt && (
-                            <button 
-                                onClick={handleInstall}
-                                className="px-4 py-2 rounded-full bg-cyber-cyan/10 text-cyber-cyan border border-cyber-cyan/30 text-xs font-mono uppercase tracking-widest hover:bg-cyber-cyan/20 transition-all flex items-center gap-2"
-                            >
-                                📲 Install App
-                            </button>
-                        )}
+                        <PWAInstallPrompt isInstallable={isInstallable} onInstall={install} />
                     </div>
 
                     {/* MOBILE HAMBURGER BUTTON */}
@@ -122,14 +99,10 @@ export function Layout() {
                              Switch Theme ({theme})
                         </button>
 
-                        {deferredPrompt && (
-                            <button 
-                                onClick={() => { handleInstall(); setIsMenuOpen(false); }}
-                                className="text-sm font-mono uppercase tracking-widest text-cyber-cyan flex items-center gap-3"
-                            >
-                                 📲 Install App
-                            </button>
-                        )}
+                        {/* MOBILE INSTALL BUTTON */}
+                         <div onClick={() => setIsMenuOpen(false)}>
+                            <PWAInstallPrompt isInstallable={isInstallable} onInstall={install} />
+                         </div>
                     </div>
                 )}
             </header>
@@ -141,16 +114,63 @@ export function Layout() {
 
             {/* BRANDED FOOTER */}
             <footer className="relative z-10 border-t border-white/5 bg-black/20 backdrop-blur-md mt-20">
-                <div className="max-w-7xl mx-auto px-6 py-12 flex flex-col md:flex-row justify-between items-center gap-8">
-                    <div className="flex items-center gap-4 grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all duration-500">
-                        <img src="/logo.svg" alt="StorySign Footer Logo" className="w-8 h-8" />
-                        <span className="text-sm font-mono tracking-widest text-gray-400">STORYSIGN © 2024</span>
+                <div className="max-w-7xl mx-auto px-6 py-12">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+                        {/* 1. BRAND */}
+                        <div className="space-y-4">
+                            <div className="flex items-center gap-4">
+                                <img src="/story-sign.jpg" alt="StorySign Footer Logo" className="w-8 h-8 opacity-80 rounded" />
+                                <span className="text-xl font-bold tracking-tighter text-white">StorySign</span>
+                            </div>
+                            <p className="text-gray-500 text-sm leading-relaxed">
+                                Empowering communication through AI-driven sign language interpretation and rehabilitation.
+                            </p>
+                        </div>
+
+                        {/* 2. MODULES */}
+                        <div>
+                            <h4 className="text-white font-bold uppercase tracking-widest text-xs mb-4">Modules</h4>
+                            <ul className="space-y-2 text-sm text-gray-400">
+                                <li><Link to="/reconnect" className="hover:text-cyber-cyan transition-colors">Reconnect</Link></li>
+                                <li><Link to="/asl" className="hover:text-yellow-400 transition-colors">ASL World</Link></li>
+                                <li><Link to="/harmony" className="hover:text-pink-400 transition-colors">Harmony</Link></li>
+                            </ul>
+                        </div>
+
+                        {/* 3. LEGAL */}
+                        <div>
+                            <h4 className="text-white font-bold uppercase tracking-widest text-xs mb-4">Legal</h4>
+                            <ul className="space-y-2 text-sm text-gray-400">
+                                <li><a href="#" className="hover:text-white transition-colors">Privacy Policy</a></li>
+                                <li><a href="#" className="hover:text-white transition-colors">Content Policy</a></li>
+                                <li><a href="#" className="hover:text-white transition-colors">Terms of Service</a></li>
+                            </ul>
+                        </div>
+
+                        {/* 4. SOCIAL / CREDIT */}
+                        <div>
+                            <h4 className="text-white font-bold uppercase tracking-widest text-xs mb-4">Connect</h4>
+                             <div className="flex gap-4">
+                                {/* Placeholders for social icons if needed */}
+                             </div>
+                        </div>
                     </div>
-                    
-                    <div className="flex gap-8 text-xs font-bold text-gray-500 uppercase tracking-widest">
-                        <a href="#" className="hover:text-cyber-cyan transition-colors">Privacy</a>
-                        <a href="#" className="hover:text-cyber-cyan transition-colors">Safety</a>
-                        <a href="#" className="hover:text-cyber-cyan transition-colors">Contact</a>
+
+                    <div className="border-t border-white/5 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-gray-500 font-mono">
+                        <div>
+                            STORYSIGN © 2026. All rights reserved.
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <span>Designed, Developed & Managed by</span>
+                            <a 
+                                href="https://prats2311.tech/" 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="text-cyber-cyan hover:text-white transition-colors border-b border-cyber-cyan/30 hover:border-cyber-cyan pb-0.5"
+                            >
+                                Prateek Srivastava
+                            </a>
+                        </div>
                     </div>
                 </div>
             </footer>

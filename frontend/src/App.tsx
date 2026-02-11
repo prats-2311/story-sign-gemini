@@ -1,5 +1,5 @@
 // React hooks removed (unused)
-// import { useState, useRef } from 'react';
+import { useState, useEffect } from 'react';
 // import { useGeminiLive } from './hooks/useGeminiLive'; // Removed (Used in SessionRunner now)
 // import { usePoseDetection } from './hooks/usePoseDetection'; // Removed
 // import { ThinkingLog } from './components/ThinkingLog'; // Removed
@@ -8,6 +8,8 @@ import { Dashboard } from './components/Dashboard';
 import type { ExerciseConfig } from './types/Exercise';
 // import { AnalyticsChart } from './components/AnalyticsChart'; // Removed
 import './App.css';
+import { exercisesApi } from './api/exercises'; // [NEW]
+import { apiClient } from './api/client'; // [NEW]
 
 import { HistoryView } from './components/HistoryView'; 
 import { DailyPlanView } from './components/DailyPlanView'; 
@@ -23,7 +25,7 @@ import { SessionRunner } from './components/SessionRunner'; // [MOVED HERE]
 // --- TOUR DATA ---
 // ... (Keep comments)
 
-import { BrowserRouter, Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import { Layout } from './components/Layout';
 
 // ... (Imports remain)
@@ -47,49 +49,101 @@ function SessionRoute() {
           'rotation': ExternalRotationConfig
     };
     
-    let config = REGISTRY[exerciseId || ''] || location.state?.config;
-    const planIndex = location.state?.planIndex as number | undefined; 
+    // Initialize with direct registry lookup OR passed state
+    const initialConfig = REGISTRY[exerciseId || ''] || location.state?.config;
+
+    const [config, setConfig] = useState<ExerciseConfig | null>(initialConfig || null);
+    const [loading, setLoading] = useState<boolean>(!initialConfig);
+    const [error, setError] = useState<string | null>(null);
     
-    console.log("SessionRoute Init. ExerciseID:", exerciseId);
-    if (config) {
-        console.log("Config found:", config.name);
-        console.log("Has Engine:", !!config.engine);
-        console.log("Calculate Type:", config.engine ? typeof config.engine.calculate : 'N/A');
-        console.log("Has Raw Schema:", !!(config as any)._rawSchema);
-    } else {
-        console.log("Config NOT found in Registry or State");
-        console.log("Location State:", location.state);
-    }
+    const planIndex = location.state?.planIndex as number | undefined; 
 
-    // [HYDRATION FIX]
-    // When passing objects via React Router state, class methods are stripped.
-    // We need to re-instantiate the UniversalPhysicsEngine if it's missing the 'calculate' method.
-    if (config && config.engine && typeof config.engine.calculate !== 'function' && (config as any)._rawSchema) {
-        console.log("Hydrating Universal Engine for:", config.name);
-        try {
-            config = {
-                ...config,
-                engine: new UniversalPhysicsEngine((config as any)._rawSchema)
-            };
-            console.log("Hydration Successful. Calculate is now:", typeof config.engine.calculate);
-        } catch (err) {
-            console.error("Hydration Failed:", err);
+    // Helper: Hydrate Universal Engine from raw schema
+    const hydrateConfig = (item: any): ExerciseConfig => {
+        return {
+            id: item.id,
+            name: item.name,
+            description: "Custom AI Generated Exercise",
+            targetRom: { min: 0, max: 180 },
+            engine: new UniversalPhysicsEngine(item.config),
+            systemPrompt: `You are monitoring ${item.name}. ${JSON.stringify(item.config.stages || [])}`,
+            _rawSchema: item.config
+        };
+    };
+    
+    useEffect(() => {
+        // 1. If we have config, ensure it's hydrated (methods are lost in navigation state)
+        if (config) {
+             if (config.engine && typeof config.engine.calculate !== 'function' && (config as any)._rawSchema) {
+                console.log("[Route] Hydrating Engine for:", config.name);
+                try {
+                    setConfig({
+                        ...config,
+                        engine: new UniversalPhysicsEngine((config as any)._rawSchema)
+                    });
+                } catch (err) {
+                    console.error("Hydration Failed:", err);
+                    setError("Failed to initialize exercise engine");
+                }
+            }
+            return;
         }
+
+        // 2. If no config, try to fetch dynamic exercise
+        const fetchDynamicExercise = async () => {
+             if (!exerciseId) return;
+             // If ID is in registry but was not caught (unlikely but safe)
+             if (REGISTRY[exerciseId]) {
+                 setConfig(REGISTRY[exerciseId]);
+                 setLoading(false);
+                 return;
+             }
+
+             console.log("[Route] Fetching Dynamic Exercise:", exerciseId);
+             setLoading(true);
+             try {
+                 const customEx = await exercisesApi.get(exerciseId);
+                 const hydrated = hydrateConfig(customEx); 
+                 setConfig(hydrated);
+                 console.log("[Route] Fetched & Hydrated:", hydrated.name);
+             } catch (e) {
+                 console.error("[Route] Failed to fetch:", e);
+                 setError("Exercise not found or could not load.");
+             } finally {
+                 setLoading(false);
+             }
+        };
+
+        fetchDynamicExercise();
+    }, [exerciseId, config]); // Re-run if ID changes
+
+    if (loading) {
+        return (
+            <div className="h-screen w-full flex flex-col items-center justify-center bg-gray-900 text-white gap-4">
+                <div className="w-8 h-8 border-4 border-cyber-cyan border-t-transparent rounded-full animate-spin"></div>
+                <div className="font-mono text-xs animate-pulse tracking-widest text-cyber-cyan">RETRIEVING NEURAL CONFIG...</div>
+            </div>
+        );
     }
 
-    if (!config) {
-        console.warn("Invalid Exercise ID:", exerciseId);
-        return <Navigate to="/reconnect" replace />;
+    if (error || !config) {
+        return (
+             <div className="h-screen w-full flex flex-col items-center justify-center bg-gray-900 text-red-400 gap-4">
+                <div className="text-4xl">⚠️</div>
+                <div className="font-mono">{error || "Invalid Exercise ID"}</div>
+                <button onClick={() => navigate('/reconnect')} className="px-6 py-2 border border-red-500 rounded hover:bg-red-500/10 transition-colors font-bold text-xs uppercase tracking-widest">
+                    Return to Dashboard
+                </button>
+            </div>
+        );
     }
 
     const handleExit = async () => {
          // Logic to mark complete if planIndex exists
           if (planIndex !== undefined && planIndex !== null) {
-              // ... 
                try {
-                 await fetch('/plan/complete', {
+                 await apiClient('/plan/complete', {
                      method: 'POST',
-                     headers: {'Content-Type': 'application/json'},
                      body: JSON.stringify({ exercise_index: planIndex })
                  });
               } catch (e) { console.error(e); }
@@ -107,7 +161,7 @@ import { ASLDashboard } from './components/ASL/ASLDashboard';
 import { ASLGameView } from './components/ASL/ASLGameView';
 
 // --- HARMONY COMPONENTS ---
-import { HarmonyDashboard } from './components/Harmony/HarmonyDashboard';
+import { HarmonyDashboard } from './components/HarmonyDashboard';
 import { HarmonyMirror } from './components/Harmony/HarmonyMirror';
 import { ExerciseCreator } from './components/ExerciseCreator';
 import { UniversalExerciseView } from './components/UniversalExerciseView';
@@ -131,6 +185,7 @@ function App() {
                 
                 {/* HARMONY MODULE - Dashboard */}
                 <Route path="/harmony" element={<HarmonyDashboard />} />
+                <Route path="/harmony/history" element={<HistoryView onBack={() => window.history.back()} initialDomain="FACE" />} />
             </Route>
             
             {/* FULLSCREEN ROUTES */}
@@ -170,7 +225,8 @@ function DailyPlanViewWrapper() {
                       'rotation': ExternalRotationConfig
                  };
                  const config = REGISTRY[item.exercise_id] || ShoulderAbductionConfig;
-                 navigate('/session', { state: { config, planIndex: index } });
+                 // [FIX] Correct Route & Pass ID
+                 navigate(`/reconnect/session/${config.id}`, { state: { config, planIndex: index } });
             }} 
         />
     );

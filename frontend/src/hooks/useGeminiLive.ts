@@ -2,6 +2,7 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 import type { ExerciseConfig, CalibrationData } from '../types/Exercise';
 import { getVector, getVectorAngle } from '../utils/vectorMath';
 import { apiClient } from '../api/client';
+// import { getUniqueLandmarks } from '../utils/FaceLandmarks'; // [REMOVED] Video-First Strategy
 
 type InteractionMode = 'ASL' | 'HARMONY' | 'RECONNECT';
 
@@ -14,9 +15,11 @@ interface UseGeminiLiveProps {
   detectPose?: PoseDetector;
   onLandmarks?: (landmarks: any) => void;
   videoRef: React.RefObject<HTMLVideoElement | null>; // [FIX] Driven by App.tsx
+  targetEmotion?: string; // [NEW] For Single-Stream Harmony
+  // targetLandmarks?: number[]; // [REMOVED] Video-First Strategy
 }
 
-export function useGeminiLive({ mode, exerciseConfig, detectPose, onLandmarks, videoRef }: UseGeminiLiveProps) {
+export function useGeminiLive({ mode, exerciseConfig, detectPose, onLandmarks, videoRef, targetEmotion }: UseGeminiLiveProps) {
   const [isConnected, setIsConnected] = useState(false);
   const [messages, setMessages] = useState<string[]>([]);
   const [feedbackStatus, setFeedbackStatus] = useState<'neutral' | 'success' | 'warning' | 'critical'>('neutral');
@@ -24,6 +27,9 @@ export function useGeminiLive({ mode, exerciseConfig, detectPose, onLandmarks, v
   // Clinical Notes State (Strategy A)
   const [clinicalNotes, setClinicalNotes] = useState<string[]>([]);
   const clinicalNotesRef = useRef<string[]>([]); // [FIX] Mirror for Interval Access
+  
+  // Harmony State
+  const [emotionData, setEmotionData] = useState<{detected_emotion: string, confidence: number, feedback: string} | null>(null);
 
   const wsRef = useRef<WebSocket | null>(null);
   
@@ -37,6 +43,15 @@ export function useGeminiLive({ mode, exerciseConfig, detectPose, onLandmarks, v
   const videoIntervalRef = useRef<number | null>(null);
   const poseIntervalRef = useRef<number | null>(null); // [FIX] Restored
   const videoStreamRef = useRef<MediaStream | null>(null); // [FIX] Restored
+  const targetEmotionRef = useRef<string | undefined>(targetEmotion); // [NEW] 
+  const forceTriggerRef = useRef<boolean>(false); // [NEW] Missing ref from previous context
+  const lastSentLandmarksRef = useRef<any[] | null>(null); // [THROTTLING]
+  const lastSentTimeRef = useRef<number>(0);             // [THROTTLING]
+
+  // [SYNC] Keep Ref In Sync with Prop
+  useEffect(() => {
+    targetEmotionRef.current = targetEmotion;
+  }, [targetEmotion]);
 
   // --- SESSION STATISTICS ---
   const sessionStatsRef = useRef({
@@ -50,7 +65,7 @@ export function useGeminiLive({ mode, exerciseConfig, detectPose, onLandmarks, v
       repState: 'DOWN' as 'DOWN' | 'UP',
       lastWristPos: null as any, // [FIX] Added for Velocity Check
       lastShoulderY: null as number | null, // [FIX] For Stability
-      telemetry: [] as { t: number, val: number, vel: number }[], // [STRATEGY C]
+      telemetry: [] as { t: number, val: number, vel: number, coords?: any }[], // [STRATEGY C] Updated for coordinate tracking
       universalVariables: {} as Record<string, number>, // [NEW] For Debugging
       startTime: Date.now() 
   });
@@ -119,6 +134,33 @@ export function useGeminiLive({ mode, exerciseConfig, detectPose, onLandmarks, v
           console.error("Error playing audio:", e);
       }
   }, []);
+  // [FIX] Audio Gesture Handler
+  const initializeAudio = useCallback(async () => {
+      if (!playbackContextRef.current) {
+           playbackContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 24000 });
+      }
+      if (playbackContextRef.current.state === 'suspended') {
+          await playbackContextRef.current.resume();
+          console.log("[GeminiLive] AudioContext Resumed by User Gesture");
+      }
+  }, []);
+
+  // [GLOBAL FIX] Auto-Recover Audio on Any Interaction
+  useEffect(() => {
+      const handleInteraction = () => {
+          initializeAudio().catch(e => console.error("Audio Recovery Failed", e));
+      };
+      
+      window.addEventListener('click', handleInteraction, { once: true });
+      window.addEventListener('keydown', handleInteraction, { once: true });
+      window.addEventListener('touchstart', handleInteraction, { once: true }); // Mobile support
+      
+      return () => {
+          window.removeEventListener('click', handleInteraction);
+          window.removeEventListener('keydown', handleInteraction);
+          window.removeEventListener('touchstart', handleInteraction);
+      };
+  }, [initializeAudio]);
 
   /* New State for Optimistic UI */
   const [dataSentCount, setDataSentCount] = useState(0);
@@ -222,18 +264,39 @@ export function useGeminiLive({ mode, exerciseConfig, detectPose, onLandmarks, v
   // --- VIDEO & POSE MULTIPLEXING ---
   // const poseIntervalRef = useRef<number | null>(null); // Moved up
 
-  const startVideoStream = useCallback(async () => {
-    try {
-        const stream = await navigator.mediaDevices.getUserMedia({ 
-            video: { width: 640, height: 480, frameRate: 15 } 
-        });
-        videoStreamRef.current = stream;
-        
-        // Use the External Ref!
-        if (videoRef.current) {
-            videoRef.current.srcObject = stream;
-        }
+  // [STABILITY] Wrap callbacks in refs to avoid dependency churn restarting the stream
+  const detectPoseRef = useRef(detectPose);
+  const onLandmarksRef = useRef(onLandmarks);
 
+  useEffect(() => {
+      detectPoseRef.current = detectPose;
+      onLandmarksRef.current = onLandmarks;
+  }, [detectPose, onLandmarks]);
+
+  const startVideoStream = useCallback(async () => {
+    // [FIX] Robustness: Clear existing loops if this function is called again
+    if (videoIntervalRef.current) clearInterval(videoIntervalRef.current);
+    if (poseIntervalRef.current) clearInterval(poseIntervalRef.current);
+
+    try {
+        // [OPTIMIZATION] If stream already exists and is active, don't re-request camera
+        if (!videoStreamRef.current || !videoStreamRef.current.active) {
+             const stream = await navigator.mediaDevices.getUserMedia({ 
+                video: { width: 640, height: 480, frameRate: 15 } 
+            });
+            videoStreamRef.current = stream;
+             // Use the External Ref!
+            if (videoRef.current) {
+                videoRef.current.srcObject = stream;
+            }
+        } else {
+            console.log("[GeminiLive] Reusing existing video stream");
+             // Ensure video ref is still attached
+             if (videoRef.current && !videoRef.current.srcObject) {
+                 videoRef.current.srcObject = videoStreamRef.current;
+             }
+        }
+        
         // Start Calibration Phase
         setIsCalibrating(true);
         calibrationBufferRef.current = [];
@@ -242,196 +305,271 @@ export function useGeminiLive({ mode, exerciseConfig, detectPose, onLandmarks, v
 
         // --- Loop A: Video Frame Sender (1 FPS) ---
         // Sends visual context to Gemini.
-        // NOW PASSIVE: "trigger: false"
-        videoIntervalRef.current = window.setInterval(() => {
-            if (wsRef.current?.readyState === WebSocket.OPEN && videoRef.current) {
+        // [REFACTOR] Extracted Logic
+        const sendVideoFrame = (trigger: boolean, contextText?: string) => {
+             if (wsRef.current?.readyState === WebSocket.OPEN && videoRef.current) {
                 // [PERF] Reuse canvas ref
                 if (!canvasRef.current) {
                     canvasRef.current = document.createElement('canvas');
-                    canvasRef.current.width = videoRef.current.videoWidth || 640;
-                    canvasRef.current.height = videoRef.current.videoHeight || 480;
+                    // [PERF] Use 320x240 for 4x faster transmission/inference
+                    canvasRef.current.width = 320; 
+                    canvasRef.current.height = 240;
                 }
                 
                 const ctx = canvasRef.current.getContext('2d');
                 if (ctx) {
-                    ctx.drawImage(videoRef.current, 0, 0);
+                    // [PERF] Draw Scaled Image
+                    ctx.drawImage(videoRef.current, 0, 0, canvasRef.current.width, canvasRef.current.height);
                     const base64Data = canvasRef.current.toDataURL('image/jpeg', 0.5).split(',')[1];
                     
-                    // PASSIVE FRAME (No Trigger)
+                    // 1. Send Image
                     wsRef.current.send(JSON.stringify({
                         mime_type: "image/jpeg",
                         data: base64Data,
-                        trigger: false 
+                        trigger: false // Image itself doesn't trigger response
                     }));
+
+                    // 2. If Trigger, Send Context Text immediately after
+                    if (trigger && contextText) {
+                         wsRef.current.send(JSON.stringify({
+                             text: contextText, 
+                             trigger: true 
+                         }));
+                    }
+                    
                     setDataSentCount(c => c + 1);
                 }
             }
+        };
+
+        videoIntervalRef.current = window.setInterval(() => {
+            sendVideoFrame(false);
         }, 1000);
 
         // --- Loop B: Pose Tracking (High Frequency - 4 FPS) ---
         // Handles "Smart Counting" and triggers Gemini only on events.
-        if (detectPose) {
-             poseIntervalRef.current = window.setInterval(() => {
-                 if (wsRef.current?.readyState !== WebSocket.OPEN || !videoRef.current) return;
+        // ALWAYS start the interval, check for detector inside
+        poseIntervalRef.current = window.setInterval(() => {
+             if (wsRef.current?.readyState !== WebSocket.OPEN || !videoRef.current) return;
 
-                 const landmarks = detectPose(videoRef.current);
-                 if (landmarks) {
-                      if (onLandmarks) onLandmarks(landmarks);
+             const detector = detectPoseRef.current; // access fresh ref
+             if (!detector) return;
 
-                      // [GLOBAL] Get Key Landmarks
-                      const rightHip = landmarks[24];
-                      const rightShoulder = landmarks[12];
-                      const rightElbow = landmarks[14];
-                      const rightWrist = landmarks[16];
+             const landmarks = detector(videoRef.current);
+             if (landmarks) {
+                  if (onLandmarksRef.current) onLandmarksRef.current(landmarks);
 
-                      // --- PHASE 1: CALIBRATION ---
-                      // [HARMONY SKIP] No calibration needed for hand tracking
-                      if (mode !== 'HARMONY' && calibrationRef.current === null) {
-                          if (rightHip && rightShoulder) {
-                              const torsoVec = getVector(rightHip, rightShoulder);
-                              const upVec = { x: 0, y: -1 };
-                              const currentLean = getVectorAngle(torsoVec, upVec);
-                              
-                              calibrationBufferRef.current.push(currentLean);
-                              
-                              if (calibrationBufferRef.current.length > 24) { // ~3 seconds @ 8fps
-                                  const avgLean = calibrationBufferRef.current.reduce((a, b) => a + b, 0) / calibrationBufferRef.current.length;
-                                  calibrationRef.current = { restingTorsoAngle: avgLean };
-                                  setIsCalibrating(false);
-                                  setMessages(prev => [...prev, "System: CALIBRATION COMPLETE. GO!"]);
-                                  // Announce to Gemini?
-                                  wsRef.current.send(JSON.stringify({
-                                      text: `[SYSTEM] Calibration Complete. Resting Torso Lean: ${avgLean.toFixed(1)} degrees.`,
-                                      trigger: false
-                                  }));
-                              }
-                          }
-                          return; // Skip physics until calibrated
-                      }
+                   // [GLOBAL] Get Key Landmarks
+                   // [FIX] Safety check for Body Mode
+                   let rightHip, rightShoulder, rightElbow, rightWrist;
+                   
+                   // [DEBUG] AGGRESSIVE LOGGING
+                   if (sessionStatsRef.current.frameCount % 50 === 0) {
+                       console.log(`[GeminiLive] Loop Check. Mode: ${mode}, Landmarks:`, landmarks);
+                   }
 
-                      // --- PHASE 2: ACTIVE SESSION ---
+                   // Distinguish Face vs Body (Correct Object Structure)
+                   const isFace = mode === 'HARMONY'; 
 
-                      // 1. Calculate Biometrics
-                      let shouldTrigger = false;
-                      let triggerMessage = "";
+                   // --- CASE 1: FACE (Harmony) ---
+                   if (isFace) {
+                       // [HARMONY STRATEGY: SMART THROTTLING]
+                       // Instead of fixed intervals, we check for Motion Delta.
+                       // Rules:
+                       // 1. Min Interval: 500ms (Max 2 FPS) - Prevent Token Storm
+                       // 2. Max Interval: 3000ms (Keep Alive) - Prevent Context Loss
+                       // 3. Motion Threshold: Only send if face moves significant amount
+                       
+                       const now = Date.now();
+                       const timeSinceLast = now - lastSentTimeRef.current;
+                       const MIN_INTERVAL = 1000; // [TUNING] Slower updates (1 FPS) to prevent 1011 errors
+                       const MAX_INTERVAL = 4000;
+                       
+                       const isForcedTrigger = forceTriggerRef.current; // User Request (e.g. Button)
+                       
+                       // 1. CAP RATE (Unless Forced)
+                       if (!isForcedTrigger && timeSinceLast < MIN_INTERVAL) return;
 
-                      // ---------------------------------------------------------
-                      // GLOBAL SAFETY CHECK (Runs for ALL exercises)
-                      // ---------------------------------------------------------
-                      let velocity = 0;
-                      if (rightWrist) {
-                           // Velocity (Jerk Detection)
-                       const lastWrist = sessionStatsRef.current.lastWristPos;
-                       if (lastWrist) {
-                           const dist = Math.sqrt(Math.pow(rightWrist.x - lastWrist.x, 2) + Math.pow(rightWrist.y - lastWrist.y, 2));
-                           velocity = dist; // dist per 125ms
+                       // 2. CHECK MOTION
+                       let shouldSend = false;
+                       const currentLandmarks = landmarks as any[];
+                       
+                       // Calculate Motion Delta (Euclidean Distance of Key Points)
+                       // We use nose (1), mouth corners (61, 291), and eyebrows (105, 334) as proxies
+                       const PROXY_INDICES = [1, 61, 291, 105, 334]; 
+                       let delta = 0;
+                       
+                       if (lastSentLandmarksRef.current) {
+                           for (const idx of PROXY_INDICES) {
+                               const p1 = currentLandmarks[idx];
+                               const p2 = lastSentLandmarksRef.current[idx];
+                               if (p1 && p2) {
+                                   delta += Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2));
+                               }
+                           }
+                       } else {
+                           delta = 999; // First Frame always send
+                       }
+
+                       // DECISION LOGIC
+                       if (isForcedTrigger) {
+                           console.log("[GeminiLive] Force Trigger");
+                           shouldSend = true;
+                           forceTriggerRef.current = false; // Reset
+                       } else if (timeSinceLast > MAX_INTERVAL) {
+                           // KeepAlive
+                           // console.log("[GeminiLive] KeepAlive Trigger");
+                           shouldSend = true;
+                       } else if (delta > 0.05) { // [TUNING] Less sensitive (5% movement) to ignore noise
+                           // Significant Motion
+                           shouldSend = true;
+                       }
+
+                       if (shouldSend) {
+                           const currentTarget = targetEmotionRef.current || "Neutral";
                            
-                           // [FIX] Threshold: > 0.5 (Restored for testing safety stops)
-                           if (velocity > 0.5) {
-                               // [FIX] Immediate Local Note
-                               const note = `[SAFETY_STOP] High Velocity Detected (Speed: ${velocity.toFixed(2)}).`;
-                               setClinicalNotes(prev => [...prev, note]);
-                               clinicalNotesRef.current.push(note);
-                                shouldTrigger = true;
-                                triggerMessage = `[SAFETY_STOP] High Velocity Detected (Speed: ${velocity.toFixed(2)}). Possible Spasm or Drop. STOP IMMEDIATELY.`;
-                                console.warn("🚨 SAFETY STOP: High Velocity Detected", velocity);
-                                setFeedbackStatus('critical');
-                                setTimeout(() => setFeedbackStatus('neutral'), 4000);
+                           // [VIDEO-FIRST STRATEGY]
+                           // Send Trigger Text. sendVideoFrame will handle image + text.
+                           sendVideoFrame(true, `[CHECK_EXPRESSION] Target: ${currentTarget}`);
+                           
+                           lastSentLandmarksRef.current = currentLandmarks;
+                           lastSentTimeRef.current = now;
+                       }
+                       return; // Done for this frame
+                   }
+
+                   // --- CASE 2: BODY (ASL/Exercises) ---
+                   if (landmarks.length >= 33) {
+                       rightHip = landmarks[24];
+                       rightShoulder = landmarks[12];
+                       rightElbow = landmarks[14];
+                       rightWrist = landmarks[16];
+                   }
+                  
+                  if (landmarks.length >= 33) {
+                       // ... PHASE 1: CALIBRATION ...
+                       if (calibrationRef.current === null) {
+                           if (rightHip && rightShoulder) {
+                               const torsoVec = getVector(rightHip, rightShoulder);
+                               const upVec = { x: 0, y: -1 };
+                               const currentLean = getVectorAngle(torsoVec, upVec);
+                               
+                               calibrationBufferRef.current.push(currentLean);
+                               
+                               if (calibrationBufferRef.current.length > 24) { 
+                                   const avgLean = calibrationBufferRef.current.reduce((a, b) => a + b, 0) / calibrationBufferRef.current.length;
+                                   calibrationRef.current = { restingTorsoAngle: avgLean };
+                                   setIsCalibrating(false);
+                                   setMessages(prev => [...prev, "System: CALIBRATION COMPLETE. GO!"]);
+                                   wsRef.current.send(JSON.stringify({
+                                       text: `[SYSTEM] Calibration Complete. Resting Torso Lean: ${avgLean.toFixed(1)} degrees.`,
+                                       trigger: false
+                                   }));
+                               }
+                           }
+                           return; 
+                       }
+
+                       // ... PHASE 2: ACTIVE SESSION ...
+                       let shouldTrigger = false;
+                       let triggerMessage = "";
+                       let velocity = 0;
+
+                       if (rightWrist) {
+                            const lastWrist = sessionStatsRef.current.lastWristPos;
+                            if (lastWrist) {
+                                const dist = Math.sqrt(Math.pow(rightWrist.x - lastWrist.x, 2) + Math.pow(rightWrist.y - lastWrist.y, 2));
+                                velocity = dist;
+                                if (velocity > 0.5) {
+                                    const note = `[SAFETY_STOP] High Velocity Detected (Speed: ${velocity.toFixed(2)}).`;
+                                    setClinicalNotes(prev => [...prev, note]);
+                                    clinicalNotesRef.current.push(note);
+                                     shouldTrigger = true;
+                                     triggerMessage = `[SAFETY_STOP] High Velocity Detected (Speed: ${velocity.toFixed(2)}). Possible Spasm or Drop. STOP IMMEDIATELY.`;
+                                     console.warn("🚨 SAFETY STOP: High Velocity Detected", velocity);
+                                     setFeedbackStatus('critical');
+                                     setTimeout(() => setFeedbackStatus('neutral'), 4000);
+                                }
+                            }
+                            sessionStatsRef.current.lastWristPos = { x: rightWrist.x, y: rightWrist.y };
+                       }
+
+                       // 2. EXERCISE ENGINE
+                       const engineOutput = exerciseConfig.engine.calculate(
+                           landmarks, 
+                           sessionStatsRef.current,
+                           calibrationRef.current 
+                       );
+                       
+                       if (engineOutput.trigger) {
+                           shouldTrigger = true;
+                           triggerMessage = engineOutput.message;
+                           setClinicalNotes(prev => [...prev, engineOutput.message]);
+                           clinicalNotesRef.current.push(engineOutput.message);
+                           setFeedbackStatus(engineOutput.feedbackStatus);
+                           if (engineOutput.feedbackStatus !== 'neutral') {
+                              setTimeout(() => setFeedbackStatus('neutral'), 2000);
                            }
                        }
-                           // Update Stats
-                           sessionStatsRef.current.lastWristPos = { x: rightWrist.x, y: rightWrist.y };
-                      }
-
-                      // ---------------------------------------------------------
-                      // 2. EXERCISE ENGINE (Strategy Pattern)
-                      // ---------------------------------------------------------
-                      // PASS CALIBRATION DATA
-                      const engineOutput = exerciseConfig.engine.calculate(
-                          landmarks, 
-                          sessionStatsRef.current,
-                          calibrationRef.current 
-                      );
-                      
-                      // Merge Output
-                      if (engineOutput.trigger) {
-                          shouldTrigger = true;
-                          triggerMessage = engineOutput.message;
-                          
-                          // [UX FIX] Show "Good Form" events in the UI immediately
-                          setClinicalNotes(prev => [...prev, engineOutput.message]);
-                          clinicalNotesRef.current.push(engineOutput.message);
-
-                          setFeedbackStatus(engineOutput.feedbackStatus);
-                          if (engineOutput.feedbackStatus !== 'neutral') {
-                             setTimeout(() => setFeedbackStatus('neutral'), 2000);
-                          }
-                      }
-                      
-                      // Merge Stats
-                      if (engineOutput.statsUpdate) {
-                          const prevRepCount = sessionStatsRef.current.repCount;
-                          sessionStatsRef.current = { ...sessionStatsRef.current, ...engineOutput.statsUpdate };
-                          
-                          // [FIX] Trigger UI Update if Rep Count Changed
-                          if (sessionStatsRef.current.repCount > prevRepCount) {
-                               setRepCount(sessionStatsRef.current.repCount);
-                          }
-                      }
-                      
-                      // Increment Frame
-                      sessionStatsRef.current.frameCount++;
-
-                       // ---------------------------------------------------------
-                       // 3. TELEMETRY CAPTURE (Strategy C)
-                       // ---------------------------------------------------------
-                       // Capture data point for post-session analysis
-                       const elapsedSeconds = Number(((Date.now() - sessionStatsRef.current.startTime) / 1000).toFixed(2));
+                       if (engineOutput.statsUpdate) {
+                           sessionStatsRef.current = { ...sessionStatsRef.current, ...engineOutput.statsUpdate };
+                           if (engineOutput.statsUpdate.repCount !== undefined) {
+                                setRepCount(sessionStatsRef.current.repCount);
+                           }
+                        }
                        
-                       // Get the primary angle metric (e.g., Elbow Angle)
-                       // We can infer this from the latest engine update or re-calculate.
-                       // For robustness, let's re-calculate R_Elbow_Flexion just for the chart trace
-                       const upperArm = getVector(rightShoulder, rightElbow);
-                       const lowerArm = getVector(rightElbow, rightWrist);
-                       const rawAngle = getVectorAngle(upperArm, lowerArm); 
-                       const currentVal = Math.round(180 - rawAngle); // Convert to flexion
+                       sessionStatsRef.current.frameCount++;
 
-                       sessionStatsRef.current.telemetry.push({
-                           t: elapsedSeconds,
-                           val: currentVal,
-                           vel: Number(velocity.toFixed(2))
-                       });
+                        // 3. SEND BODY DATA
+                        if (shouldTrigger) {
+                            console.log("[GeminiLive] Triggering Response:", triggerMessage);
+                            wsRef.current.send(JSON.stringify({
+                                text: triggerMessage,
+                                trigger: true
+                            }));
+                        } else {
+                            wsRef.current.send(JSON.stringify({
+                                text: `[POSE_DATA] ${JSON.stringify(landmarks)}`,
+                                trigger: false
+                            }));
+                        }
 
-                       // 3. Send Data
-                       if (shouldTrigger) {
-                           // [LOG] Proactive Turn
-                           console.log("[GeminiLive] Triggering Response:", triggerMessage);
-                           wsRef.current.send(JSON.stringify({
-                               text: triggerMessage,
-                               trigger: true
-                           }));
-                       } else {
-                           // [RESTORE] Passive Stream
-                           wsRef.current.send(JSON.stringify({
-                               text: `[POSE_DATA] ${JSON.stringify(landmarks)}`,
-                               trigger: false
-                           }));
-                       }
-                      
-                      setDataSentCount(c => c + 1);
+                        // [TELEMETRY UPDATE] Capture Coordinates for Graphing & Gauge
+                        if (sessionStatsRef.current.telemetry) {
+                            const nowT = (Date.now() - sessionStatsRef.current.startTime) / 1000;
+                            
+                            // Extract Key Points: Shoulders(11,12), Elbows(13,14), Wrists(15,16)
+                            const keyPoints: Record<string, {x:number, y:number}> = {};
+                            [11, 12, 13, 14, 15, 16].forEach(idx => {
+                                if (landmarks[idx]) {
+                                    keyPoints[idx] = { x: Number(landmarks[idx].x.toFixed(3)), y: Number(landmarks[idx].y.toFixed(3)) };
+                                }
+                            });
 
-                      // Update generic stats (using whatever available)
-                      if (rightElbow) sessionStatsRef.current.frameCount++;
-                 }
-                  // --- REF: 8 FPS for High Fidelity ---
-                  }, 125); 
-        }
+                            // [FIX] Live Gauge Value
+                            const activeMetricKey = Object.keys(sessionStatsRef.current).find(k => k.toLowerCase().includes('angle')) || 'val';
+                            const metricVal = (sessionStatsRef.current as any)[activeMetricKey] || 0;
 
+                            sessionStatsRef.current.telemetry.push({
+                                t: Number(nowT.toFixed(2)),
+                                val: typeof metricVal === 'number' ? metricVal : 0, 
+                                vel: Number(velocity.toFixed(3)),
+                                coords: keyPoints
+                            });
+                        }
+                       
+                       setDataSentCount(c => c + 1);
+
+                       if (rightElbow) sessionStatsRef.current.frameCount++;
+                  }
+             }
+              // --- REF: 8 FPS for High Fidelity ---
+              }, 125); 
     } catch (err: any) {
         console.error("Error accessing camera:", err);
         setMessages(prev => [...prev, `Error: Could not access camera (${err.name}: ${err.message})`]);
     }
-  }, [detectPose, mode, onLandmarks, videoRef, exerciseConfig.engine]); // Added exerciseConfig.engine dependency
+  }, [mode, videoRef, exerciseConfig.engine]); // Removed detectPose to stabilize identity
 
   const stopVideoStream = useCallback(() => {
     if (videoStreamRef.current) {
@@ -516,9 +654,19 @@ export function useGeminiLive({ mode, exerciseConfig, detectPose, onLandmarks, v
     clinicalNotesRef.current = [];
 
     // 1. Wake up Shadow Brain
+    const startPayload = { 
+        session_id: sessionIdRef.current,
+        domain: mode === 'HARMONY' ? 'FACE' : 'BODY',
+        // [FIX] Prioritize 'targetEmotion' (e.g. HAPPY) over generic config ID for Harmony
+        exercise_id: (mode === 'HARMONY' && targetEmotion) 
+            ? targetEmotion 
+            : ((exerciseConfig as any)?.id || 'unknown'),
+        exercise_name: (mode === 'HARMONY') ? targetEmotion : (exerciseConfig?.name || 'Unknown Exercise')
+    };
+    
     apiClient('/session/start', {
         method: 'POST',
-        body: JSON.stringify({ session_id: sessionIdRef.current })
+        body: JSON.stringify(startPayload)
     }).catch(e => console.error("Start Session Error", e));
 
     // 2. Start Chunk Loop (Every 10s)
@@ -594,6 +742,17 @@ export function useGeminiLive({ mode, exerciseConfig, detectPose, onLandmarks, v
                  const updated = [...prev, msg.note];
                  clinicalNotesRef.current = updated; // Sync Ref
                  return updated;
+             });
+         } else if (msg.type === 'emotion_ui_update') {
+             console.log("[GeminiLive] Emotion Update:", msg.content);
+             setEmotionData(msg.content);
+             
+             // [FIX] Log to Clinical Notes for Report Generation
+             const note = `[EMOTION] Detected: ${msg.content.detected_emotion} (${msg.content.confidence}%) - Feedback: ${msg.content.feedback}`;
+             setClinicalNotes(prev => {
+                  const updated = [...prev, note];
+                  clinicalNotesRef.current = updated; 
+                  return updated;
              });
          } else if (msg.type === 'text') {
              const textContent = msg.content;
@@ -679,11 +838,18 @@ export function useGeminiLive({ mode, exerciseConfig, detectPose, onLandmarks, v
         }
   };
 
+  // Instant Trigger for UI Events
+  // Instant Trigger for UI Events
+  const triggerInstantAnalysis = useCallback(() => {
+      console.log("[GeminiLive] Force Trigger Requested");
+      forceTriggerRef.current = true;
+  }, []);
+
   useEffect(() => {
     return () => {
       disconnect();
     };
   }, [disconnect]);
 
-  return { isConnected, messages, clinicalNotes, connect, disconnect, sendMessage, startAudioStream, stopAudioStream, startVideoStream, stopVideoStream, dataSentCount, getSessionStats, feedbackStatus, isCalibrating, sessionId: sessionIdRef.current, flushData, repCount };
+  return { isConnected, messages, clinicalNotes, connect, disconnect, sendMessage, startAudioStream, stopAudioStream, startVideoStream, stopVideoStream, dataSentCount, getSessionStats, feedbackStatus, isCalibrating, sessionId: sessionIdRef.current, flushData, repCount, emotionData, triggerInstantAnalysis, initializeAudio };
 }

@@ -210,36 +210,93 @@ CREATE TABLE session_logs (
 
 ## 8. Development Setup & Run Instructions
 
-### Prerequisites
-- Python 3.9+
-- Node.js 18+
-- [Google AI Studio API Key](https://aistudio.google.com/app/apikey)
+We support two ways to run StorySign: **Hybrid Mode** (recommended for rapid development) and **Container Mode** (recommended for production/full isolation).
 
-### Backend Setup (FastAPI)
-1. Navigate to the project root.
-2. Create and activate a virtual environment:
-   ```bash
-   python3 -m venv venv
-   source venv/bin/activate  # Windows: venv\\Scripts\\activate
-   ```
-3. Install dependencies:
-   ```bash
-   pip install -r backend/requirements.txt
-   ```
-4. Configure Environment Variables:
-   - Edit `backend/.env` and add your `GEMINI_API_KEY`.
-5. Run the Server:
-   ```bash
-   uvicorn backend.main:app --host 0.0.0.0 --port 8000 --reload
-   ```
+### Option 1: Hybrid Mode (Local Dev)
+* **Best for:** Frontend/Backend feature development.
+* **Database:** Uses **SQLite** (`local_history.db`) automatically. No Docker required.
 
-### Frontend Setup (React + Vite)
-1. Navigate to the project root.
-2. Install dependencies (if not already done):
-   ```bash
-   cd frontend && npm install && cd ..
-   ```
-3. Run the Development Server:
-   ```bash
-   cd frontend && npm run dev
-   ```
+#### 1. Backend (FastAPI)
+```bash
+# Terminal A
+cd backend
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+# Create .env with GEMINI_API_KEY=...
+uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+```
+*Backend runs on http://localhost:8000*
+
+#### 2. Frontend (React + Vite)
+```bash
+# Terminal B
+cd frontend
+npm install
+npm run dev
+```
+*Frontend runs on http://localhost:5173*
+
+---
+
+### Option 2: Container Mode (Docker)
+* **Best for:** Testing full deployment, Caddy routing, and PostgreSQL integration.
+* **Database:** Uses **PostgreSQL** in a container.
+
+```bash
+# Root Directory
+docker-compose up --build
+```
+*App runs on http://localhost (via Caddy reverse proxy)*
+
+### ⚠️ Database Note
+* **Local Mode** uses `sqlite:///./local_history.db`.
+* **Docker Mode** uses `postgresql://user:password@db:5432/storysign`.
+* **Schema Sync:** The application code (`main.py` -> `init_db()`) automatically creates the schema tables on startup for whichever database is active.
+* **Advanced:** To use Docker Postgres with Local Backend, add `DATABASE_URL=postgresql://user:password@localhost:5432/storysign` to your local `.env`.
+
+---
+
+## 9. API Reference & Workflows
+
+### Core Loop: The "Shadow Brain"
+StorySign uses a unique **"Two-Brain" Architecture** to handle real-time interaction and deep analysis simultaneously.
+
+1.  **Fast Brain (Gemini 2.0 Flash)**: Handles the WebSocket stream (`/ws/stream/{mode}`). It sees the user, counts reps, and gives instant audio feedback. It generates a "transcript" of events.
+2.  **Slow Brain (Shadow Drafter)**: The backend collects these events in the background. When the session ends, it sends the full transcript to **Gemini 3 Pro** (or Flash Thinking) to generate a structured JSON report (`SessionReport`), which is then saved to the database.
+
+### API Endpoints
+All endpoints are prefix-routed (e.g., `/session`, `/exercises`).
+
+| Module | Method | Endpoint | Description |
+| :--- | :--- | :--- | :--- |
+| **Session** | `POST` | `/session/start` | Initializes a "Shadow Draft" context for the user. |
+| | `POST` | `/session/chunk` | Non-blocking ingestion of session events for the report. |
+| | `POST` | `/session/end` | Triggers the AI Analyst to generate the final report & save to DB. |
+| | `GET` | `/session/history` | Retrieves past sessions with filtering (Domain, Date). |
+| **Exercises** | `POST` | `/exercises/custom` | Create a new custom exercise configuration. |
+| | `POST` | `/exercises/generate` | Uses LLM to generate a valid exercise schema from text description. |
+| **Plan** | `GET` | `/plan/daily` | Generates a specific recovery plan for the day based on history. |
+| **Stream** | `WS` | `/ws/stream/{mode}` | The real-time bidirectional audio/video pipe. |
+
+### Module Specifics
+
+#### 1. Reconnect (Physical Therapy)
+*   **Mode:** `RECONNECT`
+*   **Tool Used:** `log_clinical_note(note, category)`
+*   **Workflow:** The AI watches movement. When it sees an issue (e.g., "Left arm lagging"), it calls `log_clinical_note`. This note is spoken to the user AND saved for the post-session report.
+
+#### 2. Harmony (Emotion Coaching)
+*   **Mode:** `HARMONY`
+*   **Tool Used:** `update_emotion_ui(emotion, confidence, feedback)`
+*   **Workflow:** The AI mimics the user's facial expression. It calls `update_emotion_ui` to drive the frontend visualizer (e.g., filling the "Happy Meter") in real-time.
+
+#### 3. ASL World (Storytelling)
+*   **Mode:** `ASL`
+*   **Workflow:** Uses a custom `system_instruction` to act as a dungeon master. It waits for specific hand signs (detected by vision) to advance the narrative nodes.
+
+## 10. License
+
+**StorySign** is © 2026 Prateek Srivastava. All rights reserved.
+
+This project is intended for educational and therapeutic demonstration purposes.

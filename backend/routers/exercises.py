@@ -63,9 +63,12 @@ async def generate_exercise(request: GenerateRequest):
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.get("/custom")
-async def get_custom_exercises(db: Session = Depends(get_db)):
+async def get_custom_exercises(domain: str = "BODY", db: Session = Depends(get_db)):
     try:
-        exercises = db.query(CustomExercise).order_by(CustomExercise.created_at.desc()).all()
+        query = db.query(CustomExercise)
+        if domain:
+            query = query.filter(CustomExercise.domain == domain)
+        exercises = query.order_by(CustomExercise.created_at.desc()).all()
         return [{
             "id": ex.id,
             "name": ex.name,
@@ -76,6 +79,24 @@ async def get_custom_exercises(db: Session = Depends(get_db)):
     except Exception as e:
         logger.error(f"Error fetching exercises: {e}")
         return []
+
+@router.get("/custom/{exercise_id}")
+async def get_custom_exercise(exercise_id: str, db: Session = Depends(get_db)):
+    try:
+        ex = db.query(CustomExercise).filter(CustomExercise.id == exercise_id).first()
+        if not ex:
+            raise HTTPException(status_code=404, detail="Exercise not found")
+        
+        return {
+            "id": ex.id,
+            "name": ex.name,
+            "domain": ex.domain,
+            "config": ex.config_json,
+            "created_at": ex.created_at.isoformat()
+        }
+    except Exception as e:
+        logger.error(f"Error fetching exercise {exercise_id}: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 @router.delete("/custom/{exercise_id}")
 async def delete_custom_exercise(exercise_id: str, db: Session = Depends(get_db)):

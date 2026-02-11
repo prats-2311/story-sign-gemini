@@ -132,51 +132,27 @@ async def websocket_endpoint(websocket: WebSocket, mode: str, db: Session = Depe
     model = "gemini-2.5-flash-native-audio-preview-12-2025" 
     
     # [DYNAMIC SYSTEM PROMPT]
-    # Fetch the correct prompt based on the mode (e.g., RECONNECT, SQUATS)
-    if mode == "HARMONY":
-        sys_instruct = """
-        You are an expert ASL (American Sign Language) Interpreter.
-        You will receive a stream of 2D/3D hand landmarks and occasional text tokens.
-        
-        **YOUR GOAL:**
-        Translate the user's signs into clear, spoken English.
-        
-        **PROTOCOL:**
-        1. **Observe:** Analyze the hand positions.
-        2. **Translate:** If you recognize a sign (e.g., "Hello", "Thank you", "Water"), say the word immediately.
-        3. **Synthesize:** If you see a sequence, form a coherent sentence.
-        4. **Voice:** Use a warm, clear voice.
-        
-        **SPECIAL COMMANDS:**
-        - If the user waves their hand, say "Hello!"
-        - If the user gives a thumbs up, say "Great!"
-        """
-    else:
-        sys_instruct = session_manager.get_system_instruction(mode)
-
-    tools = [
-        {
-            "function_declarations": [
-                {
-                    "name": "log_clinical_note",
-                    "description": "Log a clinical observation about the user's performance, pain, or improvement.",
-                    "parameters": {
-                        "type": "OBJECT",
-                        "properties": {
-                            "note": {"type": "STRING", "description": "The observation text."},
-                            "category": {"type": "STRING", "enum": ["FORM", "PAIN", "PROGRESS", "GENERAL"]}
-                        },
-                        "required": ["note"]
-                    }
-                }
-            ]
-        }
-    ]
+    # Fetch the correct prompt based on the mode (e.g., RECONNECT, SQUATS, HARMONY)
+    sys_instruct = session_manager.get_system_instruction(mode)
 
     # Create the LiveConnectConfig
     try:
         if GEMINI_AVAILABLE:
-            clinical_tool_func = types.FunctionDeclaration(
+            # --- DEFINE TOOLS ---
+            tools_list = []
+            
+            # 1. Heartbeat (Universal)
+            heartbeat_tool = types.FunctionDeclaration(
+                name="log_heartbeat",
+                description="Call this immediately when the session starts to confirm tool connectivity.",
+                parameters=types.Schema(
+                    type="OBJECT",
+                    properties={},
+                )
+            )
+            
+            # 2. Clinical Note (Reconnect / Default)
+            clinical_tool = types.FunctionDeclaration(
                 name="log_clinical_note",
                 description="Log a clinical observation about the user's performance, pain, or improvement.",
                 parameters=types.Schema(
@@ -188,18 +164,32 @@ async def websocket_endpoint(websocket: WebSocket, mode: str, db: Session = Depe
                     required=["note"]
                 )
             )
-            
-            heartbeat_tool = types.FunctionDeclaration(
-                name="log_heartbeat",
-                description="Call this immediately when the session starts to confirm tool connectivity.",
+
+            # 3. Emotion UI Update (Harmony)
+            emotion_tool = types.FunctionDeclaration(
+                name="update_emotion_ui",
+                description="Update the visual interface with the detected emotion and feedback.",
                 parameters=types.Schema(
                     type="OBJECT",
-                    properties={},
+                    properties={
+                        "detected_emotion": types.Schema(type="STRING", description="The detected emotion (HAPPY, SAD, etc)."),
+                        "confidence": types.Schema(type="INTEGER", description="Confidence score (0-100)."),
+                        "feedback": types.Schema(type="STRING", description="Short feedback text to display on screen.")
+                    },
+                    required=["detected_emotion", "confidence", "feedback"]
                 )
             )
 
-            # Define Tools conditionally
-            tools_list = [types.Tool(function_declarations=[clinical_tool_func, heartbeat_tool])]
+            # --- SELECT TOOLS BASED ON MODE ---
+            active_funcs = [heartbeat_tool]
+            
+            if mode == "HARMONY":
+                active_funcs.append(emotion_tool)
+            else:
+                # Default to Clinical Scribe tools for Reconnect/ASL
+                active_funcs.append(clinical_tool)
+            
+            tools_list = [types.Tool(function_declarations=active_funcs)]
             
             # Create Config
             config = types.LiveConnectConfig(
@@ -207,7 +197,7 @@ async def websocket_endpoint(websocket: WebSocket, mode: str, db: Session = Depe
                 system_instruction=types.Content(parts=[types.Part(text=sys_instruct)]),
                 tools=tools_list
             )
-            logger.info("Created LiveConnectConfig with Tools")
+            logger.info(f"Created LiveConnectConfig with Tools: {[f.name for f in active_funcs]}")
         else:
             # Fallback for SDK missing (Should not happen if SDK_INSTALLED is true)
             config = {
@@ -279,18 +269,25 @@ async def websocket_endpoint(websocket: WebSocket, mode: str, db: Session = Depe
                                 data = json.loads(message)
                                 should_trigger = data.get("trigger", False)
 
-                                # 1. HANDLE TEXT / EVENTS / POSE
+                                    # 1. HANDLE TEXT / EVENTS / POSE / FACE
                                 if "text" in data:
                                     text_msg = data["text"]
                                     processed_as_data = False
                                     
-                                    # [OPTIMIZATION] Detect and Compact Pose Data
-                                    # Expected format: "[POSE_DATA] [{"x":...}, ...]"
-                                    tag = "[POSE_DATA] "
-                                    if tag in text_msg:
+                                    # [FACE DATA] - Pass through (High bandwidth, maybe compress later)
+                                    if "[FACE_DATA]" in text_msg:
+                                         # [DEBUG] Confirm Receipt
+                                         # logger.info(f"received FACE_DATA length: {len(text_msg)}")
+                                         # Just forward it for now. 
+                                         # Future: Compress 478 points to key emotion features (Mouth, Eyes)
+                                         await gemini_output_queue.put((session.send, {"input": text_msg, "end_of_turn": should_trigger}))
+                                         processed_as_data = True
+
+                                    # [POSE DATA] - Optimized
+                                    elif "[POSE_DATA]" in text_msg:
                                         try:
                                             # Extract JSON part
-                                            json_part = text_msg.split(tag)[1]
+                                            json_part = text_msg.split("[POSE_DATA] ")[1]
                                             landmarks = json.loads(json_part)
                                             
                                             # Filter to Critical Body Parts (Shoulders, Elbows, Wrists, Hips)
@@ -366,33 +363,47 @@ async def websocket_endpoint(websocket: WebSocket, mode: str, db: Session = Depe
                     nonlocal gemini_connection_active
                     try:
                         while gemini_connection_active:
-                            async for response in session.receive():
-                                server_content = response.server_content
-                                if server_content and server_content.model_turn:
-                                    for part in server_content.model_turn.parts:
-                                        if part.text:
-                                            # logger.info(f"Gemini Text: {part.text[:50]}...")
-                                            await websocket.send_json({"type": "text", "content": part.text})
-                                        
-                                        if part.inline_data:
-                                            # logger.info(f"Gemini Audio ({len(part.inline_data.data)} bytes)")
-                                            import base64
-                                            b64_data = base64.b64encode(part.inline_data.data).decode('utf-8')
-                                            await websocket.send_json({"type": "audio", "content": b64_data})
-
-                                tool_call = response.tool_call
-                                if tool_call:
-                                    for fc in tool_call.function_calls:
-                                        if fc.name == "log_clinical_note":
-                                            args = fc.args
-                                            note = args.get("note")
-                                            await websocket.send_json({
-                                                "type": "clinical_note", 
-                                                "note": note,
-                                                "category": args.get("category", "GENERAL")
-                                            })
+                            try:
+                                async for response in session.receive():
+                                    server_content = response.server_content
+                                    if server_content and server_content.model_turn:
+                                        for part in server_content.model_turn.parts:
+                                            if part.text:
+                                                # logger.info(f"Gemini Text: {part.text[:50]}...")
+                                                await websocket.send_json({"type": "text", "content": part.text})
                                             
-                                            # Acknowledge Tool
+                                            if part.inline_data:
+                                                # logger.info(f"Gemini Audio ({len(part.inline_data.data)} bytes)")
+                                                import base64
+                                                b64_data = base64.b64encode(part.inline_data.data).decode('utf-8')
+                                                await websocket.send_json({"type": "audio", "content": b64_data})
+
+                                    # [ROBUST] Use getattr in case tool_call is missing from TypedDict/Object
+                                    tool_call = getattr(response, 'tool_call', None)
+                                    if tool_call:
+                                        for fc in tool_call.function_calls:
+                                            logger.info(f"Gemini Tool Call: {fc.name}")
+                                            if fc.name == "log_clinical_note":
+                                                args = fc.args
+                                                note = args.get("note")
+                                                await websocket.send_json({
+                                                    "type": "clinical_note", 
+                                                    "note": note,
+                                                    "category": args.get("category", "GENERAL")
+                                                })
+                                            
+                                            elif fc.name == "update_emotion_ui":
+                                                args = fc.args
+                                                await websocket.send_json({
+                                                    "type": "emotion_ui_update",
+                                                    "content": {
+                                                        "detected_emotion": args.get("detected_emotion"),
+                                                        "confidence": args.get("confidence", 0),
+                                                        "feedback": args.get("feedback", "")
+                                                    }
+                                                })
+                                                
+                                            # Acknowledge Tool (Universal)
                                             await gemini_output_queue.put((session.send, {
                                                 "input": types.LiveClientToolResponse(
                                                     function_responses=[
@@ -404,9 +415,13 @@ async def websocket_endpoint(websocket: WebSocket, mode: str, db: Session = Depe
                                                     ]
                                                 )
                                             }))
+                            except Exception as e:
+                                logger.error(f"Error in Gemini Receive Stream: {e}")
+                                gemini_connection_active = False
+                                break
 
                     except Exception as e:
-                         logger.error(f"Error in receive_from_gemini: {e}")
+                         logger.error(f"Error in receive_from_gemini Outer Loop: {e}")
                          gemini_connection_active = False
 
                 # Start Loops
@@ -415,8 +430,11 @@ async def websocket_endpoint(websocket: WebSocket, mode: str, db: Session = Depe
     except Exception as e:
         logger.error(f"WebSocket Error: {e}")
         try:
-            await websocket.close(code=1011)
+             # [DEBUG] Send Error to Client
+             await websocket.send_json({"type": "error", "message": f"Server Error: {str(e)}"})
+             await asyncio.sleep(0.1) 
+             await websocket.close(code=1011)
         except:
-            pass
+             pass
     finally:
          manager.disconnect(websocket)

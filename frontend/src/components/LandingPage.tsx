@@ -33,11 +33,20 @@ export function LandingPage() {
 
     const modules = [
         {
+            id: 'reconnect',
+            path: '/reconnect',
+            title: "Reconnect",
+            icon: <FaRunning className="text-5xl text-cyber-cyan" />,
+            desc: "AI-powered physical therapy assistant. Features real-time form correction, rep counting, and safety monitoring.",
+            gradient: "from-cyan-500/20 to-blue-500/20",
+            border: "border-cyber-cyan/30 hover:border-cyber-cyan"
+        },
+        {
             id: 'asl',
             path: '/asl',
             title: "ASL World",
             icon: <FaSignLanguage className="text-5xl text-yellow-400" />,
-            desc: "An interactive storytelling adventure. Sign words to move the story forward. Perfect for learning American Sign Language in a fun, immersive way.",
+            desc: "An interactive storytelling adventure. Sign words to move the story forward. Perfect for learning American Sign Language.",
             gradient: "from-yellow-500/20 to-orange-500/20",
             border: "border-yellow-500/30 hover:border-yellow-400"
         },
@@ -49,15 +58,6 @@ export function LandingPage() {
             desc: "Your social-emotional coach. Practice facial expressions and emotional cues with a gentle, supportive AI mirror.",
             gradient: "from-pink-500/20 to-rose-500/20",
             border: "border-pink-500/30 hover:border-pink-400"
-        },
-        {
-            id: 'reconnect',
-            path: '/reconnect',
-            title: "Reconnect",
-            icon: <FaRunning className="text-5xl text-cyber-cyan" />,
-            desc: "AI-powered physical therapy assistant. Recovery exercises with real-time feedback and progress tracking.",
-            gradient: "from-cyan-500/20 to-blue-500/20",
-            border: "border-cyber-cyan/30 hover:border-cyber-cyan"
         }
     ];
 
@@ -79,7 +79,7 @@ export function LandingPage() {
                 </h1>
                 
                 <p className="max-w-2xl mx-auto text-2xl text-gray-400 leading-relaxed font-light">
-                    StorySign bridges the gap between clinical care and daily life using advanced multimodal AI that <span className="text-white font-medium">sees</span>, <span className="text-white font-medium">hears</span>, and <span className="text-white font-medium">understands</span> you.
+                    StorySign bridges the gap between clinical care and daily life using Google's multimodal AI that <span className="text-white font-medium">sees</span>, <span className="text-white font-medium">hears</span>, and <span className="text-white font-medium">understands</span> you.
                 </p>
             </section>
 

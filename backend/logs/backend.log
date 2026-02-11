@@ -389,3 +389,1480 @@ FINALIZE
   token_count=8715
 )] thoughts_token_count=691 tool_use_prompt_token_count=None tool_use_prompt_tokens_details=None total_token_count=10306 traffic_type=None
 2026-02-09 11:02:10,143 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #7. Brain said: Ack...
+2026-02-09 14:13:52,832 - story_sign - INFO - Application Startup Complete. Routers Loaded.
+2026-02-09 14:21:05,872 - story_sign - INFO - Application Startup Complete. Routers Loaded.
+2026-02-09 14:24:36,789 - story_sign - INFO - Application Startup Complete. Routers Loaded.
+2026-02-09 14:24:55,247 - story_sign - INFO - [ReportDrafter] Started Shadow Session: e685c21f-7439-4600-8a63-cfe966a2fe80
+2026-02-09 14:26:04,800 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 495b5289-6422-4c77-a922-e83eab0acad8
+2026-02-09 14:27:59,078 - story_sign - INFO - Application Startup Complete. Routers Loaded.
+2026-02-09 14:28:15,990 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 55a8bd58-cca6-41c5-a0a2-014f4197a855
+2026-02-09 14:29:03,851 - story_sign - INFO - Application Startup Complete. Routers Loaded.
+2026-02-09 14:29:35,095 - story_sign - INFO - [ReportDrafter] Started Shadow Session: b6ce8e37-58a9-483d-b58d-63f9eaf3f08f
+2026-02-09 14:30:31,945 - story_sign - INFO - [ReportDrafter] Started Shadow Session: fc3cb6eb-50a0-421c-86fc-296da8fdabd8
+2026-02-09 15:01:52,711 - story_sign - INFO - Application Startup Complete. Routers Loaded.
+2026-02-09 15:04:58,544 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 12919b39-08e2-4d5a-b0f4-b480860a44cc
+2026-02-09 15:07:50,466 - story_sign - INFO - [ReportDrafter] Started Shadow Session: f54fc532-c7f7-4e22-b168-1d7e6a3d569d
+2026-02-09 15:08:06,896 - story_sign - INFO - Application Startup Complete. Routers Loaded.
+2026-02-09 15:32:21,645 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 9ab41b24-0424-440e-bd9f-d5dc8d115c0d
+2026-02-09 15:39:07,654 - story_sign - INFO - Application Startup Complete. Routers Loaded.
+2026-02-09 15:39:33,689 - story_sign - INFO - [ReportDrafter] Started Shadow Session: de95f4b1-6deb-474e-ba2b-1608f3357882
+2026-02-09 15:43:02,926 - story_sign - INFO - Application Startup Complete. Routers Loaded.
+2026-02-09 15:43:14,459 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 8ac7c225-e38c-4cc4-b6fc-f910be6a286b
+2026-02-09 15:49:27,751 - story_sign - INFO - Application Startup Complete. Routers Loaded.
+2026-02-09 15:51:23,835 - story_sign - INFO - [ReportDrafter] Started Shadow Session: fbe16d74-65de-4856-aecc-31df6896c0aa
+2026-02-09 15:52:34,941 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 1c5c7339-3e01-42ed-81f7-387ad9b86f92
+2026-02-09 15:54:54,881 - story_sign - INFO - Application Startup Complete. Routers Loaded.
+2026-02-09 15:55:03,254 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 9d91f549-7288-4611-806c-13f2e673152f
+2026-02-09 15:59:23,248 - story_sign - INFO - Application Startup Complete. Routers Loaded.
+2026-02-09 15:59:30,960 - story_sign - INFO - [ReportDrafter] Started Shadow Session: ef585a85-0518-46ef-82be-a9cb8bd2afd6
+2026-02-09 15:59:31,148 - story_sign - INFO - [ReportDrafter] Started Shadow Session: ccbf864c-13ee-44e1-905e-c8c362d82efb
+2026-02-09 15:59:31,150 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 3a3ef21b-326f-4fab-8b27-e6b141f3497f
+2026-02-09 15:59:31,160 - story_sign - INFO - [ReportDrafter] Started Shadow Session: c45322cb-3c4c-437e-b681-fe4b71feadcc
+2026-02-09 15:59:31,168 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 416f4755-3d31-40fe-9aea-a34887850a0e
+2026-02-09 15:59:31,178 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 8d3c9c2c-dd0b-45b7-a8a4-a495b68cc111
+2026-02-09 15:59:31,341 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 52b08f2c-9cb6-44d9-861a-5d6f759f273f
+2026-02-09 15:59:31,344 - story_sign - INFO - [ReportDrafter] Started Shadow Session: a4647f77-e216-4976-8f66-aa54b8e0d7fb
+2026-02-09 15:59:31,345 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 6e489871-ba7d-4442-8cb3-b7284692e656
+2026-02-09 15:59:31,367 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 0e23586b-d733-4e8f-9542-a9583e9b3ea6
+2026-02-09 15:59:31,369 - story_sign - INFO - [ReportDrafter] Started Shadow Session: bda19aa9-b06e-41d3-a760-1e21a8189446
+2026-02-09 15:59:31,372 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 475edccf-cb8e-4b5a-8051-ef1b94eb9aee
+2026-02-09 15:59:31,385 - story_sign - INFO - [ReportDrafter] Started Shadow Session: d7061c49-d217-4c2b-9144-0f3c85ea8cf0
+2026-02-09 15:59:31,388 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 94b793d0-2d08-4f43-8543-53497d95aadb
+2026-02-09 15:59:31,397 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 9f676372-34b8-4493-91ae-34abe5788034
+2026-02-09 15:59:31,407 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 811991fd-9839-4c72-90cc-606ec1945e80
+2026-02-09 15:59:31,456 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 2732b03c-0677-4205-baf5-f40abd0d0855
+2026-02-09 15:59:31,470 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 5b28fb5f-cd53-4219-bdb9-6e650fb812ce
+2026-02-09 15:59:31,481 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 1b0aff0f-e9a8-4d54-8054-da523cfba638
+2026-02-09 15:59:31,484 - story_sign - INFO - [ReportDrafter] Started Shadow Session: b1890044-61cb-4db7-91c0-51e23fe9869d
+2026-02-09 15:59:31,493 - story_sign - INFO - [ReportDrafter] Started Shadow Session: dce6e8e3-f7c7-4019-a27c-76ae9e7ec5c8
+2026-02-09 15:59:31,495 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 8776e8ea-59ef-4a60-a8c6-ce0f08b2f108
+2026-02-09 15:59:31,499 - story_sign - INFO - [ReportDrafter] Started Shadow Session: bb49b091-1bf1-4f86-be83-5ff3087f4b80
+2026-02-09 15:59:31,503 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 8f576630-746c-4f4c-b8d6-e03d62069833
+2026-02-09 15:59:31,542 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 309f3067-65b4-4b89-968b-19bb8aa9ede9
+2026-02-09 15:59:31,566 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 795cb786-1682-464a-a6cd-4315d8ca9baf
+2026-02-09 15:59:31,570 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 568e7382-85c4-434a-88d9-9b890f781c48
+2026-02-09 15:59:31,573 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 39675a67-657c-444c-a3e6-9750ccb801c7
+2026-02-09 15:59:31,582 - story_sign - INFO - [ReportDrafter] Started Shadow Session: d25db7d2-a1e1-4035-9201-fc3d08657009
+2026-02-09 15:59:31,593 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 3139fd90-7e1e-45bf-a723-303aa608d1f9
+2026-02-09 15:59:31,603 - story_sign - INFO - [ReportDrafter] Started Shadow Session: cc537d33-ac30-442c-92f2-d2a1dcdc6697
+2026-02-09 15:59:31,606 - story_sign - INFO - [ReportDrafter] Started Shadow Session: fdd568b3-8a73-46b4-bc66-15105dca882c
+2026-02-09 15:59:31,607 - story_sign - INFO - [ReportDrafter] Started Shadow Session: f14c61d4-e3fd-4cd5-babc-4d4cd8d6d893
+2026-02-09 15:59:31,622 - story_sign - INFO - [ReportDrafter] Started Shadow Session: a7bb20f3-0e41-45d1-ac21-fcae8389f48a
+2026-02-09 15:59:31,626 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 872817d4-bb76-42d4-93cd-f4b3f0ef2c2e
+2026-02-09 15:59:31,658 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 2f28e310-a6dd-480f-8eb5-5ace228e9734
+2026-02-09 15:59:31,660 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 3d2b7633-dc8b-4fc9-953a-4faf92488907
+2026-02-09 15:59:31,661 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 8966ddf8-a3f8-4635-9b02-34e79c5c3480
+2026-02-09 15:59:31,662 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 091ca5f2-c829-4e18-81c5-6931df564831
+2026-02-09 15:59:31,663 - story_sign - INFO - [ReportDrafter] Started Shadow Session: f64eeaba-da16-4888-a6f7-4c7979b4723e
+2026-02-09 15:59:31,664 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 2cf3e504-572d-4720-b3ad-59b6a99e8059
+2026-02-09 15:59:31,680 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 39897c73-c0a5-4210-8001-fe5e2aa399c2
+2026-02-09 15:59:31,724 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 4326a14b-1cc5-4a11-91a8-8302f214de8d
+2026-02-09 15:59:31,726 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 00e0de47-8c5e-477b-a054-00d5d80c0571
+2026-02-09 15:59:31,742 - story_sign - INFO - [ReportDrafter] Started Shadow Session: c73c06c2-b4c4-4b23-835a-92fdf7cce4d1
+2026-02-09 15:59:31,758 - story_sign - INFO - [ReportDrafter] Started Shadow Session: d420af0d-d606-4722-a482-fcbe6ae7ce93
+2026-02-09 15:59:31,761 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 13557746-3eaa-460e-97f3-d34e0e5fec4c
+2026-02-09 15:59:31,762 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 15d8cede-6a8f-498d-906f-6dde1d7d7b4e
+2026-02-09 15:59:31,773 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 7c174672-ae70-4f2c-8537-f5a56549a382
+2026-02-09 15:59:31,778 - story_sign - INFO - [ReportDrafter] Started Shadow Session: d8f6f16f-122a-443e-900f-ea3b77ff1d14
+2026-02-09 15:59:31,794 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 432ba5ae-817c-4448-9889-5aa18a1db494
+2026-02-09 15:59:31,799 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 60e2f631-6c8d-443d-bec5-cc8fa1f57113
+2026-02-09 15:59:31,813 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 203bb81e-92dd-4344-88ca-4d0523553881
+2026-02-09 15:59:31,831 - story_sign - INFO - [ReportDrafter] Started Shadow Session: ea6c681f-ab8f-4a21-9200-3b6dfd68ea23
+2026-02-09 15:59:31,842 - story_sign - INFO - [ReportDrafter] Started Shadow Session: a3dc36f0-154f-4d8b-b6b1-2299f0c95c38
+2026-02-09 15:59:31,844 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 0824b251-3d18-43d3-8691-0cc9f215c2a8
+2026-02-09 15:59:31,845 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 5ca508b5-7893-46f2-86dc-b9c8b5337091
+2026-02-09 15:59:31,846 - story_sign - INFO - [ReportDrafter] Started Shadow Session: dad450ad-6e0b-44c4-b00e-8646bb61c2b2
+2026-02-09 15:59:31,847 - story_sign - INFO - [ReportDrafter] Started Shadow Session: a209fd0c-b0c0-4870-b5fb-25b4ddfd955e
+2026-02-09 15:59:31,848 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 5c0a22a1-2ab4-4699-aba2-5420a139c8c2
+2026-02-09 15:59:31,868 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 2f75956a-0dd4-4be7-8ba1-66ccf209e539
+2026-02-09 15:59:31,872 - story_sign - INFO - [ReportDrafter] Started Shadow Session: e988edfa-f060-47a3-b9cc-76728753cb39
+2026-02-09 15:59:31,899 - story_sign - INFO - [ReportDrafter] Started Shadow Session: bbd94f06-3a1c-4f6b-9671-7298b96b8da4
+2026-02-09 15:59:31,903 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 964feadb-9466-4f5a-9cfd-9dce4ed66036
+2026-02-09 15:59:31,906 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 54adf289-63e2-4a79-9823-6c383f09730e
+2026-02-09 15:59:31,908 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 6908dbc6-21d1-4299-ad35-46ef6b757e0e
+2026-02-09 15:59:31,913 - story_sign - INFO - [ReportDrafter] Started Shadow Session: a2b55379-e1f2-496f-b3be-d6d2870098a0
+2026-02-09 15:59:31,916 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 4779a5fd-8508-4b54-93c6-b9c5b4da6513
+2026-02-09 15:59:31,918 - story_sign - INFO - [ReportDrafter] Started Shadow Session: bb5eaeec-f117-4c4d-885a-58c813e3eadd
+2026-02-09 15:59:31,925 - story_sign - INFO - [ReportDrafter] Started Shadow Session: aa7980b9-629e-41df-b991-1d9fc12211d0
+2026-02-09 15:59:31,935 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 96f3cf6a-59e3-4da2-b043-c0ec1364b762
+2026-02-09 15:59:32,000 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 789b9d73-4372-4cc8-b007-d3e745a19c33
+2026-02-09 15:59:32,023 - story_sign - INFO - [ReportDrafter] Started Shadow Session: c60e6151-0b28-4087-8137-9a297535bb39
+2026-02-09 15:59:32,035 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 7efef1cd-5dfe-467f-a0c5-7d0da4757207
+2026-02-09 15:59:32,038 - story_sign - INFO - [ReportDrafter] Started Shadow Session: d7fb0bf1-f04a-4738-967e-f6003589222f
+2026-02-09 15:59:32,040 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 028c9b6e-9317-4f52-908f-ba4cd2023581
+2026-02-09 15:59:32,042 - story_sign - INFO - [ReportDrafter] Started Shadow Session: e552dbb2-8c83-44f0-be39-942e1608cf49
+2026-02-09 15:59:32,043 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 25885f5f-306d-458a-ab5d-50a3f39028ba
+2026-02-09 15:59:32,051 - story_sign - INFO - [ReportDrafter] Started Shadow Session: ffa1aea1-c5b9-409f-822a-a698c6797256
+2026-02-09 15:59:32,052 - story_sign - INFO - [ReportDrafter] Started Shadow Session: b9162617-e859-42b5-bb82-060a82d5a05e
+2026-02-09 15:59:32,068 - story_sign - INFO - [ReportDrafter] Started Shadow Session: d0c2c98d-22cf-4a7f-8f9d-03c74f3d0299
+2026-02-09 15:59:32,075 - story_sign - INFO - [ReportDrafter] Started Shadow Session: bbe85d58-d81a-42f5-80b8-bb45da41c34e
+2026-02-09 15:59:32,077 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 7b54751f-7442-495c-bf9a-32d07fba7cf5
+2026-02-09 15:59:32,079 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 376eb669-7e93-46cf-adbb-087536f259de
+2026-02-09 15:59:32,123 - story_sign - INFO - [ReportDrafter] Started Shadow Session: c5d1627a-ac5c-46e1-949d-9c05b8f8d3b1
+2026-02-09 15:59:32,127 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 7d52d979-f671-463f-b5b5-da8bc3423f40
+2026-02-09 15:59:32,132 - story_sign - INFO - [ReportDrafter] Started Shadow Session: c1c93e34-5628-4f4d-ba28-b45efe4e1306
+2026-02-09 15:59:32,139 - story_sign - INFO - [ReportDrafter] Started Shadow Session: bd8c2b14-5fe9-4004-8789-a18a05c02fac
+2026-02-09 15:59:32,153 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 188c333a-6e08-4955-91f5-0ea234e363d3
+2026-02-09 15:59:32,158 - story_sign - INFO - [ReportDrafter] Started Shadow Session: db6ed46a-fe08-4729-8c53-3559684aad6f
+2026-02-09 15:59:32,166 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 6a0a2f07-d46c-406f-9203-0a988328ed45
+2026-02-09 15:59:32,172 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 8b601008-d397-4e57-a7ed-36ad3ae2b9ec
+2026-02-09 15:59:32,178 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 27158fd4-090e-4eff-9e51-495677f1364c
+2026-02-09 15:59:32,179 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 6e3228b1-1093-41e8-9237-620eb65f4ed7
+2026-02-09 15:59:32,182 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 8d37e297-101e-43ba-b415-ec705d64d30a
+2026-02-09 15:59:32,196 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 760c5e16-4444-405e-9fcd-a72d7c5fef88
+2026-02-09 15:59:32,202 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 61bf3831-ad7d-4b92-a5e3-f5d0ce2269b9
+2026-02-09 15:59:32,210 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 41dca898-c36c-4a15-ae38-e62f17793636
+2026-02-09 15:59:32,214 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 63144b31-8f15-4760-863d-ffd616a94c55
+2026-02-09 15:59:32,219 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 7317c9f2-0fd3-4bf0-87f2-e6c7ac8a5b66
+2026-02-09 15:59:32,225 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 63586398-bd53-4b33-9c7b-cec2b61718da
+2026-02-09 15:59:32,241 - story_sign - INFO - [ReportDrafter] Started Shadow Session: b3335289-1f40-4528-9726-4aa4972152a7
+2026-02-09 15:59:32,269 - story_sign - INFO - [ReportDrafter] Started Shadow Session: ccba11ec-4779-4e5d-b9ca-da06863ca083
+2026-02-09 15:59:32,272 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 68ae3702-99e8-4536-a049-ffcfc912fe5a
+2026-02-09 15:59:32,275 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 493709a6-40ab-472a-9c9f-e39a80505679
+2026-02-09 15:59:32,278 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 35dd2147-a43e-404c-aca2-04916cbaea88
+2026-02-09 15:59:32,282 - story_sign - INFO - [ReportDrafter] Started Shadow Session: dd6c4422-38c9-4a46-a4c5-826306b94dc0
+2026-02-09 15:59:32,293 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 08603917-df19-41f8-9932-b36d7ef6e3f1
+2026-02-09 15:59:32,296 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 0b6fe3ec-6685-47e2-9dda-fc9b4734f9dc
+2026-02-09 15:59:32,300 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 3daed083-9912-4e20-ba2f-d7198b01b92a
+2026-02-09 15:59:32,304 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 2d7eb19b-28bf-485e-8366-0ac5f664a758
+2026-02-09 15:59:32,313 - story_sign - INFO - [ReportDrafter] Started Shadow Session: b7b2fae7-db48-4ecb-ba7e-dc7b0367cc51
+2026-02-09 15:59:32,319 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 612a7e69-4300-445d-bc51-757ac3be968a
+2026-02-09 15:59:32,339 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 026cc52f-e469-42a3-af4d-a607914043cf
+2026-02-09 15:59:32,358 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 84238a9c-2eb1-49eb-a4a8-2ef998013c72
+2026-02-09 15:59:32,374 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 30dcb123-6560-411a-81ea-0539435dce2f
+2026-02-09 15:59:32,377 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 578e6da6-4a6c-4939-b1d6-e45922cb547f
+2026-02-09 15:59:32,379 - story_sign - INFO - [ReportDrafter] Started Shadow Session: e4cfaa7a-cc16-4340-9d93-256902fad82b
+2026-02-09 15:59:32,380 - story_sign - INFO - [ReportDrafter] Started Shadow Session: e6593dba-4d86-45a2-a588-6c169e32c253
+2026-02-09 15:59:32,387 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 9b18eb10-df7c-4616-8780-952702169508
+2026-02-09 15:59:32,401 - story_sign - INFO - [ReportDrafter] Started Shadow Session: dafb9d16-f7bf-49da-94e5-da8094c4ccd2
+2026-02-09 15:59:32,410 - story_sign - INFO - [ReportDrafter] Started Shadow Session: ec9cba97-e9cc-414e-b2b0-8a08aef7defc
+2026-02-09 15:59:32,416 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 29864a0a-6c0a-456b-b1fc-8c3154ee8214
+2026-02-09 15:59:32,417 - story_sign - INFO - [ReportDrafter] Started Shadow Session: f3cbaf77-4c86-41f5-adc9-4684a244c663
+2026-02-09 15:59:32,418 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 8f34050f-ce39-4eae-9559-9cdd8a1bbeeb
+2026-02-09 15:59:32,444 - story_sign - INFO - [ReportDrafter] Started Shadow Session: f8a2a56b-44f5-4c89-b19b-7cf2f6db4855
+2026-02-09 15:59:32,447 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 832dcd64-3cd9-4de8-8c3b-625e5969715a
+2026-02-09 15:59:32,473 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 736befa7-efc8-4f09-8140-b6630836c94f
+2026-02-09 15:59:32,477 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 681a0eb0-5600-4c3f-bdb1-d6ddb31e9eef
+2026-02-09 15:59:32,480 - story_sign - INFO - [ReportDrafter] Started Shadow Session: e9b032ed-6dd4-4a27-a475-12a05a200027
+2026-02-09 15:59:32,486 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 3e3c94fa-515c-4c2a-8224-cfbd2a24e719
+2026-02-09 15:59:32,504 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 03ea17d5-dbb0-4a93-a07a-cd11362f4867
+2026-02-09 15:59:32,514 - story_sign - INFO - [ReportDrafter] Started Shadow Session: e4179756-c4ec-4a94-a66d-2a77361942b9
+2026-02-09 15:59:32,523 - story_sign - INFO - [ReportDrafter] Started Shadow Session: d4d830ac-3bb2-402a-9b54-07b42e7a6c49
+2026-02-09 15:59:32,526 - story_sign - INFO - [ReportDrafter] Started Shadow Session: c041f917-9380-4f62-9324-96f5f6a028d7
+2026-02-09 15:59:32,529 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 4ebd37bf-1011-4c40-9914-405c78192938
+2026-02-09 15:59:32,534 - story_sign - INFO - [ReportDrafter] Started Shadow Session: eaef8c70-9c45-4374-bc3a-150cc43cfd7d
+2026-02-09 15:59:32,541 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 79da038e-ab40-43dc-8cd5-fb99a4c91f53
+2026-02-09 15:59:32,548 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 0dfa676f-f0be-4d41-a6d9-db8539a3c8d1
+2026-02-09 15:59:32,552 - story_sign - INFO - [ReportDrafter] Started Shadow Session: a1577082-c482-472b-a547-8772724fae0b
+2026-02-09 15:59:32,560 - story_sign - INFO - [ReportDrafter] Started Shadow Session: ac431bcd-cff6-4922-8bc9-d49e6db1a6cf
+2026-02-09 15:59:32,563 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 90750bf8-6ba7-4b54-adb7-f6f6309ddd29
+2026-02-09 15:59:32,574 - story_sign - INFO - [ReportDrafter] Started Shadow Session: deb4e089-db90-46d8-9e14-024ec0100061
+2026-02-09 15:59:32,600 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 3ef6eb50-508d-4b3b-b771-7bef78a3525c
+2026-02-09 15:59:32,608 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 9dcc2e20-650f-431b-82a8-8ba6894cc704
+2026-02-09 15:59:32,616 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 63f4fc5c-f155-4d9d-951e-f09628fe5ba6
+2026-02-09 15:59:32,624 - story_sign - INFO - [ReportDrafter] Started Shadow Session: ab02ae38-6184-4120-b60c-806b6ba177a5
+2026-02-09 15:59:32,640 - story_sign - INFO - [ReportDrafter] Started Shadow Session: d7c34211-cac3-44db-b232-bc43e1dca74d
+2026-02-09 15:59:32,662 - story_sign - INFO - [ReportDrafter] Started Shadow Session: dbd6c6a9-70f3-45ed-9286-40d3015a5960
+2026-02-09 15:59:32,666 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 27532288-6ea9-4719-b5c3-c2e1b9175097
+2026-02-09 15:59:32,675 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 29eda3b7-6f38-4ed0-9965-f281b8a79e13
+2026-02-09 15:59:32,693 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 7288fc27-6401-4413-9ca5-70b1d98c6818
+2026-02-09 15:59:32,709 - story_sign - INFO - [ReportDrafter] Started Shadow Session: e14c3e09-a709-4480-8110-e3a3909fbd02
+2026-02-09 15:59:32,711 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 4141c849-0004-4261-863a-7a4c899175dd
+2026-02-09 15:59:32,713 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 3df34276-889b-4304-82d6-3b332ca84df4
+2026-02-09 15:59:32,718 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 2326d8e1-3506-4810-97f7-6b6833497900
+2026-02-09 15:59:32,733 - story_sign - INFO - [ReportDrafter] Started Shadow Session: fbcb5156-49da-4c9e-86eb-041f911b5289
+2026-02-09 15:59:32,754 - story_sign - INFO - [ReportDrafter] Started Shadow Session: c7cd60a5-e8e1-4534-a67b-380bb1bdb51b
+2026-02-09 15:59:32,755 - story_sign - INFO - [ReportDrafter] Started Shadow Session: cbdee14a-42d3-4825-af2e-8ee8b42e3dd8
+2026-02-09 15:59:32,757 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 608e1618-4dc0-4adf-9cd6-a9589a514d92
+2026-02-09 15:59:32,760 - story_sign - INFO - [ReportDrafter] Started Shadow Session: a9b0abce-dab4-4a7b-9e49-d391621d1f0f
+2026-02-09 15:59:32,762 - story_sign - INFO - [ReportDrafter] Started Shadow Session: adfa0e80-5da6-4c5c-944f-c6695e716cde
+2026-02-09 15:59:32,763 - story_sign - INFO - [ReportDrafter] Started Shadow Session: dbe6ecc7-7cbb-4b22-8d33-22ebbb5b1a36
+2026-02-09 15:59:32,793 - story_sign - INFO - [ReportDrafter] Started Shadow Session: b76e4eb0-c4a5-4194-b145-ae14fe22b2da
+2026-02-09 15:59:32,819 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 11ed5276-5a5c-4034-8872-d95efafaa3c5
+2026-02-09 15:59:32,904 - story_sign - INFO - [ReportDrafter] Started Shadow Session: b2e1a763-768f-47ec-9a80-e73e50ca6a16
+2026-02-09 15:59:32,919 - story_sign - INFO - [ReportDrafter] Started Shadow Session: a4aaf8e5-bef7-4909-b495-ae5b10e12799
+2026-02-09 15:59:32,954 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 69d0086d-bc04-4a0b-907b-0f0147693185
+2026-02-09 15:59:32,956 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 99f02f3d-3f2c-4173-b53e-42cbaf5c0173
+2026-02-09 15:59:32,966 - story_sign - INFO - [ReportDrafter] Started Shadow Session: c4351090-55ec-42bd-a986-bca9ada74993
+2026-02-09 15:59:32,972 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 62a8f494-4174-43a6-8ca7-add7f8172f3e
+2026-02-09 15:59:32,975 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 348e2cf0-4f3c-40e6-aafd-57165f5463b4
+2026-02-09 15:59:32,977 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 47b05290-697c-45eb-9b8d-090ceb1fd019
+2026-02-09 15:59:32,983 - story_sign - INFO - [ReportDrafter] Started Shadow Session: afcb38e2-4156-4e5f-97ea-d0d4299a9c44
+2026-02-09 15:59:32,988 - story_sign - INFO - [ReportDrafter] Started Shadow Session: dbdaecf7-4d0d-485b-a556-211ab37c222d
+2026-02-09 15:59:32,995 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 03303827-f7b4-4da6-bf38-62c246716430
+2026-02-09 15:59:32,999 - story_sign - INFO - [ReportDrafter] Started Shadow Session: fad5f8b8-51f0-4d45-83a2-da871406022c
+2026-02-09 15:59:33,001 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 4ba05eed-70a0-4639-8fcc-46f29c7090c9
+2026-02-09 15:59:33,003 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 41b2986f-3fd6-4bfd-9fd4-82435b5981c8
+2026-02-09 15:59:33,011 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 50ed0741-b555-4a2b-8835-d9d2bfd53abd
+2026-02-09 15:59:33,013 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 313649e4-2c86-4e81-9ff7-2ecf8dbfe802
+2026-02-09 15:59:33,016 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 7b218763-d1f3-4270-9706-eb784f923129
+2026-02-09 15:59:33,022 - story_sign - INFO - [ReportDrafter] Started Shadow Session: a0a7e497-5a46-4a5a-a6c6-e3adfdf266c3
+2026-02-09 15:59:33,023 - story_sign - INFO - [ReportDrafter] Started Shadow Session: d9d77489-f61f-40d6-a71f-87ecbc708eb3
+2026-02-09 15:59:33,028 - story_sign - INFO - [ReportDrafter] Started Shadow Session: a20ed37e-a29e-4ebd-8a98-77232aab52f5
+2026-02-09 15:59:33,032 - story_sign - INFO - [ReportDrafter] Started Shadow Session: aefa6974-81c4-4316-865d-81523b6ad074
+2026-02-09 15:59:33,042 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 89ffd957-fd2c-4580-98ba-c66c2e020b69
+2026-02-09 15:59:33,051 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 2261aa74-8731-4590-8b8a-ddaa02712814
+2026-02-09 15:59:33,055 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 2d9c6e2d-e0d8-4cd2-bbed-b92931640cb5
+2026-02-09 15:59:33,075 - story_sign - INFO - [ReportDrafter] Started Shadow Session: f317f0d2-2572-4da0-b276-90ddf5f5183e
+2026-02-09 15:59:33,078 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 51a2ffe8-f610-43e7-9c56-69d82558f10e
+2026-02-09 15:59:33,088 - story_sign - INFO - [ReportDrafter] Started Shadow Session: e529ec8e-8701-4057-809d-98b8be686465
+2026-02-09 15:59:33,089 - story_sign - INFO - [ReportDrafter] Started Shadow Session: ceef5e74-388d-4c06-ba6e-5c21a2695c95
+2026-02-09 15:59:33,091 - story_sign - INFO - [ReportDrafter] Started Shadow Session: f2129b4b-c209-4121-ba3d-47f746c1bdbe
+2026-02-09 15:59:33,092 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 6409e9b8-a311-4076-a723-b2251da84d2d
+2026-02-09 15:59:33,135 - story_sign - INFO - [ReportDrafter] Started Shadow Session: c6bf49ee-de75-4a38-9c23-f35acd5a9e43
+2026-02-09 15:59:33,160 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 3eb84f27-6781-43d5-b762-2c39ae93bf62
+2026-02-09 15:59:33,173 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 9ba7c586-6cf1-43c6-b667-74b4c0301892
+2026-02-09 15:59:33,177 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 532aa6e0-882a-4bbd-afd8-1f70fa372d1f
+2026-02-09 15:59:33,197 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 2baa5177-d218-4d45-943f-40e6a8da9065
+2026-02-09 15:59:33,202 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 449b8ec6-6b4e-4d90-a319-32caf84a6d6a
+2026-02-09 15:59:33,218 - story_sign - INFO - [ReportDrafter] Started Shadow Session: a21e120f-09e8-4f6b-953c-a6caf5f6c7bb
+2026-02-09 15:59:33,221 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 614cec05-5132-4165-ae53-64e184b49dc0
+2026-02-09 15:59:33,230 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 97c0947e-3bc3-4836-ae7e-2842f01592d9
+2026-02-09 15:59:33,233 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 87f0c020-d92c-4b8c-8c20-05f675dfaee4
+2026-02-09 15:59:33,243 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 6342cb1c-16a6-427b-86ae-984c787875f2
+2026-02-09 15:59:33,255 - story_sign - INFO - [ReportDrafter] Started Shadow Session: d33b7721-a861-4a64-9ba1-d839ade3922b
+2026-02-09 15:59:33,273 - story_sign - INFO - [ReportDrafter] Started Shadow Session: b01149e1-925e-463b-91d6-e6bec7fdfac4
+2026-02-09 15:59:33,286 - story_sign - INFO - [ReportDrafter] Started Shadow Session: aac14746-4b7e-4652-a23a-ce02b8f6d449
+2026-02-09 15:59:33,290 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 1cef118b-f199-4289-9de4-20a6bb388e92
+2026-02-09 15:59:33,310 - story_sign - INFO - [ReportDrafter] Started Shadow Session: e861eb9a-af5a-438c-81da-f69f4573a76c
+2026-02-09 15:59:33,327 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 00129262-131c-4dc2-b52a-49d5f8bc88e4
+2026-02-09 15:59:33,338 - story_sign - INFO - [ReportDrafter] Started Shadow Session: f3001353-4aa5-48d2-93bb-00246427b0e9
+2026-02-09 15:59:33,358 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 7d684598-cc0a-48e9-ae6f-eb9ce4c3ff91
+2026-02-09 15:59:33,370 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 8e8790c0-2fd7-4975-8845-5f2c7c01b260
+2026-02-09 15:59:33,374 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 647e0843-85af-48a9-894f-959971b508de
+2026-02-09 15:59:33,379 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 26181990-aa1b-4cf7-b05d-28a27345ca65
+2026-02-09 15:59:33,383 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 297d40e2-e25a-46b8-9c5d-4f8a21fe9821
+2026-02-09 15:59:33,387 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 06bc1738-4bd2-4398-b2ae-5fed180a9366
+2026-02-09 15:59:33,405 - story_sign - INFO - [ReportDrafter] Started Shadow Session: d109991f-c08d-4436-a370-41b75a13247d
+2026-02-09 15:59:33,411 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 66ef3613-135b-464b-8106-a68f793d216a
+2026-02-09 15:59:33,417 - story_sign - INFO - [ReportDrafter] Started Shadow Session: df6bdc58-37d4-4b2d-8a26-d5c8c016fedf
+2026-02-09 15:59:33,424 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 451dec24-d73a-453b-ad87-e0ac26dd32b0
+2026-02-09 15:59:33,428 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 40faa759-7c89-4c38-a333-36d5107e0bbe
+2026-02-09 15:59:33,432 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 747b9e67-e110-4be3-9e51-38dfb0def9b5
+2026-02-09 15:59:33,442 - story_sign - INFO - [ReportDrafter] Started Shadow Session: d4049bb6-6cb9-453e-992e-718da22f7c1b
+2026-02-09 15:59:33,454 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 0554db40-b3d4-4df5-890a-49a99c3ffce2
+2026-02-09 15:59:33,467 - story_sign - INFO - [ReportDrafter] Started Shadow Session: a3310b99-6bb1-4146-8af8-7f7bb1a49b1f
+2026-02-09 15:59:33,470 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 462aaf5e-c0f7-49e7-bd15-c1552b37d457
+2026-02-09 15:59:33,476 - story_sign - INFO - [ReportDrafter] Started Shadow Session: e145be1f-eecd-4f87-be72-bfed45db94ae
+2026-02-09 15:59:33,480 - story_sign - INFO - [ReportDrafter] Started Shadow Session: ffbef884-3611-4d3b-aa40-ef66433ced52
+2026-02-09 15:59:33,484 - story_sign - INFO - [ReportDrafter] Started Shadow Session: ea7dcf45-9d71-410d-8859-a9dd171152a0
+2026-02-09 15:59:33,494 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 4b9f24c5-90df-4219-ad57-f786a0809d95
+2026-02-09 15:59:33,499 - story_sign - INFO - [ReportDrafter] Started Shadow Session: e8333089-fdb8-46df-a29e-359c66076717
+2026-02-09 15:59:33,505 - story_sign - INFO - [ReportDrafter] Started Shadow Session: f84e17f0-d88e-4aed-8bee-397261649a65
+2026-02-09 15:59:33,515 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 9d3ef757-3811-4e2d-959b-054e2b0d49c5
+2026-02-09 15:59:33,517 - story_sign - INFO - [ReportDrafter] Started Shadow Session: be07f468-5ed0-4553-bda6-e83fa4113557
+2026-02-09 15:59:33,527 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 1665f8d6-9299-42df-9228-860462d80f7d
+2026-02-09 15:59:33,545 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 31ae30a6-9098-434a-8c71-091fdca6930f
+2026-02-09 15:59:33,550 - story_sign - INFO - [ReportDrafter] Started Shadow Session: c01cdbee-c4f2-4750-87b1-6640d34fdaf0
+2026-02-09 15:59:33,555 - story_sign - INFO - [ReportDrafter] Started Shadow Session: e8ec95e3-9f89-458d-bc8f-7848446c9e81
+2026-02-09 15:59:33,559 - story_sign - INFO - [ReportDrafter] Started Shadow Session: f8a37af2-dcc2-419a-90c8-afcc2e7ef3d0
+2026-02-09 15:59:33,575 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 1c36d279-6923-48ae-9800-e7d3798e24d8
+2026-02-09 15:59:33,581 - story_sign - INFO - [ReportDrafter] Started Shadow Session: e139b73e-1784-4206-accf-51ee3c880995
+2026-02-09 15:59:33,584 - story_sign - INFO - [ReportDrafter] Started Shadow Session: fc23944e-0f5a-493b-a5d9-6b304b30655f
+2026-02-09 15:59:33,599 - story_sign - INFO - [ReportDrafter] Started Shadow Session: ac047082-788e-4ca3-b7a4-a58ee6bef973
+2026-02-09 15:59:33,607 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 00830434-744c-4853-a8da-f3bfcc1c33a7
+2026-02-09 15:59:33,611 - story_sign - INFO - [ReportDrafter] Started Shadow Session: fd59d90a-2a95-4b44-b7a9-3a08d22f6940
+2026-02-09 15:59:33,632 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 92b4d252-5acf-4b3a-86a3-fad8f69768c8
+2026-02-09 15:59:33,658 - story_sign - INFO - [ReportDrafter] Started Shadow Session: bfafb060-15a8-4983-b488-823304b54ca1
+2026-02-09 15:59:33,667 - story_sign - INFO - [ReportDrafter] Started Shadow Session: bbaccb17-5e17-43e5-b631-3152b2e625ef
+2026-02-09 15:59:33,681 - story_sign - INFO - [ReportDrafter] Started Shadow Session: b0ad9ff1-c6f9-4638-8131-d79a64cfa043
+2026-02-09 15:59:33,685 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 3193994e-d37e-4c14-893b-dbf876924d03
+2026-02-09 15:59:33,700 - story_sign - INFO - [ReportDrafter] Started Shadow Session: b549f1c0-4d1f-45a8-a8fd-df597e4721fc
+2026-02-09 15:59:33,721 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 5072f6a1-85ea-40ee-b5ca-b9cdcfe8fe6b
+2026-02-09 15:59:33,737 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 42571c6c-8fb3-42b1-ab85-be87078e29e9
+2026-02-09 15:59:33,740 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 210b186c-9b7d-4dc9-998a-898e8fd6f4d7
+2026-02-09 15:59:33,744 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 44d47e4d-b79f-43f5-8238-0cd27f6b9f97
+2026-02-09 15:59:33,781 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 2319cadc-692c-4439-bfe8-13b271d69268
+2026-02-09 15:59:33,823 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 38304602-c563-4e29-95f9-858a757852a6
+2026-02-09 15:59:33,827 - story_sign - INFO - [ReportDrafter] Started Shadow Session: a0142d34-15d6-4731-9928-4f7115622ae2
+2026-02-09 15:59:33,830 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 0bb20400-01e1-490b-9c97-b0883fe42af9
+2026-02-09 15:59:33,849 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 9de685cf-4ccb-4496-bd42-cab18fa2e5b7
+2026-02-09 15:59:33,854 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 138dda6f-dcb8-413b-8b0c-ed9790d04bcb
+2026-02-09 15:59:33,858 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 7befc190-1e74-4bbb-a1b7-bd53135b2c02
+2026-02-09 15:59:33,899 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 1974cb3f-2018-46cb-b39b-8f95c56036a1
+2026-02-09 15:59:33,915 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 22a38468-a8db-4538-b831-7bb7270555a0
+2026-02-09 15:59:33,923 - story_sign - INFO - [ReportDrafter] Started Shadow Session: a40d0b73-89dd-4447-a64b-3bb7b9778ae4
+2026-02-09 15:59:33,941 - story_sign - INFO - [ReportDrafter] Started Shadow Session: bd6f858f-d4b5-4073-9f3e-e492eb7b5479
+2026-02-09 15:59:33,953 - story_sign - INFO - [ReportDrafter] Started Shadow Session: be0114fa-c342-42f1-a716-218e576c4513
+2026-02-09 15:59:33,962 - story_sign - INFO - [ReportDrafter] Started Shadow Session: acfaa432-1f80-4da4-b680-ba6f939fd5f0
+2026-02-09 15:59:34,001 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 456a5ac8-9ee9-4090-9ea9-659fb4c12aa7
+2026-02-09 15:59:34,007 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 6d77f773-5635-4d30-88b1-b9a945e39166
+2026-02-09 15:59:34,021 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 380769b5-f8c6-48e8-b8d4-d001507806b9
+2026-02-09 15:59:34,031 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 3164c97e-cb4e-428b-8dcb-5025ff478a29
+2026-02-09 15:59:34,045 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 2f40c987-9985-4408-b0b1-355e082d0c8a
+2026-02-09 15:59:34,062 - story_sign - INFO - [ReportDrafter] Started Shadow Session: fc47e0aa-f858-4012-8ff8-3edb9c120249
+2026-02-09 15:59:34,081 - story_sign - INFO - [ReportDrafter] Started Shadow Session: e735210d-854b-48d5-9bf2-85ed4600ce6b
+2026-02-09 15:59:34,086 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 15e0ceeb-26bd-429a-b1f7-e6201c43bdd2
+2026-02-09 15:59:34,092 - story_sign - INFO - [ReportDrafter] Started Shadow Session: f825d575-a001-4b5b-8c27-780759fe9313
+2026-02-09 15:59:34,103 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 459f1bdc-8b94-4d03-b333-6701025305fc
+2026-02-09 15:59:34,109 - story_sign - INFO - [ReportDrafter] Started Shadow Session: b37f5c5e-3afc-4a8a-b830-f42ae2edf1b1
+2026-02-09 15:59:34,171 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 5b190b76-5833-480d-9a64-c99d3a357d71
+2026-02-09 15:59:34,199 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 4ed7a579-933e-4271-9f92-6ee882a5ec7c
+2026-02-09 15:59:34,209 - story_sign - INFO - [ReportDrafter] Started Shadow Session: ab4ae152-c999-4397-8ad3-afc2e9533962
+2026-02-09 15:59:34,224 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 2276ca5c-c1ef-4eb8-8fff-06f66b44765b
+2026-02-09 15:59:34,236 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 24a94944-f48f-4c12-ba78-6e73929ad90f
+2026-02-09 15:59:34,251 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 8c97dbb0-4479-4895-a743-f1fb7ad977b4
+2026-02-09 15:59:34,275 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 2f2c80e3-792e-4b1d-8e7d-f7c30988e122
+2026-02-09 15:59:34,322 - story_sign - INFO - [ReportDrafter] Started Shadow Session: dc6068e6-be0f-4d5f-a7a0-98297bd0ea8a
+2026-02-09 15:59:34,377 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 672f4213-dafd-483c-b06f-cbbf7ae0dbdb
+2026-02-09 15:59:34,416 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 7097b6e5-3e0e-44fc-81fc-34c36e0eef8d
+2026-02-09 15:59:34,420 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 5ffbc742-6971-4c9f-87a1-321a1f813e0d
+2026-02-09 15:59:34,437 - story_sign - INFO - [ReportDrafter] Started Shadow Session: fd7e3bbb-574c-4fdb-aad8-f4a68591b185
+2026-02-09 15:59:34,462 - story_sign - INFO - [ReportDrafter] Started Shadow Session: c054dde4-c066-49e9-a987-ecb43efe3502
+2026-02-09 15:59:34,486 - story_sign - INFO - [ReportDrafter] Started Shadow Session: a8d251f9-8756-40d4-90ef-4f65b4ec4810
+2026-02-09 15:59:34,490 - story_sign - INFO - [ReportDrafter] Started Shadow Session: a1775eaa-555b-4bf9-b0a9-65a4fc432e5c
+2026-02-09 15:59:34,508 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 6f31269c-beb9-4e9c-8a9e-f6739953ad77
+2026-02-09 15:59:34,536 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 83ae1c25-731f-44ff-a043-45bd6eb052df
+2026-02-09 15:59:34,543 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 160b5ba0-d999-48e9-88f4-9be41418e583
+2026-02-09 15:59:34,597 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 98ecae8d-217b-4b91-bfb0-a80cf48ff490
+2026-02-09 15:59:34,601 - story_sign - INFO - [ReportDrafter] Started Shadow Session: dba50030-e1b6-4eef-92c8-97efa2a808d6
+2026-02-09 15:59:34,607 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 68754120-b0fb-49b0-b4d2-601389861245
+2026-02-09 15:59:34,633 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 422a4383-bb96-4325-b534-3ef400da685d
+2026-02-09 15:59:34,637 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 3b7fb690-ac6a-4040-977f-5b8a31bc0986
+2026-02-09 15:59:34,643 - story_sign - INFO - [ReportDrafter] Started Shadow Session: a1a79f39-efd8-4b69-acd7-69a25aff92bd
+2026-02-09 15:59:34,654 - story_sign - INFO - [ReportDrafter] Started Shadow Session: b08525dc-c90a-4339-910d-f2dea2cd764e
+2026-02-09 15:59:34,665 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 0d4f8876-3c11-40d0-887a-11506992e856
+2026-02-09 15:59:34,670 - story_sign - INFO - [ReportDrafter] Started Shadow Session: ca8e51f8-50bb-4ada-8911-d87fde61b85e
+2026-02-09 15:59:34,687 - story_sign - INFO - [ReportDrafter] Started Shadow Session: b556d6cb-8f5f-4387-9eb9-49fbee2987b5
+2026-02-09 15:59:34,712 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 2935571c-cab8-4685-854e-3c45af11b18d
+2026-02-09 15:59:34,725 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 53d30e34-13d5-4ba9-bca7-cfadda9d9b7e
+2026-02-09 15:59:34,746 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 8baa1d87-a95e-454a-8b9c-8a48a640ee63
+2026-02-09 15:59:34,763 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 0ca42d86-cd1d-4433-9d91-72a0bf8f8cfa
+2026-02-09 15:59:34,773 - story_sign - INFO - [ReportDrafter] Started Shadow Session: cbff2c84-8664-44c1-a986-a2d931b8d093
+2026-02-09 15:59:34,788 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 95982c30-2220-4f85-ab9c-a141d4c34e3f
+2026-02-09 15:59:34,795 - story_sign - INFO - [ReportDrafter] Started Shadow Session: c6d97ba6-ba8e-41f7-b0cb-f70fdd01e052
+2026-02-09 15:59:34,810 - story_sign - INFO - [ReportDrafter] Started Shadow Session: d640de09-d09f-4be4-8b67-82e02ccafc17
+2026-02-09 15:59:34,936 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 13650c8e-9829-47d3-980c-7688f26e4cf8
+2026-02-09 15:59:34,970 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 6d40aeb3-397b-47cb-9ef2-f000d7f0c4f0
+2026-02-09 15:59:34,985 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 3c69f3fb-9314-4f5e-8159-d4864ff00d71
+2026-02-09 15:59:34,994 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 87e98eaa-7f04-46c3-88dc-1585f2def0a1
+2026-02-09 15:59:35,016 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 750ba6e2-f893-41cb-8176-0e5db7841746
+2026-02-09 15:59:35,028 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 1b10b13b-a8af-4d61-9a22-1eb834e6a022
+2026-02-09 15:59:35,058 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 28a85c93-5c8a-4943-af0b-a816bb317e1b
+2026-02-09 15:59:35,065 - story_sign - INFO - [ReportDrafter] Started Shadow Session: a320ed36-7c70-48c1-83bc-0502eaeb1b69
+2026-02-09 15:59:35,068 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 724b7e98-077b-4234-a447-fb5be7c31346
+2026-02-09 15:59:35,072 - story_sign - INFO - [ReportDrafter] Started Shadow Session: e586ac5a-a0e5-4030-9e63-6ebfafe1724e
+2026-02-09 15:59:35,081 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 53c98796-c616-4f6c-9aa4-b771b2f6d9da
+2026-02-09 15:59:35,098 - story_sign - INFO - [ReportDrafter] Started Shadow Session: df151057-df63-4ed7-8b91-f43ec1670a90
+2026-02-09 15:59:35,114 - story_sign - INFO - [ReportDrafter] Started Shadow Session: ea14a71b-f59a-4a09-a466-0b3bc6c39223
+2026-02-09 15:59:35,118 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 56159560-a865-40d8-ba45-5f2ce21e2060
+2026-02-09 15:59:35,123 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 87a2e683-ee2e-425d-a687-b2a1896e961d
+2026-02-09 15:59:35,131 - story_sign - INFO - [ReportDrafter] Started Shadow Session: c562408f-8904-4246-a7bb-5eaf4e97348c
+2026-02-09 15:59:35,138 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 0014875c-9195-49bf-85ab-a7c2cb8e68d0
+2026-02-09 15:59:35,151 - story_sign - INFO - [ReportDrafter] Started Shadow Session: f5a6f87b-727c-46da-9070-ab1e43dcb145
+2026-02-09 15:59:35,178 - story_sign - INFO - [ReportDrafter] Started Shadow Session: af50a5db-1627-47c2-9cbd-f8a8304d7c68
+2026-02-09 15:59:35,199 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 9228a573-9bee-4c07-9801-5b9617c1f97a
+2026-02-09 15:59:35,215 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 6ef8e2f5-435e-4d14-8f0a-68670ae76ea4
+2026-02-09 15:59:35,238 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 63c05fec-741a-424b-93c3-0713f82e23e3
+2026-02-09 15:59:35,244 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 6bb0d3ca-e4ff-4f0c-9d43-2589a5e8f6da
+2026-02-09 15:59:35,254 - story_sign - INFO - [ReportDrafter] Started Shadow Session: affb7812-3f29-4b03-9db2-249579fc9528
+2026-02-09 15:59:35,275 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 5cd01c52-ffc8-4eb7-abe7-9f98cbae91cf
+2026-02-09 15:59:35,286 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 745f9850-938a-4d55-acaa-918e6a82c83b
+2026-02-09 15:59:35,310 - story_sign - INFO - [ReportDrafter] Started Shadow Session: a49cbbf8-1d64-4511-a6ca-8dd4793a370f
+2026-02-09 15:59:35,324 - story_sign - INFO - [ReportDrafter] Started Shadow Session: e0f20bda-1826-4e26-a58e-b7f5aee45a29
+2026-02-09 15:59:35,334 - story_sign - INFO - [ReportDrafter] Started Shadow Session: b18a677e-8168-483e-9cfc-34b0c6748037
+2026-02-09 15:59:35,383 - story_sign - INFO - [ReportDrafter] Started Shadow Session: ad2f27a8-ed52-4eb1-9898-5b977c355516
+2026-02-09 15:59:35,690 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 1e3a7150-dfb5-4309-8f80-c60aae599f88
+2026-02-09 15:59:35,714 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 131aabac-6089-4576-b630-ef6b88c92eac
+2026-02-09 15:59:35,767 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 8a409853-6b76-4094-af0e-1252e293ce1e
+2026-02-09 15:59:35,792 - story_sign - INFO - [ReportDrafter] Started Shadow Session: c78544cf-ac36-4b81-b8ba-6eee6b6c8be2
+2026-02-09 15:59:35,822 - story_sign - INFO - [ReportDrafter] Started Shadow Session: bbb28265-a36a-4aa2-97f1-df51ee1ba6d7
+2026-02-09 15:59:35,855 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 105c0274-410d-4f93-8767-d865847fa9c1
+2026-02-09 15:59:35,917 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 11ca406d-b3b2-4afc-991d-ddb5334cbb5d
+2026-02-09 15:59:35,959 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 25eed9bb-ca78-4432-b623-c4874aa06c5c
+2026-02-09 15:59:35,993 - story_sign - INFO - [ReportDrafter] Started Shadow Session: fbf3a0e4-c12b-4061-b446-37479f259668
+2026-02-09 15:59:36,018 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 7693da2e-81ff-4d5a-988d-ce5c37c0c06f
+2026-02-09 15:59:36,031 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 24f18ab6-1f6e-4d7c-8703-b92698c08cda
+2026-02-09 15:59:36,037 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 0113c102-03e8-4c12-aef4-c69a3a4baa18
+2026-02-09 15:59:36,063 - story_sign - INFO - [ReportDrafter] Started Shadow Session: acb4fd22-8a87-48a5-af65-12d8a3d72a21
+2026-02-09 15:59:36,075 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 5f0e3fb6-7d39-43e7-986d-b5f31bf41a99
+2026-02-09 15:59:36,084 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 1cdd3cb1-2c79-4e8d-992c-e3511b7e1aa4
+2026-02-09 15:59:36,094 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 1178d1b9-a534-4356-9a05-e274e1b369e3
+2026-02-09 15:59:36,099 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 289bace5-6ec6-4d9f-a903-512f07456c44
+2026-02-09 15:59:36,106 - story_sign - INFO - [ReportDrafter] Started Shadow Session: defbe276-e3da-4882-9639-027fe435a15d
+2026-02-09 15:59:36,125 - story_sign - INFO - [ReportDrafter] Started Shadow Session: c15d9808-c361-4cfe-89fd-17b6c4e4054c
+2026-02-09 15:59:36,131 - story_sign - INFO - [ReportDrafter] Started Shadow Session: e625c5ee-0ed1-4000-80bd-d42b2d69f662
+2026-02-09 15:59:36,137 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 4fae05bd-8e50-4caa-9e58-cb9b19dee822
+2026-02-09 15:59:36,145 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 1f23500f-bc7d-459a-904f-955781520a90
+2026-02-09 15:59:36,149 - story_sign - INFO - [ReportDrafter] Started Shadow Session: a4802b1f-d4c7-4a7b-8550-be28b2380c3a
+2026-02-09 15:59:36,157 - story_sign - INFO - [ReportDrafter] Started Shadow Session: ea0429ba-5e37-4998-b483-098644bf1f89
+2026-02-09 15:59:36,180 - story_sign - INFO - [ReportDrafter] Started Shadow Session: f4e4ab77-4930-4a8d-89a8-1f6959d1c3e8
+2026-02-09 15:59:36,184 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 6f77293b-b2e0-40ee-888a-910f917c5892
+2026-02-09 15:59:36,195 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 58d6f3e8-ca7c-4950-8437-ec50eac35ff0
+2026-02-09 15:59:36,211 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 2e2ca1ac-290e-4412-97b6-81594a33b202
+2026-02-09 15:59:36,216 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 05894995-5bca-40f6-8a61-275d25cf3bb7
+2026-02-09 15:59:36,222 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 7ebd2cad-41f1-4870-91ef-a8d402ba4da3
+2026-02-09 15:59:36,248 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 3c16a1b0-e1eb-4441-a64f-dbf747413729
+2026-02-09 15:59:36,265 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 015c7a5e-a5d6-4ef5-9bf0-ae3ec1fc358f
+2026-02-09 15:59:36,283 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 176cff5c-e493-47de-acc0-d36052c5326a
+2026-02-09 15:59:36,294 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 5113ddbf-9e69-40ff-91a0-5efd90d7a626
+2026-02-09 15:59:36,311 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 07556e95-8388-431e-9b02-15e43df03460
+2026-02-09 15:59:36,318 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 1c7660b7-bb61-4106-be2c-dde72ec179ca
+2026-02-09 15:59:36,342 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 97b79934-4bc0-49ce-baf9-8cd20d51a65a
+2026-02-09 15:59:36,358 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 21424083-7cc1-4722-bba3-724c5b8a8255
+2026-02-09 15:59:36,364 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 8578b2da-f3d1-40fd-a679-eb617f0811fc
+2026-02-09 15:59:36,382 - story_sign - INFO - [ReportDrafter] Started Shadow Session: a9af1d45-623a-442c-96f7-6185012c55c1
+2026-02-09 15:59:36,416 - story_sign - INFO - [ReportDrafter] Started Shadow Session: a8d96ad5-d0b9-4ec4-a75b-d314f6b6d9ca
+2026-02-09 15:59:36,423 - story_sign - INFO - [ReportDrafter] Started Shadow Session: aee1230c-8cb0-4873-9c89-7f8d25a32e77
+2026-02-09 15:59:36,454 - story_sign - INFO - [ReportDrafter] Started Shadow Session: f8f11adf-1567-4819-93bb-9d35210e759d
+2026-02-09 15:59:36,463 - story_sign - INFO - [ReportDrafter] Started Shadow Session: f9938590-304b-4871-b830-892a3a354f90
+2026-02-09 15:59:36,468 - story_sign - INFO - [ReportDrafter] Started Shadow Session: a6c59668-5ed7-4c4d-bb0c-77a4a234714c
+2026-02-09 15:59:36,475 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 6f87fcf2-e4bf-44ba-9565-841732ec4276
+2026-02-09 15:59:36,486 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 56528aac-5fa8-4471-a651-69ba56d1b6ca
+2026-02-09 15:59:36,518 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 9dc45ede-3834-4442-ab08-2af93ade52f2
+2026-02-09 15:59:36,575 - story_sign - INFO - [ReportDrafter] Started Shadow Session: f06862e9-1ef3-4e48-8741-b108ab35e0a3
+2026-02-09 15:59:36,619 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 5a3da5b1-dc45-4fe4-876a-ecf68db54d16
+2026-02-09 15:59:36,639 - story_sign - INFO - [ReportDrafter] Started Shadow Session: bf5d72a2-523a-461e-9bd8-be29f9fea6dd
+2026-02-09 15:59:36,665 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 894cadcb-5429-46b7-a945-8f9170eeb964
+2026-02-09 15:59:36,696 - story_sign - INFO - [ReportDrafter] Started Shadow Session: b3dffdef-8f79-487e-b943-891144274098
+2026-02-09 15:59:36,727 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 06b2b6c0-1cb8-4db7-a054-0f7fdee53106
+2026-02-09 15:59:36,779 - story_sign - INFO - [ReportDrafter] Started Shadow Session: e9b3a145-50a4-4d7b-9b98-d8fd18f04af0
+2026-02-09 15:59:36,801 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 49e5eafd-b822-406c-adce-9aa5f673886e
+2026-02-09 15:59:36,810 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 1ce9232b-be3d-474d-8925-e10a47afe416
+2026-02-09 15:59:36,817 - story_sign - INFO - [ReportDrafter] Started Shadow Session: b5d260ed-d188-4e97-af35-4d32d5869d24
+2026-02-09 15:59:36,827 - story_sign - INFO - [ReportDrafter] Started Shadow Session: cf9b905e-caa5-407b-bcd7-073400301e72
+2026-02-09 15:59:36,837 - story_sign - INFO - [ReportDrafter] Started Shadow Session: feef5f70-6b96-419f-b7f4-6f619d8044f9
+2026-02-09 15:59:37,362 - story_sign - INFO - [ReportDrafter] Started Shadow Session: a7746baa-de46-4e87-8612-f8d8ba95e62d
+2026-02-09 15:59:37,485 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 16e513ab-e8be-4c25-9988-c9795c1c9a54
+2026-02-09 15:59:37,510 - story_sign - INFO - [ReportDrafter] Started Shadow Session: e60284a2-8736-416b-ab9d-ee1b7969adb4
+2026-02-09 15:59:37,530 - story_sign - INFO - [ReportDrafter] Started Shadow Session: ee71e99a-774e-4508-8672-a3edd4afc744
+2026-02-09 15:59:37,545 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 7e2a741e-f230-4b97-aaa9-44451af5fde9
+2026-02-09 15:59:37,554 - story_sign - INFO - [ReportDrafter] Started Shadow Session: bed19e37-9c71-4ec0-9de7-b32b0b8a17c5
+2026-02-09 15:59:37,591 - story_sign - INFO - [ReportDrafter] Started Shadow Session: bd94793d-047f-49ba-afca-cb5ed8e95454
+2026-02-09 15:59:37,612 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 4b7b5ea2-9bd2-4740-a3e1-15e88f9eeff4
+2026-02-09 15:59:37,619 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 980ea7fd-3db8-44df-843f-ca0d769ebd61
+2026-02-09 15:59:37,647 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 13888cf7-6e87-430e-9894-598b04fd7cef
+2026-02-09 15:59:37,698 - story_sign - INFO - [ReportDrafter] Started Shadow Session: cb66c431-da0c-4ec9-8488-2055666d0ed9
+2026-02-09 15:59:37,726 - story_sign - INFO - [ReportDrafter] Started Shadow Session: de5c6ca3-8ae5-4885-9643-156b66d0c4eb
+2026-02-09 15:59:37,731 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 241595c3-c41a-4b7f-be11-05f2793fa070
+2026-02-09 15:59:37,735 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 2a89349e-e994-4a9e-90fc-efbbf9e03ba3
+2026-02-09 15:59:37,738 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 0b097848-a2b3-4ec1-a599-236923b2be7f
+2026-02-09 15:59:37,745 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 74b2da93-79ac-4ec2-96b6-9c3a308c7dee
+2026-02-09 15:59:37,747 - story_sign - INFO - [ReportDrafter] Started Shadow Session: d6e555cf-2357-4848-8c45-28779b7caf91
+2026-02-09 15:59:37,750 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 00e956e0-935e-4e76-a2fe-0df16b72dcf3
+2026-02-09 15:59:37,790 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 784c834c-c07c-40d5-8e7e-20c51ea62a34
+2026-02-09 15:59:37,793 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 6128f400-2277-4493-a787-5de928e4b53f
+2026-02-09 15:59:37,830 - story_sign - INFO - [ReportDrafter] Started Shadow Session: dec6c2d7-4116-4e46-b485-dac4648ea91a
+2026-02-09 15:59:37,836 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 450eb111-f517-44c6-8879-6ebaac571dba
+2026-02-09 15:59:37,856 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 53e6a01b-0f9a-4cde-80e4-9c97c5fd716e
+2026-02-09 15:59:37,875 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 78b083e4-0827-42e6-a394-3361bc04d4bf
+2026-02-09 15:59:37,890 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 55e0685b-f562-4022-b91e-300b7f179b25
+2026-02-09 15:59:37,910 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 0abf83fc-310e-4101-8a67-8abaaaffaf4f
+2026-02-09 15:59:37,925 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 5199e3a8-2585-4afe-91d0-5db132929dd2
+2026-02-09 15:59:37,957 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 2089a0e2-4446-4218-98e0-ed90253ff5db
+2026-02-09 15:59:37,986 - story_sign - INFO - [ReportDrafter] Started Shadow Session: f1270e4e-bb8d-4617-b81a-7902fc26d5f5
+2026-02-09 15:59:38,057 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 4e351335-d00d-4454-97d8-19b455cbbc5d
+2026-02-09 15:59:38,108 - story_sign - INFO - [ReportDrafter] Started Shadow Session: a6eebb4f-c579-48e9-b839-fdbe9569bada
+2026-02-09 15:59:38,114 - story_sign - INFO - [ReportDrafter] Started Shadow Session: bf12e086-e7ce-43f1-8ad5-55b20789d43f
+2026-02-09 15:59:38,156 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 4364acfe-c93d-402f-b5b1-91e7bb35d935
+2026-02-09 15:59:38,174 - story_sign - INFO - [ReportDrafter] Started Shadow Session: d3f56b0f-b170-44aa-9a62-ab26d5ea8f9f
+2026-02-09 15:59:38,177 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 1c445d4d-c3e0-4ec4-ba83-0c298f590888
+2026-02-09 15:59:38,179 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 13a639e1-4c20-4678-8d11-c1b5406341b6
+2026-02-09 15:59:38,196 - story_sign - INFO - [ReportDrafter] Started Shadow Session: c1ce1aed-c692-4608-a8c1-c2fc227c5e96
+2026-02-09 15:59:38,227 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 942d2e91-d380-4374-a49a-9dcf4e9547e2
+2026-02-09 15:59:38,249 - story_sign - INFO - [ReportDrafter] Started Shadow Session: c9cd9635-c388-48b9-8282-6576fa95ceb5
+2026-02-09 15:59:38,260 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 7cfe9316-0185-4988-8e7b-8496b8db1281
+2026-02-09 15:59:38,273 - story_sign - INFO - [ReportDrafter] Started Shadow Session: db42087c-22b3-457c-b6cc-9a0c1340718e
+2026-02-09 15:59:38,292 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 0a80b7e9-007f-4c73-af61-78dce2b6c341
+2026-02-09 15:59:38,307 - story_sign - INFO - [ReportDrafter] Started Shadow Session: a7b1d5d1-1eec-4514-928f-24f45208bc97
+2026-02-09 15:59:38,318 - story_sign - INFO - [ReportDrafter] Started Shadow Session: b0b1d508-43bc-4e03-b8a3-853f0423052b
+2026-02-09 15:59:38,341 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 63b00a0d-3e6e-49af-8efc-3668c9187876
+2026-02-09 15:59:38,344 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 9fda340e-b4cd-4dbf-b5b6-3e275dba4f13
+2026-02-09 15:59:38,353 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 21c4239b-e917-462f-bb8a-e8091f099a7f
+2026-02-09 15:59:38,358 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 855ae43e-c2df-4c28-bdf8-b90c5174511e
+2026-02-09 15:59:38,360 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 2e9ae436-6215-42bb-a273-97b4eb32bf69
+2026-02-09 15:59:38,390 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 65c589fb-0abd-42eb-823c-7048f20bbc3b
+2026-02-09 15:59:38,399 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 1afa32fc-75b7-4f3a-bfb3-4278af04f4a5
+2026-02-09 15:59:38,415 - story_sign - INFO - [ReportDrafter] Started Shadow Session: beabcd46-fd9a-411e-aa26-eac1094d6e9a
+2026-02-09 15:59:38,418 - story_sign - INFO - [ReportDrafter] Started Shadow Session: b495f226-03c8-4eee-ae24-aba3493173d6
+2026-02-09 15:59:38,450 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 27b2c16c-b7a0-4562-a2d7-fb3ebd1580b9
+2026-02-09 15:59:38,465 - story_sign - INFO - [ReportDrafter] Started Shadow Session: cd05bff0-ef39-462c-b3ed-1376c2d9bc5e
+2026-02-09 15:59:38,483 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 59740436-b5c0-4f24-99a6-b5cf00c287de
+2026-02-09 15:59:38,486 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 1ee65e31-60be-4d80-8f5b-00303ed57071
+2026-02-09 15:59:38,488 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 1cf5ac4e-72bd-47ea-9201-6bcf9644908b
+2026-02-09 15:59:38,498 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 967411e7-adbf-4c8e-88af-173a255883f4
+2026-02-09 15:59:38,506 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 6de4c86d-4294-4cff-9801-c321d64ca6a7
+2026-02-09 15:59:38,520 - story_sign - INFO - [ReportDrafter] Started Shadow Session: d6f1e195-f86e-4ba1-ba6f-d92335fb6cad
+2026-02-09 15:59:38,533 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 4aabff48-7a4c-4502-9fe9-6296e44c1cec
+2026-02-09 15:59:38,536 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 95fd2119-472f-42d8-a07f-c9bb42bba6a5
+2026-02-09 15:59:38,542 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 6c534223-fb82-4a6a-ada1-146731a0e39b
+2026-02-09 15:59:38,553 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 4a8a414b-d15f-4f01-9f69-e9bbe8999cc6
+2026-02-09 15:59:38,560 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 2c1a60af-8310-461d-a1ef-329b88c506b1
+2026-02-09 15:59:38,562 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 204e1c2d-369a-461f-9089-9d799697acc0
+2026-02-09 15:59:38,612 - story_sign - INFO - [ReportDrafter] Started Shadow Session: ae12e573-3ad1-42d8-8648-1e32fa138c51
+2026-02-09 15:59:38,618 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 9f1d587c-8512-4a5d-a164-86d85dc92551
+2026-02-09 15:59:38,626 - story_sign - INFO - [ReportDrafter] Started Shadow Session: a213bd36-455b-4be1-887d-444c6eab6cc2
+2026-02-09 15:59:38,643 - story_sign - INFO - [ReportDrafter] Started Shadow Session: f475235c-ae82-4a55-accb-2cc126c24071
+2026-02-09 15:59:38,648 - story_sign - INFO - [ReportDrafter] Started Shadow Session: f4b26c69-b7f1-4371-9399-a708c8b58354
+2026-02-09 15:59:38,677 - story_sign - INFO - [ReportDrafter] Started Shadow Session: e920c7f6-2ba3-49c1-b2ed-6a52880f9d86
+2026-02-09 15:59:38,703 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 1f3eb176-75e5-4997-b6f6-41af4fb840ef
+2026-02-09 15:59:38,732 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 5082553c-c72c-4cb7-9828-a96ed3c8e66f
+2026-02-09 15:59:38,739 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 021fad21-3c37-48cc-a17a-73ccb06159d9
+2026-02-09 15:59:38,744 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 1dbbe3a4-536a-44de-bb3d-30d9eb05e41d
+2026-02-09 15:59:38,745 - story_sign - INFO - [ReportDrafter] Started Shadow Session: bff66b49-d4a2-47bc-baf1-7ff07826b745
+2026-02-09 15:59:38,746 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 20f8d16c-83dc-4622-a174-0a3567dcdfc8
+2026-02-09 15:59:38,754 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 4620a8c8-bbbe-4276-9efa-1e62831e4f3d
+2026-02-09 15:59:38,804 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 97d4c00b-7006-43a9-a12d-1decdf5662ec
+2026-02-09 15:59:38,824 - story_sign - INFO - [ReportDrafter] Started Shadow Session: e34b0f7e-93db-49c2-a7be-731916923560
+2026-02-09 15:59:38,857 - story_sign - INFO - [ReportDrafter] Started Shadow Session: f84aa88b-ae67-44b6-bd78-6f930b6d24cd
+2026-02-09 15:59:38,913 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 9fe19499-5c7e-45d3-bd73-6bde46f08a59
+2026-02-09 15:59:38,942 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 912f2c18-16e8-4311-8f00-6cacf9cfb948
+2026-02-09 15:59:38,961 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 648bca99-e966-4078-92f1-d4d1033ad9c1
+2026-02-09 15:59:38,973 - story_sign - INFO - [ReportDrafter] Started Shadow Session: f109b1b5-30da-420a-be1c-df1b2e561e95
+2026-02-09 15:59:38,988 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 07cd911a-f8f3-44ed-9e02-c84118ea7c74
+2026-02-09 15:59:39,039 - story_sign - INFO - [ReportDrafter] Started Shadow Session: d0dadca4-4675-446f-8ec5-7ee9d0fce6da
+2026-02-09 15:59:39,064 - story_sign - INFO - [ReportDrafter] Started Shadow Session: ca79c397-1576-4815-8c50-0f21693141c1
+2026-02-09 15:59:39,070 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 941e12b8-2e55-488f-9158-be8f6aeaa845
+2026-02-09 15:59:39,080 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 559d6cf4-bf5f-452e-8cea-2ba31b302260
+2026-02-09 15:59:39,183 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 6282e251-d5bb-4dff-a7be-247406249eec
+2026-02-09 15:59:39,963 - story_sign - INFO - [ReportDrafter] Started Shadow Session: e56615eb-da7d-4a86-9180-fa0004ef6612
+2026-02-09 15:59:40,067 - story_sign - INFO - [ReportDrafter] Started Shadow Session: df96e4d7-da38-45bb-b7ce-93c6bbad6ae9
+2026-02-09 15:59:40,082 - story_sign - INFO - [ReportDrafter] Started Shadow Session: a49e2f3b-42d2-4ae2-b9fd-f920654951fe
+2026-02-09 15:59:40,112 - story_sign - INFO - [ReportDrafter] Started Shadow Session: cfb357e8-6195-44af-81a5-6603337f3efa
+2026-02-09 15:59:40,132 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 227d2b9b-7234-4aff-9164-449159f4fef1
+2026-02-09 15:59:40,219 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 2d65c7ed-3e64-44a1-9571-806a3e5451dc
+2026-02-09 15:59:40,228 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 08810034-f98b-4403-8c7e-4ab818c5e121
+2026-02-09 15:59:40,272 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 07f21405-250f-49e5-ac55-4c685641e2d8
+2026-02-09 15:59:40,284 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 34867ffc-96b7-4142-a128-83de71674aeb
+2026-02-09 15:59:40,297 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 8d696e67-c422-4892-b6f5-39f53204f556
+2026-02-09 15:59:40,305 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 99a5ec48-ae34-450e-8233-a65dd2dbd7bb
+2026-02-09 15:59:40,385 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 9d75b46e-414f-4ee5-8b6f-7e7137587b65
+2026-02-09 15:59:40,420 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 7217da9d-a821-442c-bc07-36b74996c492
+2026-02-09 15:59:40,453 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 792271ec-a517-45f8-ae79-01a2682b3e70
+2026-02-09 15:59:40,500 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 640e4898-34da-4dbf-8e98-d668f3237803
+2026-02-09 15:59:40,525 - story_sign - INFO - [ReportDrafter] Started Shadow Session: e2f9d5ae-4f01-46ad-97f2-2ec02a44706b
+2026-02-09 15:59:40,574 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 4f435501-c8ef-4d1e-aa3e-9d7f05bafb89
+2026-02-09 15:59:40,765 - story_sign - INFO - [ReportDrafter] Started Shadow Session: dac60c51-d6f1-43c8-8e59-b57877df6813
+2026-02-09 15:59:40,800 - story_sign - INFO - [ReportDrafter] Started Shadow Session: eaf9dc57-f62b-41fb-8aa8-4f9efafc07bb
+2026-02-09 15:59:40,817 - story_sign - INFO - [ReportDrafter] Started Shadow Session: de48637f-7a3d-4581-9939-5cbd34282d08
+2026-02-09 15:59:41,003 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 147900b1-17ea-4c28-9311-433c45b74ecf
+2026-02-09 15:59:41,025 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 07602fa2-c1ce-4b44-b8ab-e4d2e0913850
+2026-02-09 15:59:41,049 - story_sign - INFO - [ReportDrafter] Started Shadow Session: e04d8bc6-5215-4511-9800-86b305ad6263
+2026-02-09 15:59:41,094 - story_sign - INFO - [ReportDrafter] Started Shadow Session: d00cc815-9620-4549-9317-feaf6e0a5109
+2026-02-09 15:59:41,128 - story_sign - INFO - [ReportDrafter] Started Shadow Session: f1c44784-112b-4457-8472-10c92ece4337
+2026-02-09 15:59:41,178 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 1e2dad8f-35f1-48f2-b30f-704067f2706b
+2026-02-09 15:59:41,192 - story_sign - INFO - [ReportDrafter] Started Shadow Session: c746a62b-f446-4955-ad1d-cdf31d77f264
+2026-02-09 15:59:41,197 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 637a57cb-3584-4920-b736-81cee1bd0971
+2026-02-09 15:59:41,225 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 22e9578d-2091-414f-959c-ff282e5bcccc
+2026-02-09 15:59:41,256 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 2c744f10-bf82-49e9-83ec-f01d7528d3d4
+2026-02-09 15:59:41,265 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 3023940a-4f97-4774-9f1a-d125d6eb8a39
+2026-02-09 15:59:41,282 - story_sign - INFO - [ReportDrafter] Started Shadow Session: f5c7fb55-e0c3-4c7c-b472-904fa135387a
+2026-02-09 15:59:41,297 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 37916dbe-ec1c-4c92-a28c-3c8768e88387
+2026-02-09 15:59:41,342 - story_sign - INFO - [ReportDrafter] Started Shadow Session: ba35870b-8e3e-410d-84eb-3de806267f4d
+2026-02-09 15:59:41,351 - story_sign - INFO - [ReportDrafter] Started Shadow Session: fdeb66ce-add5-478d-9521-eb036f37f158
+2026-02-09 15:59:41,353 - story_sign - INFO - [ReportDrafter] Started Shadow Session: d205789e-cd62-4f9a-b9af-b87f939edeed
+2026-02-09 15:59:41,354 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 6fa797f7-f03b-41e4-bf76-a080b50251e2
+2026-02-09 15:59:41,356 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 090b5e4a-604d-4ae5-8d9e-fbf3574e55c5
+2026-02-09 15:59:41,367 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 26e37c41-d399-4ed7-8ca5-32829f0e8bac
+2026-02-09 15:59:41,372 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 3bd46966-24c8-4ffe-9d59-acd91ca5e0e0
+2026-02-09 15:59:41,380 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 0446a4fc-bce5-4f4a-9887-f460ec1c8b86
+2026-02-09 15:59:41,383 - story_sign - INFO - [ReportDrafter] Started Shadow Session: fcc406c5-cea3-47c2-b89b-1dd201da503e
+2026-02-09 15:59:41,384 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 7b3a903c-4753-4364-9671-b1167cda464a
+2026-02-09 15:59:41,387 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 80bf9253-b971-489f-a1e3-2173b210c6a6
+2026-02-09 15:59:41,402 - story_sign - INFO - [ReportDrafter] Started Shadow Session: c8515ddb-6c54-4da7-950b-d12e88b21eee
+2026-02-09 15:59:41,414 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 19874b12-0f5b-42f4-a3b1-9c8d8d871b45
+2026-02-09 15:59:41,439 - story_sign - INFO - [ReportDrafter] Started Shadow Session: e101987c-627e-4743-b5e5-bdb974ef19b8
+2026-02-09 15:59:41,451 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 6019b416-afb0-4722-8cdb-4b2b2cdaec1a
+2026-02-09 15:59:41,458 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 62009417-828b-425c-b322-dc66159c4a28
+2026-02-09 15:59:41,471 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 4b22b7f7-65bb-4226-811c-fe110809d22e
+2026-02-09 15:59:41,482 - story_sign - INFO - [ReportDrafter] Started Shadow Session: fda000de-8a22-4d22-a49e-d9bf37f2b1be
+2026-02-09 15:59:41,501 - story_sign - INFO - [ReportDrafter] Started Shadow Session: b8a9471a-1604-4630-a06f-5f4297d4aa6b
+2026-02-09 15:59:41,513 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 51d2038b-5b6a-4be5-b4c3-43f7840afeda
+2026-02-09 15:59:41,518 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 6fda37c1-56d3-439f-ba7b-333e045a793d
+2026-02-09 15:59:41,527 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 9f968ddb-3746-4521-9ee8-de2e8bcf428a
+2026-02-09 15:59:41,535 - story_sign - INFO - [ReportDrafter] Started Shadow Session: e1ae7ed8-204c-4a6d-a430-c6dcde520f8a
+2026-02-09 15:59:41,551 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 72b8feee-5a17-4864-8c4f-63468e1c7622
+2026-02-09 15:59:41,560 - story_sign - INFO - [ReportDrafter] Started Shadow Session: c39362e1-758d-4294-b89a-3914f2e2419a
+2026-02-09 15:59:41,641 - story_sign - INFO - [ReportDrafter] Started Shadow Session: b53cda63-181d-480a-aa8f-c692ca46c040
+2026-02-09 15:59:41,657 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 1699a4b2-0191-48d1-b6cf-ef3b12075b09
+2026-02-09 15:59:41,676 - story_sign - INFO - [ReportDrafter] Started Shadow Session: d17aef2d-c2fa-4e19-b548-f5313532174f
+2026-02-09 15:59:41,715 - story_sign - INFO - [ReportDrafter] Started Shadow Session: c3f96e0f-6dd3-4927-b421-a232de772f64
+2026-02-09 15:59:41,728 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 6e3629a3-e1d0-451b-8df9-ffbae7988ffc
+2026-02-09 15:59:41,751 - story_sign - INFO - [ReportDrafter] Started Shadow Session: e9e764cd-2447-4c7c-8de7-26f243d180bd
+2026-02-09 15:59:41,787 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 65b29476-4c36-471c-aefe-41cf081bdcfc
+2026-02-09 15:59:41,818 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 4cf785b4-5020-442f-93e9-c6257e8a684d
+2026-02-09 15:59:41,850 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 09441142-04cf-4c25-9bef-7b3cfc70b979
+2026-02-09 15:59:41,910 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 8d6658b3-10cc-4b32-b9c8-3e4c5d20847a
+2026-02-09 15:59:41,917 - story_sign - INFO - [ReportDrafter] Started Shadow Session: ce979c74-1106-4797-bca1-d95f0c6ac176
+2026-02-09 15:59:41,925 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 2c0bec7d-3568-4cd6-8b28-ef203bfa4802
+2026-02-09 15:59:41,958 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 9a407eb3-2654-496a-a6ec-fc152c2c5d8d
+2026-02-09 15:59:41,966 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 434ef6b7-1c19-4a7a-9852-d2a8ebe4eaf6
+2026-02-09 15:59:41,974 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 57f67e76-7a01-46cb-b87d-2114971f4643
+2026-02-09 15:59:41,989 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 03270f8f-9780-41c3-974f-d7fd1c5b6c81
+2026-02-09 15:59:41,994 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 52db3ed0-c35d-47be-8a45-7b65ec316090
+2026-02-09 15:59:42,019 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 4eb5a30a-fa1b-4a5b-91e5-e7c390320a18
+2026-02-09 15:59:42,050 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 5fae2527-f8cf-478a-9559-56d9d7e6e98e
+2026-02-09 15:59:42,060 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 22e0d367-fc06-4020-85ea-b0e9735012e5
+2026-02-09 15:59:42,086 - story_sign - INFO - [ReportDrafter] Started Shadow Session: b555d9e1-8788-4cc0-b1c1-f043e319cb4d
+2026-02-09 15:59:42,112 - story_sign - INFO - [ReportDrafter] Started Shadow Session: cbf4acf5-1b50-4d88-80cf-0cf5f723a357
+2026-02-09 15:59:42,133 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 60f0bfff-318e-46c6-9f3a-517948133257
+2026-02-09 15:59:42,155 - story_sign - INFO - [ReportDrafter] Started Shadow Session: aa292668-0471-4293-892b-1c436606c140
+2026-02-09 15:59:42,187 - story_sign - INFO - [ReportDrafter] Started Shadow Session: b24b3ac6-6546-4884-80d0-d2ba195e166a
+2026-02-09 15:59:42,211 - story_sign - INFO - [ReportDrafter] Started Shadow Session: ea5785c4-4ee0-405f-a59f-a19d4f0c0fa7
+2026-02-09 15:59:42,233 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 97847595-3570-4030-86f0-a49addb159b6
+2026-02-09 15:59:42,249 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 433c2ec8-1bff-4731-8691-28cd9708c7f9
+2026-02-09 15:59:42,256 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 881c4b75-499f-471c-bae8-7f69d1af8453
+2026-02-09 15:59:42,277 - story_sign - INFO - [ReportDrafter] Started Shadow Session: aadedd39-ac0e-41a3-b9c7-9b6deab0d735
+2026-02-09 15:59:42,313 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 29a4be80-7c61-44ca-a0c3-d28ee8f167cf
+2026-02-09 15:59:42,349 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 749bbd8a-8c13-4000-8bc0-4fd5df730dad
+2026-02-09 15:59:42,359 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 97c0b78a-0fdd-4938-b08b-5ea847c83c63
+2026-02-09 15:59:42,382 - story_sign - INFO - [ReportDrafter] Started Shadow Session: f2dc9b4a-148d-4093-b141-e0f34ed8c81e
+2026-02-09 15:59:42,411 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 1f6e8875-f63f-4281-a5bc-8f6d908a5a39
+2026-02-09 15:59:42,416 - story_sign - INFO - [ReportDrafter] Started Shadow Session: da5a349c-6382-4f1a-810d-b7b674b1e4fb
+2026-02-09 15:59:42,444 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 9f468a65-325c-4e15-8e71-bda0723003e8
+2026-02-09 15:59:42,447 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 8a352ffd-4266-475c-8c16-6e03aa6205d2
+2026-02-09 15:59:42,453 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 359fb3e8-4b2a-4655-9fc7-b74fc2b50d1f
+2026-02-09 15:59:42,460 - story_sign - INFO - [ReportDrafter] Started Shadow Session: c509bf0e-438c-490e-9195-2f5ddbc92cef
+2026-02-09 15:59:42,468 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 98e701e2-4d71-49ce-be4f-7a269a6fd374
+2026-02-09 15:59:42,471 - story_sign - INFO - [ReportDrafter] Started Shadow Session: c1b43306-21ec-498c-80cf-7ba00e5c7345
+2026-02-09 15:59:42,478 - story_sign - INFO - [ReportDrafter] Started Shadow Session: cfbb190d-50cb-4713-9402-4ab129114c43
+2026-02-09 15:59:42,483 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 19635a51-0ded-4086-9030-22bf8ef13848
+2026-02-09 15:59:42,489 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 1cf8ac9f-af4f-496c-bc7f-0d276d1aeb9d
+2026-02-09 15:59:42,496 - story_sign - INFO - [ReportDrafter] Started Shadow Session: a2bf9502-56e9-4ecc-ae97-8cacf99b38f0
+2026-02-09 15:59:42,500 - story_sign - INFO - [ReportDrafter] Started Shadow Session: c1be274e-93de-46a8-869e-948dc25a304d
+2026-02-09 15:59:42,511 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 85ff5c7d-7ebe-47fd-a4f7-b4c0b0d032d0
+2026-02-09 15:59:42,520 - story_sign - INFO - [ReportDrafter] Started Shadow Session: c6aa27bf-d1d1-46aa-817e-1cbc35a8ee87
+2026-02-09 15:59:42,527 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 764b2163-27fd-4dad-819f-b463f2dd7695
+2026-02-09 15:59:42,538 - story_sign - INFO - [ReportDrafter] Started Shadow Session: ccb4d4da-9340-4018-8d36-34c3785499d3
+2026-02-09 15:59:42,546 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 879b81cf-d3c1-4f82-9288-16b99aaf3180
+2026-02-09 15:59:42,558 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 1244a38b-29f5-4f56-86e3-56353357643f
+2026-02-09 15:59:42,563 - story_sign - INFO - [ReportDrafter] Started Shadow Session: cb73d015-4a3b-4589-8ff1-e7faeb9929d0
+2026-02-09 15:59:42,579 - story_sign - INFO - [ReportDrafter] Started Shadow Session: b5a81757-b084-4f36-b4b7-b5b9c0e93513
+2026-02-09 15:59:42,581 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 58a75596-f41a-4b61-97c4-a663dbf74ac7
+2026-02-09 15:59:42,584 - story_sign - INFO - [ReportDrafter] Started Shadow Session: a371b80c-dc45-4e01-988a-2054685b8600
+2026-02-09 15:59:42,598 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 1f02dc94-29ad-48f7-97e1-20be851cabb3
+2026-02-09 15:59:42,613 - story_sign - INFO - [ReportDrafter] Started Shadow Session: e20cb35d-668f-4762-8240-ccdd8c4f70d0
+2026-02-09 15:59:42,627 - story_sign - INFO - [ReportDrafter] Started Shadow Session: f828dc80-5e2f-43af-8579-c47840de9a2e
+2026-02-09 15:59:42,648 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 6d99f237-bff6-492b-8fa2-ad9257c8eca1
+2026-02-09 15:59:42,657 - story_sign - INFO - [ReportDrafter] Started Shadow Session: d0c78f81-8018-49c4-8234-d60b53d63621
+2026-02-09 15:59:42,662 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 2a223dcd-1d1a-4e43-8cae-4632ca0101b6
+2026-02-09 15:59:42,669 - story_sign - INFO - [ReportDrafter] Started Shadow Session: ddbf1236-a75f-4d3e-928a-9fe570cb67e6
+2026-02-09 15:59:42,680 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 894a86b2-bab7-4d43-be9a-eb60701a34a9
+2026-02-09 15:59:42,686 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 367c8650-9110-4167-ad9b-a983b3a30c22
+2026-02-09 15:59:42,706 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 57418742-06c3-44bd-8563-d02a4a6db68b
+2026-02-09 15:59:42,711 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 85219ca2-46e8-493a-b03d-aec0866d47ed
+2026-02-09 15:59:43,341 - story_sign - INFO - [ReportDrafter] Started Shadow Session: eef403e2-829d-4727-ad65-8194a61f5a44
+2026-02-09 15:59:43,393 - story_sign - INFO - [ReportDrafter] Started Shadow Session: aaf4950a-83a8-4d15-b016-28fe68297491
+2026-02-09 15:59:43,428 - story_sign - INFO - [ReportDrafter] Started Shadow Session: e21c3963-da97-4c34-92fe-70da7043c52d
+2026-02-09 15:59:43,458 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 43bb92d7-5b26-4b8a-b47c-247cd8ec7de4
+2026-02-09 15:59:43,542 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 4eecd54d-19ec-46bc-a538-d3a5645facc7
+2026-02-09 15:59:43,632 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 16c3a4f3-0869-484c-8929-62f5031701c9
+2026-02-09 15:59:43,678 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 972f8e24-2f54-445c-bb1d-17466c5d2e03
+2026-02-09 15:59:43,695 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 8235f917-3bca-4d60-b546-55a349b7ea61
+2026-02-09 15:59:43,707 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 4f44d293-59d0-4eb2-8afc-f55a15a3bb98
+2026-02-09 15:59:43,742 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 2ae0f032-b849-43b3-9b75-7217f2021b2e
+2026-02-09 15:59:43,790 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 94b836c4-cb44-40b0-9466-3b71e2979c35
+2026-02-09 15:59:43,794 - story_sign - INFO - [ReportDrafter] Started Shadow Session: b4bffdf9-4673-4efb-a76c-7742e9e8f890
+2026-02-09 15:59:43,827 - story_sign - INFO - [ReportDrafter] Started Shadow Session: b78c6551-10ca-4511-af51-2e91e955e161
+2026-02-09 15:59:43,845 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 8f0825ec-2e40-4f6c-bb59-35720c97bd6c
+2026-02-09 15:59:43,851 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 3394f2cc-f7f0-437c-adf9-0ca2c81a3020
+2026-02-09 15:59:43,886 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 31124099-94e5-4490-93e5-82e01c4d8da5
+2026-02-09 15:59:44,004 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 2b3b0638-4f2a-4a87-bcd3-4a92de611de2
+2026-02-09 15:59:44,033 - story_sign - INFO - [ReportDrafter] Started Shadow Session: a762fcc6-0624-425e-840c-5d57beb2c5fc
+2026-02-09 15:59:44,058 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 25b84a29-7430-4ac2-a999-a993db3579f7
+2026-02-09 15:59:44,105 - story_sign - INFO - [ReportDrafter] Started Shadow Session: be02ca5c-cdff-46e7-a5fa-b13da6078856
+2026-02-09 15:59:44,134 - story_sign - INFO - [ReportDrafter] Started Shadow Session: fb60c959-3f05-41f1-a31a-d26e2ca9e806
+2026-02-09 15:59:44,148 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 8a8f12b2-29bf-4f3d-82e3-13c9aa9c7366
+2026-02-09 15:59:44,183 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 652abef9-a60e-413a-b5bf-66b2531ed18d
+2026-02-09 15:59:44,191 - story_sign - INFO - [ReportDrafter] Started Shadow Session: ca07c320-80de-4028-97cd-c2f61a1122e5
+2026-02-09 15:59:44,230 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 674e6493-69fc-4194-b9d6-26ddcbcce51d
+2026-02-09 15:59:44,288 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 87e99a82-5711-408a-ad9b-d29102ef0a60
+2026-02-09 15:59:44,323 - story_sign - INFO - [ReportDrafter] Started Shadow Session: d9ed8be8-9e5c-4ce6-a2c0-fe78cdbbe9ac
+2026-02-09 15:59:44,359 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 63e5e976-47e1-4dbb-a0e7-17a285caffb5
+2026-02-09 15:59:44,404 - story_sign - INFO - [ReportDrafter] Started Shadow Session: eb740fc3-efe9-4d32-b05b-89b221b8249b
+2026-02-09 15:59:44,417 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 89564090-e863-4deb-a710-bfe115a3cd23
+2026-02-09 15:59:44,430 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 461fbe6a-6da3-4e77-bc18-771296983573
+2026-02-09 15:59:44,458 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 905d4b1b-7611-4a48-927b-f2e2e7fcbfd0
+2026-02-09 15:59:44,476 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 3c3ca598-42ba-4da8-b53a-f427f0237adf
+2026-02-09 15:59:44,493 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 7bd496d9-5a08-40a1-9908-440e1bf5081a
+2026-02-09 15:59:44,540 - story_sign - INFO - [ReportDrafter] Started Shadow Session: d4f3369e-922e-4c74-9904-0db4846b8b14
+2026-02-09 15:59:44,557 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 64dd5a22-a7dc-4c71-8633-c08212d9d201
+2026-02-09 15:59:44,563 - story_sign - INFO - [ReportDrafter] Started Shadow Session: eed434b3-4465-41e4-aa15-c15884e378d1
+2026-02-09 15:59:44,592 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 43ba005a-ee18-4b8e-9375-9e20c241434c
+2026-02-09 15:59:44,614 - story_sign - INFO - [ReportDrafter] Started Shadow Session: e975102e-5ae6-440e-a5b3-e895767ae7aa
+2026-02-09 15:59:44,627 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 8f4598be-5d2c-4e12-939c-2ea054ff8dfa
+2026-02-09 15:59:44,683 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 08a81bd6-fa8b-460a-9c25-cade1f7b3ba4
+2026-02-09 15:59:44,712 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 32f4cb1f-2d7b-4210-89fd-eb57faf9d135
+2026-02-09 15:59:44,731 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 7f3bfbd7-13fc-46f0-95eb-37f0fe4e3b23
+2026-02-09 15:59:44,745 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 696e5034-643d-43e8-9b9f-1c876d64c0b8
+2026-02-09 15:59:44,754 - story_sign - INFO - [ReportDrafter] Started Shadow Session: fdebf002-3880-4053-a8b2-2a6093d1c400
+2026-02-09 15:59:44,778 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 122d7eb3-d46f-4ddb-85f9-6b9886fd9698
+2026-02-09 15:59:44,841 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 0f914caf-13f8-4c72-8810-67b16b876e27
+2026-02-09 15:59:44,849 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 8594d296-298b-489b-bfb5-6f2a098c0094
+2026-02-09 15:59:44,861 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 921e760e-24ef-4519-aa8d-fdbd696cf86a
+2026-02-09 15:59:44,866 - story_sign - INFO - [ReportDrafter] Started Shadow Session: fdcec910-f8f1-4e6f-8eb2-50c1dd68857d
+2026-02-09 15:59:44,873 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 1d42475a-e5e7-4078-b7f9-7e5340d33d4f
+2026-02-09 15:59:44,883 - story_sign - INFO - [ReportDrafter] Started Shadow Session: e5feb74d-ec0b-401e-bb4f-c9ae06dcd69c
+2026-02-09 15:59:44,903 - story_sign - INFO - [ReportDrafter] Started Shadow Session: d0b11122-84d0-45cf-9281-30141623c0ce
+2026-02-09 15:59:44,910 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 004b8969-b43f-4ce2-9fd3-696c866f3605
+2026-02-09 15:59:44,914 - story_sign - INFO - [ReportDrafter] Started Shadow Session: b8618a1a-d87e-434f-a3fd-beb983137a0e
+2026-02-09 15:59:44,928 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 9cfde2c0-77a4-41a4-90b0-d8b7f4c29bcc
+2026-02-09 15:59:44,941 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 1a7c2ca2-f761-4191-90f2-699ba46efc35
+2026-02-09 15:59:44,961 - story_sign - INFO - [ReportDrafter] Started Shadow Session: c3a9af44-e0b4-4887-93d0-7a034135f97d
+2026-02-09 15:59:45,003 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 02cf3421-76db-408d-b812-6a81fa10716f
+2026-02-09 15:59:45,016 - story_sign - INFO - [ReportDrafter] Started Shadow Session: f4464f7e-570a-434e-ae24-ec45ab195596
+2026-02-09 15:59:45,020 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 874fd4bd-7a53-4f9d-9340-d6cc8914d5c6
+2026-02-09 15:59:45,027 - story_sign - INFO - [ReportDrafter] Started Shadow Session: afb19915-1dcd-4620-bd32-8fa179f763ad
+2026-02-09 15:59:45,035 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 293c1660-2794-447a-ba1c-0ea95d369aed
+2026-02-09 15:59:45,049 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 311d570e-e859-459d-8e05-1fd2e77fd8f8
+2026-02-09 15:59:45,061 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 67b1d751-7a42-4293-9f97-6e5a70341301
+2026-02-09 15:59:45,076 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 45874fa6-780b-4b2b-99e6-a943c2ddecb5
+2026-02-09 15:59:45,099 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 2931a625-3642-40ef-aeda-85de382878b9
+2026-02-09 15:59:45,116 - story_sign - INFO - [ReportDrafter] Started Shadow Session: c3933d38-fce4-4e6b-bfcb-086b44e55cef
+2026-02-09 15:59:45,130 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 7be219d8-c576-448f-b99a-ff3c83ac8404
+2026-02-09 15:59:45,146 - story_sign - INFO - [ReportDrafter] Started Shadow Session: a124500b-4021-4844-96b6-dc4383234e4c
+2026-02-09 15:59:45,171 - story_sign - INFO - [ReportDrafter] Started Shadow Session: d4f025ff-8392-4c8f-90ec-85a63a951075
+2026-02-09 15:59:45,181 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 993a4896-af16-4a27-8025-20b033bb362e
+2026-02-09 15:59:45,185 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 98acc32b-9629-49e8-869b-6b6561bcb725
+2026-02-09 15:59:45,194 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 47e53654-f9a2-4f05-99c6-7d913a59108d
+2026-02-09 15:59:45,221 - story_sign - INFO - [ReportDrafter] Started Shadow Session: dc97abc5-6439-475c-9e55-8b615b1b4ccc
+2026-02-09 15:59:45,243 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 0bdbf50d-fa33-4f54-bc75-26af9df7c4dc
+2026-02-09 15:59:45,262 - story_sign - INFO - [ReportDrafter] Started Shadow Session: f30c0464-0050-449b-9015-e1188169fd4a
+2026-02-09 15:59:45,277 - story_sign - INFO - [ReportDrafter] Started Shadow Session: b6e25972-b9f8-4aa4-bb05-4c0c7a1569fe
+2026-02-09 15:59:45,294 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 91d418f1-1ada-459e-87eb-b162db5f7532
+2026-02-09 15:59:45,309 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 432a7dcf-b24e-430f-853d-762597876f2f
+2026-02-09 15:59:45,321 - story_sign - INFO - [ReportDrafter] Started Shadow Session: eb0c0b4e-ad1b-4546-811e-22a1b523108d
+2026-02-09 15:59:45,347 - story_sign - INFO - [ReportDrafter] Started Shadow Session: bea4950f-7228-451b-be61-e65ec63e0f17
+2026-02-09 15:59:45,375 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 4965b747-6bcd-4659-94b6-5453c37735dc
+2026-02-09 15:59:45,384 - story_sign - INFO - [ReportDrafter] Started Shadow Session: c2150d48-483b-452d-9636-437b17fc8601
+2026-02-09 15:59:45,392 - story_sign - INFO - [ReportDrafter] Started Shadow Session: deecb243-7188-478d-ad17-b2adec959a2a
+2026-02-09 15:59:45,416 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 2cc65e78-e759-4cfd-94ab-5fb7b3f70630
+2026-02-09 15:59:45,427 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 32cd7ca2-fd1b-43d7-840e-c1d9fa5b2d88
+2026-02-09 15:59:45,462 - story_sign - INFO - [ReportDrafter] Started Shadow Session: a140e1d5-826c-4a8a-a569-705d3a9f5483
+2026-02-09 15:59:45,569 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 56088e78-303f-4414-bf0b-5a96fd6e2849
+2026-02-09 15:59:45,597 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 7e7099b3-395b-416e-b05c-b46711b5aca8
+2026-02-09 15:59:45,661 - story_sign - INFO - [ReportDrafter] Started Shadow Session: d83397c0-b0e8-430f-821a-15a7e70898f0
+2026-02-09 15:59:45,683 - story_sign - INFO - [ReportDrafter] Started Shadow Session: b7aa338e-ba43-4763-8f6f-b8e21c373e17
+2026-02-09 15:59:45,691 - story_sign - INFO - [ReportDrafter] Started Shadow Session: d5ea9328-b2ea-4a62-96cc-9b046766c7f3
+2026-02-09 15:59:45,700 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 87b07cac-4a3a-44e8-93ff-6e2b32510acf
+2026-02-09 15:59:45,725 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 022ddedb-e31c-4923-99e4-58f7581d8381
+2026-02-09 15:59:45,731 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 42d14ea1-d0e1-4179-96d6-8a76f94a55fe
+2026-02-09 15:59:45,740 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 1ca38376-6b7c-4e92-a8a7-d4d739d20ddb
+2026-02-09 15:59:45,794 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 7506bd3c-3339-47e5-8180-bed6207fb2ba
+2026-02-09 15:59:45,844 - story_sign - INFO - [ReportDrafter] Started Shadow Session: c01e1aad-09f4-44ad-aa67-675a206204f4
+2026-02-09 15:59:45,871 - story_sign - INFO - [ReportDrafter] Started Shadow Session: b2b35c4d-5a1c-41f1-87ea-7a11260bc494
+2026-02-09 15:59:45,925 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 682f57a6-db2a-432d-a13f-885ba338768d
+2026-02-09 15:59:45,939 - story_sign - INFO - [ReportDrafter] Started Shadow Session: ef81120c-2897-4a74-bbf0-88931d8825c3
+2026-02-09 15:59:46,010 - story_sign - INFO - [ReportDrafter] Started Shadow Session: e1c0ed01-9e26-4eec-ac6e-5af2336286f2
+2026-02-09 15:59:46,026 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 24663a0c-4c1a-4099-9ed4-b030b723e0db
+2026-02-09 15:59:46,052 - story_sign - INFO - [ReportDrafter] Started Shadow Session: bcf656de-ecfa-41fc-bb3d-79c004a1dc33
+2026-02-09 15:59:46,103 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 09aadbaf-dc5d-4636-8c95-33634471dfe1
+2026-02-09 15:59:46,190 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 3e5237d2-0442-4ee3-ae15-aa37b31d062f
+2026-02-09 15:59:46,220 - story_sign - INFO - [ReportDrafter] Started Shadow Session: a96bab4a-7e3d-421d-8c8c-ed9ae3b4697a
+2026-02-09 15:59:46,335 - story_sign - INFO - [ReportDrafter] Started Shadow Session: a0bd1d4f-e10f-4311-bbbe-9789cc175e8c
+2026-02-09 15:59:46,372 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 38186cb6-bcdf-4d25-a378-600d1ccb6396
+2026-02-09 15:59:46,383 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 3833dedc-fb26-448d-98e3-56ce7f1bc93c
+2026-02-09 15:59:46,391 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 16f72254-ae00-45e7-8ec3-81b9cd2f9d12
+2026-02-09 15:59:46,437 - story_sign - INFO - [ReportDrafter] Started Shadow Session: ca3f4f36-269c-419f-912e-c190aeddc68d
+2026-02-09 15:59:46,476 - story_sign - INFO - [ReportDrafter] Started Shadow Session: de957b5d-ca0f-4768-b496-6ac0b8158227
+2026-02-09 15:59:46,490 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 13d98676-cfc8-4ee0-be13-b65592a2e913
+2026-02-09 15:59:46,495 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 299ba477-ae2b-4c79-b790-ab35c8767ad8
+2026-02-09 15:59:46,519 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 81076375-aa6f-4468-a579-1e7dee5979ac
+2026-02-09 15:59:46,528 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 48e40f84-b56a-4e78-9c03-44938ae8cdca
+2026-02-09 15:59:46,610 - story_sign - INFO - [ReportDrafter] Started Shadow Session: ba83b2c9-5e15-49cd-8c34-0e695ab45c2d
+2026-02-09 15:59:46,619 - story_sign - INFO - [ReportDrafter] Started Shadow Session: bb0894c1-e6cc-49d3-8a0b-199b60e5b1ae
+2026-02-09 15:59:46,651 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 6cbc0641-bdf4-4c87-abf2-a24d71fd2491
+2026-02-09 15:59:46,656 - story_sign - INFO - [ReportDrafter] Started Shadow Session: c3975a33-9409-42bd-a820-7b0753c3a765
+2026-02-09 15:59:46,657 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 61a36b06-683e-4b05-a7ac-701bce417e39
+2026-02-09 15:59:46,659 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 164838cb-9ad2-40fb-becf-d4d1b74e702a
+2026-02-09 15:59:46,677 - story_sign - INFO - [ReportDrafter] Started Shadow Session: e3d97239-97a4-4ce1-8b4d-4c0ed732bd7c
+2026-02-09 15:59:46,690 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 1f239b1e-b6c4-4242-afce-0ae8b96d4009
+2026-02-09 15:59:46,692 - story_sign - INFO - [ReportDrafter] Started Shadow Session: d5a49edc-d941-44a4-94ad-aa2ac9da9681
+2026-02-09 15:59:46,695 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 595526cf-f0d3-4456-bb54-17d8ace81b21
+2026-02-09 15:59:46,747 - story_sign - INFO - [ReportDrafter] Started Shadow Session: f2335bdb-3b15-477a-9e5c-f663f8600042
+2026-02-09 15:59:46,860 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 8b60f324-6745-4d2c-8290-32c3b19f873d
+2026-02-09 15:59:46,952 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 372ddf1b-93f5-41c4-844a-a12cb562c4c5
+2026-02-09 15:59:46,965 - story_sign - INFO - [ReportDrafter] Started Shadow Session: bab6fc72-8a06-4430-8be6-5e61817bab85
+2026-02-09 15:59:47,003 - story_sign - INFO - [ReportDrafter] Started Shadow Session: e90354de-4bb1-4ec4-96f8-a63ec14a056b
+2026-02-09 15:59:47,027 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 820b7263-965f-48e8-87d4-97df8ce01bf3
+2026-02-09 15:59:47,046 - story_sign - INFO - [ReportDrafter] Started Shadow Session: eff98ca1-07b2-4bbc-a6e0-03d67b610cd2
+2026-02-09 15:59:47,066 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 2c9b2bc4-3e7c-49b4-bed2-b498e0f06ce3
+2026-02-09 15:59:47,152 - story_sign - INFO - [ReportDrafter] Started Shadow Session: a80078ad-9439-4525-8181-ed2fa05b4639
+2026-02-09 15:59:47,162 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 64384f98-33a5-4e50-9d44-358bb26bbfb6
+2026-02-09 15:59:47,169 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 87107a12-7f7e-45d5-8e45-28fa252ca6ac
+2026-02-09 15:59:47,174 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 4edf53c4-21d0-465f-b031-fe1b058131f1
+2026-02-09 15:59:47,180 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 95b73c63-730e-4808-be70-daf0fccab907
+2026-02-09 15:59:47,188 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 6a186f25-9535-4c14-8686-3c5f7eb144d1
+2026-02-09 15:59:47,228 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 782b04f3-35de-49fa-86b0-b906b94915e2
+2026-02-09 15:59:47,237 - story_sign - INFO - [ReportDrafter] Started Shadow Session: f0efb01f-da36-4b59-bf85-45325eb12e52
+2026-02-09 15:59:47,245 - story_sign - INFO - [ReportDrafter] Started Shadow Session: bd8e1d76-65e3-433a-933d-a5489ba5bc00
+2026-02-09 15:59:47,260 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 02ad5131-c578-4fca-98a0-d2790769e5f1
+2026-02-09 15:59:47,266 - story_sign - INFO - [ReportDrafter] Started Shadow Session: b2fbf8c7-063c-4138-a240-4e612babcb0e
+2026-02-09 15:59:47,285 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 4748b812-ee53-4f08-90af-620c298ea498
+2026-02-09 15:59:47,342 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 51250692-3121-46b3-b6f5-bc899e67210e
+2026-02-09 15:59:47,360 - story_sign - INFO - [ReportDrafter] Started Shadow Session: efa18c4e-1f66-4037-aca3-2779a257aabc
+2026-02-09 15:59:47,384 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 32968925-596b-45af-b967-78bd8fd2d235
+2026-02-09 15:59:47,393 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 9b6e4bd5-fe9d-4cde-bcb6-2b5b8817d878
+2026-02-09 15:59:47,408 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 8aee5006-c4b9-4aa9-90e6-8462c0c5b8bd
+2026-02-09 15:59:47,420 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 44094821-1a6a-4147-913b-79add28fd683
+2026-02-09 15:59:47,439 - story_sign - INFO - [ReportDrafter] Started Shadow Session: de525d11-2b43-4925-8107-a395b3c402bc
+2026-02-09 15:59:47,451 - story_sign - INFO - [ReportDrafter] Started Shadow Session: c1e24167-5d6b-432d-bd61-5ecd3f65a22e
+2026-02-09 15:59:47,458 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 602bd47e-289a-49cd-bf6f-898cc2dac0d2
+2026-02-09 15:59:47,466 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 5be88b18-419e-4b04-96ad-fd5664942c0a
+2026-02-09 15:59:47,472 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 1f11d878-940c-4e6f-bb48-8717f3909939
+2026-02-09 15:59:47,483 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 2b8bc178-f454-435c-8349-9945da524ef9
+2026-02-09 15:59:47,505 - story_sign - INFO - [ReportDrafter] Started Shadow Session: f8a5c62b-5f5c-48f9-95e9-3e44b3a31956
+2026-02-09 15:59:47,512 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 8f7b84dc-b707-4a13-97c1-e7f2961feb93
+2026-02-09 15:59:47,519 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 331d2285-ea5f-4ec5-b440-0239a49815de
+2026-02-09 15:59:47,523 - story_sign - INFO - [ReportDrafter] Started Shadow Session: ea91d41a-58df-4ef1-9569-52f67d18d235
+2026-02-09 15:59:47,548 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 3a1a3c15-49f1-4978-b890-c30fe14e98be
+2026-02-09 15:59:47,555 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 9565188e-26ee-4db6-a35a-48c7aa087a27
+2026-02-09 15:59:47,575 - story_sign - INFO - [ReportDrafter] Started Shadow Session: e95fc2bf-bb03-4ecb-b029-3c65198b7627
+2026-02-09 15:59:47,579 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 4494d21b-0fa1-43bf-93d3-ad7ce7827244
+2026-02-09 15:59:47,589 - story_sign - INFO - [ReportDrafter] Started Shadow Session: b79d37f0-6054-4862-8837-d342e0016bd0
+2026-02-09 15:59:47,604 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 6e58bf85-e43a-4374-8f08-a3ea80257df8
+2026-02-09 15:59:47,613 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 3409b3ce-e244-48e9-a1a2-fea964db8b78
+2026-02-09 15:59:47,634 - story_sign - INFO - [ReportDrafter] Started Shadow Session: fc02168b-235e-4660-857f-6b66e058ef16
+2026-02-09 15:59:47,654 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 7f80bf1f-d15a-4d2b-b5fc-7ad1a0bdd8d4
+2026-02-09 15:59:47,658 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 701bbbc0-e435-4f77-a556-189ccc0e7b38
+2026-02-09 15:59:47,669 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 694666b5-dc20-432a-a389-d049a8835c29
+2026-02-09 15:59:47,675 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 8e9b0f95-e1cc-4139-99a7-aebcd39a7714
+2026-02-09 15:59:47,689 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 44868deb-5fb6-43b9-b84b-a4dac77d1377
+2026-02-09 15:59:47,707 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 0c00f202-5dc6-475d-8bb4-a1860c35c3f0
+2026-02-09 15:59:47,718 - story_sign - INFO - [ReportDrafter] Started Shadow Session: ab92e292-9742-4a2b-bc30-1f81d48f6ca2
+2026-02-09 15:59:47,724 - story_sign - INFO - [ReportDrafter] Started Shadow Session: aee60a4f-8aa4-4b0c-9c16-ddd8b6caae3e
+2026-02-09 15:59:47,730 - story_sign - INFO - [ReportDrafter] Started Shadow Session: e5d827c0-e981-4d26-a9a6-469a2b3af2d0
+2026-02-09 15:59:47,740 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 7ff3a9fb-4b48-453b-8b8d-78950113d319
+2026-02-09 15:59:47,754 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 64c51f9c-d955-41e9-81cb-44b5cd10cb19
+2026-02-09 15:59:47,772 - story_sign - INFO - [ReportDrafter] Started Shadow Session: df888e68-3d6e-4e6f-bc92-3cf790f24fe3
+2026-02-09 15:59:47,784 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 9abf284d-4b96-422c-833d-3ed26b2c2bad
+2026-02-09 15:59:47,796 - story_sign - INFO - [ReportDrafter] Started Shadow Session: bb8e44f5-2900-4eeb-b847-9369550f12c9
+2026-02-09 15:59:47,809 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 3bf31d77-3870-4e95-9399-5aec9a77e43c
+2026-02-09 15:59:47,852 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 01eb8ed7-f5f4-40b0-b55d-9cd0d107fa65
+2026-02-09 15:59:47,863 - story_sign - INFO - [ReportDrafter] Started Shadow Session: e1f76278-ad6e-4b50-be55-6b25990b9d93
+2026-02-09 15:59:47,886 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 681935cd-bb84-4e43-9e0b-c7ee348b60a0
+2026-02-09 15:59:47,892 - story_sign - INFO - [ReportDrafter] Started Shadow Session: e34db6a6-ad07-4c12-98fd-e4dbbafedc83
+2026-02-09 15:59:47,908 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 958e962c-969f-44e3-bf17-36b7925bfe33
+2026-02-09 15:59:47,923 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 7c83b39d-8c18-46b7-9649-c64e7fd722fb
+2026-02-09 15:59:47,931 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 5eb1aab3-22ce-4738-aedc-93dbef01dbbd
+2026-02-09 15:59:47,947 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 193e19aa-aa6a-4382-b579-4e3f52af578e
+2026-02-09 15:59:47,968 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 5413c5d5-27f1-42b6-91d0-1d21bcba798b
+2026-02-09 15:59:47,985 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 779f88af-be25-402a-83d5-f1e907f38db4
+2026-02-09 15:59:47,993 - story_sign - INFO - [ReportDrafter] Started Shadow Session: b22dd4e9-834e-48f6-841c-8a0a39afd8b0
+2026-02-09 15:59:48,002 - story_sign - INFO - [ReportDrafter] Started Shadow Session: a5cc3bf9-d835-4fad-9a87-412818f0cfef
+2026-02-09 15:59:48,015 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 42fb22a8-303a-4847-b353-f2610e0d545a
+2026-02-09 15:59:48,026 - story_sign - INFO - [ReportDrafter] Started Shadow Session: aa9526e3-9950-4717-b7c4-37e37ad467cb
+2026-02-09 15:59:48,039 - story_sign - INFO - [ReportDrafter] Started Shadow Session: ac88b2b3-a1c4-4b38-8443-721e068be99e
+2026-02-09 15:59:48,044 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 09c6c5e5-b5d8-48c6-8f2e-1ad7b8403886
+2026-02-09 15:59:48,054 - story_sign - INFO - [ReportDrafter] Started Shadow Session: dd9490c2-6365-4950-91ba-d54a8da6f577
+2026-02-09 15:59:48,064 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 7fa75a5b-6a9d-4988-95a3-40979bc0e7e7
+2026-02-09 15:59:48,083 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 2620b66b-6f53-4e7e-8f12-40a1b3a93303
+2026-02-09 15:59:48,095 - story_sign - INFO - [ReportDrafter] Started Shadow Session: ab975a87-4626-4a66-a37e-704022a06117
+2026-02-09 15:59:48,108 - story_sign - INFO - [ReportDrafter] Started Shadow Session: f4bf05be-9847-4c4b-b1b4-3b00cf23ed2f
+2026-02-09 15:59:48,116 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 7840ffa2-c6af-4c4a-9d62-10a3ed50a40d
+2026-02-09 15:59:48,129 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 0185fe82-6df5-4361-93e1-21166744aa47
+2026-02-09 15:59:48,136 - story_sign - INFO - [ReportDrafter] Started Shadow Session: d2e9f2df-51b8-45e0-878b-72736bf15e5b
+2026-02-09 15:59:48,149 - story_sign - INFO - [ReportDrafter] Started Shadow Session: a7a69639-1d3e-4a08-8b57-525acb487484
+2026-02-09 15:59:48,172 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 32f9e6a1-1037-4713-a99c-4ca056dcf742
+2026-02-09 15:59:48,191 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 8d606bbc-5aee-460c-8918-b296f75d7b8b
+2026-02-09 15:59:48,202 - story_sign - INFO - [ReportDrafter] Started Shadow Session: ab4d5d82-acbc-48ba-b821-6bd3e15a350f
+2026-02-09 15:59:48,211 - story_sign - INFO - [ReportDrafter] Started Shadow Session: f7a8d12e-cf34-4ca2-b1c6-28416bd76ed2
+2026-02-09 15:59:48,224 - story_sign - INFO - [ReportDrafter] Started Shadow Session: a614b334-46bd-421c-9c91-b84ffc35c86c
+2026-02-09 15:59:48,229 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 11e4b314-a980-4ffe-bbe8-a11db5114c1a
+2026-02-09 15:59:48,238 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 008f518f-133f-4d26-896a-27c4aec7c3ab
+2026-02-09 15:59:48,242 - story_sign - INFO - [ReportDrafter] Started Shadow Session: b4571ce9-328b-4e21-905d-d0152e57cd65
+2026-02-09 15:59:48,258 - story_sign - INFO - [ReportDrafter] Started Shadow Session: b102091c-10d0-4a32-b90a-6f4f37c69888
+2026-02-09 15:59:48,269 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 7c50be5b-1527-4192-b377-168ed78a7fda
+2026-02-09 15:59:48,282 - story_sign - INFO - [ReportDrafter] Started Shadow Session: c07d1f82-208c-4d30-8a5c-337993726128
+2026-02-09 15:59:48,300 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 65e0ccb7-7187-4a4f-8e85-63d77fdf7140
+2026-02-09 15:59:48,310 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 3f07d1e9-fb50-48b1-8e59-9371b1885792
+2026-02-09 15:59:48,316 - story_sign - INFO - [ReportDrafter] Started Shadow Session: a6083585-3e29-43b3-bd8e-43a7047351bf
+2026-02-09 15:59:48,325 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 3c910b26-d34a-4480-ae6c-968950799ef3
+2026-02-09 15:59:48,329 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 0ee47ad9-ff8f-44b2-9669-694f1f9ac258
+2026-02-09 15:59:48,335 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 67483da6-d325-4c22-909f-2b75674d0216
+2026-02-09 15:59:48,367 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 53b5d5dc-ee6b-43ad-b217-70f2a6a4ce6b
+2026-02-09 15:59:48,376 - story_sign - INFO - [ReportDrafter] Started Shadow Session: c4b6e8d1-6d41-4786-83f9-106355e99287
+2026-02-09 15:59:48,386 - story_sign - INFO - [ReportDrafter] Started Shadow Session: a8c4aeb6-39e7-42cd-9035-b8af0551453f
+2026-02-09 15:59:48,395 - story_sign - INFO - [ReportDrafter] Started Shadow Session: e3bb8ad2-94ec-4743-9a3a-c3d3f1251442
+2026-02-09 15:59:48,401 - story_sign - INFO - [ReportDrafter] Started Shadow Session: e7c7c3b2-1598-4501-9f7d-e262389b1c08
+2026-02-09 15:59:48,411 - story_sign - INFO - [ReportDrafter] Started Shadow Session: e4d425a8-7214-4d49-bdb3-2939aebac065
+2026-02-09 15:59:48,436 - story_sign - INFO - [ReportDrafter] Started Shadow Session: ac0f73d0-ae53-4ab6-9781-5975e4ee5e39
+2026-02-09 15:59:48,445 - story_sign - INFO - [ReportDrafter] Started Shadow Session: e39f57e9-a9d9-408c-907e-50517091b521
+2026-02-09 15:59:48,452 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 89739016-70b3-4eee-854d-fddab66107b5
+2026-02-09 15:59:48,457 - story_sign - INFO - [ReportDrafter] Started Shadow Session: d1a6d1b5-da3b-4232-a284-31f33bb1797e
+2026-02-09 15:59:48,461 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 98e28eb7-34c2-4242-b843-67209fa79324
+2026-02-09 15:59:48,473 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 5aa7f1a5-9d24-4fe7-99a1-3982651ba126
+2026-02-09 15:59:48,505 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 7e9c16c7-d0c4-4893-af6b-44b6ee166ca4
+2026-02-09 15:59:48,512 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 3b7a8c2d-4970-416b-909d-9b5cf137f604
+2026-02-09 15:59:48,519 - story_sign - INFO - [ReportDrafter] Started Shadow Session: b0a43091-bc72-435b-937c-2edca3793490
+2026-02-09 15:59:48,523 - story_sign - INFO - [ReportDrafter] Started Shadow Session: ee09c6b3-cdb0-4743-8a24-415b3c560c69
+2026-02-09 15:59:48,526 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 924592ea-3155-45af-94d8-b8eb1659a2a2
+2026-02-09 15:59:48,529 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 8ffacea5-0270-4013-af6a-0d45a0ce8c06
+2026-02-09 15:59:48,536 - story_sign - INFO - [ReportDrafter] Started Shadow Session: d6d92880-67b8-4473-9dc7-7ac07f26a1ee
+2026-02-09 15:59:48,547 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 34a58f79-7230-4634-a4ab-3ee85d3df0c4
+2026-02-09 15:59:48,553 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 3167dd1b-1e79-4674-920d-1cb2574e1241
+2026-02-09 15:59:48,558 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 29b2105a-f3a6-461f-9541-3e0fc5d278b1
+2026-02-09 15:59:48,566 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 1395adc6-6dbb-4657-85c0-186e9093359b
+2026-02-09 15:59:48,575 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 642b2147-7098-4592-9f76-70cce37e8c91
+2026-02-09 15:59:48,594 - story_sign - INFO - [ReportDrafter] Started Shadow Session: ad3b9cc8-6dc8-4e3b-a95a-98ed5208e4e6
+2026-02-09 15:59:48,610 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 544e6b23-9808-4552-8933-17641df38095
+2026-02-09 15:59:48,619 - story_sign - INFO - [ReportDrafter] Started Shadow Session: a8f46b91-548c-40a7-b589-74357adb2664
+2026-02-09 15:59:48,629 - story_sign - INFO - [ReportDrafter] Started Shadow Session: dd50b5b3-f9a7-4b55-bdee-522150ee89e5
+2026-02-09 15:59:48,632 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 60c06c90-2a28-4cf4-8654-31821d547132
+2026-02-09 15:59:48,652 - story_sign - INFO - [ReportDrafter] Started Shadow Session: bf910eec-842e-4f90-a960-4637bec5dea1
+2026-02-09 15:59:48,677 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 3fa7e57e-20d0-4bf3-ad22-73803c8179c2
+2026-02-09 15:59:48,694 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 9a7e9a81-f4ca-4d37-848b-a2ebf457af8e
+2026-02-09 15:59:48,703 - story_sign - INFO - [ReportDrafter] Started Shadow Session: bf7eba77-1f38-4075-add7-d1bbf10f95ad
+2026-02-09 15:59:48,709 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 1b4e13dd-829c-48c8-b403-f428ce436dfa
+2026-02-09 15:59:48,714 - story_sign - INFO - [ReportDrafter] Started Shadow Session: cd3f1c26-5a9b-41ca-af11-af578af9cb15
+2026-02-09 15:59:48,719 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 9994dc6e-e7c8-484c-86b9-e45d6ec9680e
+2026-02-09 15:59:48,742 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 6b0eef1f-8e46-49a1-ab33-88873169e12f
+2026-02-09 15:59:48,744 - story_sign - INFO - [ReportDrafter] Started Shadow Session: ee780fc9-6ccc-4686-bbbd-ca2363fc6fc9
+2026-02-09 15:59:48,757 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 14dfff76-306b-4143-95ad-34bf8f668324
+2026-02-09 15:59:48,768 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 9ebb8aac-f084-4a86-99b8-b467506c3113
+2026-02-09 15:59:48,776 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 97bc5a44-1c46-44a2-825e-e59a2816567e
+2026-02-09 15:59:48,790 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 7c360a74-5887-4b8c-933d-57acf08bfac9
+2026-02-09 15:59:48,815 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 987c7416-91e0-46b2-858a-861615c6ff04
+2026-02-09 15:59:48,827 - story_sign - INFO - [ReportDrafter] Started Shadow Session: a05f6f9c-bb5d-4f32-8f2b-6e13700a4dc8
+2026-02-09 15:59:48,830 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 0106429c-60a5-4d02-b063-4bc204a76b70
+2026-02-09 15:59:48,844 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 3e8e2af5-7bca-49d2-ac34-42dd3fa400da
+2026-02-09 15:59:48,852 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 4d699df1-1f88-42dd-b2eb-389d4dfa65bf
+2026-02-09 15:59:48,863 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 1ab197c5-32b6-432a-99e5-c72c7a507224
+2026-02-09 15:59:48,895 - story_sign - INFO - [ReportDrafter] Started Shadow Session: ef0df50a-1ee1-40b8-b099-72a7906ef8f4
+2026-02-09 15:59:48,907 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 12ab9526-bad6-49cd-9f69-a80a4e10a735
+2026-02-09 15:59:48,909 - story_sign - INFO - [ReportDrafter] Started Shadow Session: e872be5b-f3e3-45e4-b268-43b440cd9817
+2026-02-09 15:59:48,919 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 9bb6a4b7-320f-4f6d-9fcc-6a8218298b73
+2026-02-09 15:59:48,926 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 71f68445-8bee-4491-8817-9f53cf1edb41
+2026-02-09 15:59:48,952 - story_sign - INFO - [ReportDrafter] Started Shadow Session: f523ba18-ec07-41a6-a8a4-09b600abd347
+2026-02-09 15:59:49,003 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 662e6bde-a128-4557-a316-290d26e14c4d
+2026-02-09 15:59:49,051 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 332dafd7-595b-4d5f-b81c-41cde447f184
+2026-02-09 15:59:49,068 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 129f419c-a02d-4458-8864-a1ec43cc8f8b
+2026-02-09 15:59:49,111 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 2e2b3d9f-d5a8-4b16-aaca-c6b9174e869a
+2026-02-09 15:59:49,201 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 01adcb93-e5d1-4f38-baee-d4e1453b178f
+2026-02-09 15:59:49,297 - story_sign - INFO - [ReportDrafter] Started Shadow Session: d15e6217-9fff-4a7f-a997-ec5017167ce4
+2026-02-09 15:59:49,395 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 303ab1c3-c208-49a5-ba8b-e838a3d44034
+2026-02-09 15:59:49,435 - story_sign - INFO - [ReportDrafter] Started Shadow Session: c7e19daa-6e80-4ad4-9f27-e1797b3f6d5c
+2026-02-09 15:59:49,460 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 8828aa78-e713-4411-8309-38055f36ff7d
+2026-02-09 15:59:49,467 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 14d12e8d-3168-44d9-9947-fdd1f259d81a
+2026-02-09 15:59:49,473 - story_sign - INFO - [ReportDrafter] Started Shadow Session: cdd12505-3c35-4d84-a7bc-f7a8754adfca
+2026-02-09 15:59:49,517 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 9d73180a-3a65-4257-953a-9b820951d38a
+2026-02-09 15:59:49,559 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 2dd12188-8442-46e7-b317-e0251028b806
+2026-02-09 15:59:49,589 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 7ba8f6ab-19c9-41df-846d-dd6357c19833
+2026-02-09 15:59:49,675 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 14ef9392-628c-4fc9-a9e7-bdf5809621d2
+2026-02-09 15:59:49,732 - story_sign - INFO - [ReportDrafter] Started Shadow Session: eaeedccf-4bfa-48e8-8e26-ad31a2d7880c
+2026-02-09 15:59:49,761 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 482355c1-9f45-4e02-8cde-eac0af396bf1
+2026-02-09 15:59:49,837 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 9d241429-c102-48bf-bb09-6e73da5b13a5
+2026-02-09 15:59:49,926 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 5358ac8e-3a4d-4867-a8ad-0bfebfe40ab1
+2026-02-09 15:59:52,382 - story_sign - INFO - [ReportDrafter] Started Shadow Session: bf7564d4-75a2-4d4d-a8a1-2d3b45171756
+2026-02-09 15:59:52,532 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 00748984-2077-4dde-b845-51678c35b194
+2026-02-09 15:59:52,552 - story_sign - INFO - [ReportDrafter] Started Shadow Session: e44c37fe-d1e8-4ef5-b90c-7cd8ddd57129
+2026-02-09 15:59:52,568 - story_sign - INFO - [ReportDrafter] Started Shadow Session: e331c217-c652-4eb5-a325-3974b762aeaf
+2026-02-09 15:59:52,623 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 8d040c28-1acd-4e0b-8d85-65c1f1c270fd
+2026-02-09 15:59:52,630 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 45330026-2fce-4e67-ab8e-686c62fa81b5
+2026-02-09 15:59:52,643 - story_sign - INFO - [ReportDrafter] Started Shadow Session: f3fa7636-cde9-41a8-b0af-494420e1d36d
+2026-02-09 15:59:52,660 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 21e74733-6c3e-4e8e-a8a6-f4028b33bb84
+2026-02-09 15:59:52,672 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 638c9438-7e40-4846-af29-2cbedfa61067
+2026-02-09 15:59:52,703 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 702bc68c-268f-4585-aab5-e181632b108a
+2026-02-09 15:59:52,732 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 8db55547-040d-49a2-90fa-ad8d0be34aca
+2026-02-09 15:59:52,746 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 02744070-1327-4bee-9e32-7920398ca53c
+2026-02-09 15:59:52,756 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 532f415c-5e3a-4505-8a87-4343e78a6b2a
+2026-02-09 15:59:52,759 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 0360cb86-f5c4-4a09-95a9-fe773f2216b5
+2026-02-09 15:59:52,761 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 3e86b368-4af1-4da3-8f8e-139013a97bda
+2026-02-09 15:59:52,769 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 931794c4-41c7-48b1-ae98-94f2ac149c63
+2026-02-09 15:59:52,779 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 342a75d8-219f-4f3d-9438-c88e8b3787f0
+2026-02-09 15:59:52,789 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 7783f5b0-aa01-4003-a6bd-3f655fbc94b9
+2026-02-09 15:59:52,927 - story_sign - INFO - [ReportDrafter] Started Shadow Session: e969ee58-249d-4c24-bf1b-6b0c46dbf9dd
+2026-02-09 15:59:52,936 - story_sign - INFO - [ReportDrafter] Started Shadow Session: adaafba6-6523-4d68-9598-780d349952ef
+2026-02-09 15:59:52,940 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 71ec2d50-1fec-4a07-a6ed-828967105f14
+2026-02-09 15:59:52,978 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 8ca79183-0748-441f-b3f6-84635c0a6278
+2026-02-09 15:59:52,982 - story_sign - INFO - [ReportDrafter] Started Shadow Session: ff6fddb1-da40-45fc-b56e-76bf6e9a18d4
+2026-02-09 15:59:52,988 - story_sign - INFO - [ReportDrafter] Started Shadow Session: cc0e0250-5316-4283-a59f-cd740c1faf0a
+2026-02-09 15:59:52,992 - story_sign - INFO - [ReportDrafter] Started Shadow Session: be97ea9e-9063-493a-8c19-09cb35489ed6
+2026-02-09 15:59:53,023 - story_sign - INFO - [ReportDrafter] Started Shadow Session: c4d64dc8-5f18-4775-b472-d827d084c9e4
+2026-02-09 15:59:53,039 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 54fc0bd4-9d01-47db-8c7e-129096c50cf0
+2026-02-09 15:59:53,070 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 12970592-f99f-4b4c-a7e9-e3ad65f70e1d
+2026-02-09 15:59:53,075 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 25f29103-6ad2-4ae6-8281-70ed3625553a
+2026-02-09 15:59:53,085 - story_sign - INFO - [ReportDrafter] Started Shadow Session: e223c417-301a-474f-9383-4b47473ec159
+2026-02-09 15:59:53,091 - story_sign - INFO - [ReportDrafter] Started Shadow Session: ff2b12fb-7182-4415-a30e-c6fd6dd10e64
+2026-02-09 15:59:53,104 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 32628991-7853-4fee-a9a8-3d943617e3b7
+2026-02-09 15:59:53,116 - story_sign - INFO - [ReportDrafter] Started Shadow Session: a647189d-9d64-49a9-92ad-ee8d0acc0cf2
+2026-02-09 15:59:53,147 - story_sign - INFO - [ReportDrafter] Started Shadow Session: c4a1d058-cc19-4f21-9780-88b65cf75782
+2026-02-09 15:59:53,169 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 8606905f-1094-40f7-9b5e-70055dcc0faa
+2026-02-09 15:59:53,177 - story_sign - INFO - [ReportDrafter] Started Shadow Session: a695c485-331c-4791-8705-e47b0959870e
+2026-02-09 15:59:53,180 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 775fd506-5ec3-4f25-a607-cf640f1ec97c
+2026-02-09 15:59:53,189 - story_sign - INFO - [ReportDrafter] Started Shadow Session: ef03896a-daed-42f4-8698-4b1f13d4bc35
+2026-02-09 15:59:53,192 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 8b6e764a-99b3-4359-b2de-d9e87ed326f6
+2026-02-09 15:59:53,201 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 3bf4adb9-0113-4de0-bc16-43768f90e86e
+2026-02-09 15:59:53,212 - story_sign - INFO - [ReportDrafter] Started Shadow Session: c7444f0d-fe99-41d7-8e80-e67493950f18
+2026-02-09 15:59:53,221 - story_sign - INFO - [ReportDrafter] Started Shadow Session: d23e3df9-6afb-45b9-a333-e08ac0987843
+2026-02-09 15:59:53,242 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 8b6056ba-29bc-490b-9867-49ddd9d68da7
+2026-02-09 15:59:53,255 - story_sign - INFO - [ReportDrafter] Started Shadow Session: cbca5a75-950a-4886-b9b8-4be0bcae896a
+2026-02-09 15:59:53,257 - story_sign - INFO - [ReportDrafter] Started Shadow Session: a959c174-8a68-4c9a-94cc-660d0324af81
+2026-02-09 15:59:53,260 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 9a2e71a2-0eb0-4503-9a45-6d73bd70247a
+2026-02-09 15:59:53,270 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 99e97ac7-d783-4dee-bbb6-ff697a44d393
+2026-02-09 15:59:53,306 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 7bef2d89-187c-4daf-97b1-27497df6fb42
+2026-02-09 15:59:53,311 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 7d7128e4-0ef3-464c-8f30-18585edb3355
+2026-02-09 15:59:53,316 - story_sign - INFO - [ReportDrafter] Started Shadow Session: d2c4967e-2c20-4ce0-8610-ef7b33ddf3df
+2026-02-09 15:59:53,323 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 62ba6681-1f29-42fd-80ac-e07c9ce48dd3
+2026-02-09 15:59:53,328 - story_sign - INFO - [ReportDrafter] Started Shadow Session: eb02cc2b-1daa-4f05-97d5-92ed30cb2513
+2026-02-09 15:59:53,335 - story_sign - INFO - [ReportDrafter] Started Shadow Session: f9a5a684-de54-421c-9d86-07defcb9427a
+2026-02-09 15:59:53,345 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 61e1f3e2-5363-4927-9c6a-d7da47ee7b57
+2026-02-09 15:59:53,350 - story_sign - INFO - [ReportDrafter] Started Shadow Session: d45665db-4fba-455d-bcc4-9643b296c816
+2026-02-09 15:59:53,356 - story_sign - INFO - [ReportDrafter] Started Shadow Session: af3b4787-27fa-4b05-b28d-63233dbd2841
+2026-02-09 15:59:53,361 - story_sign - INFO - [ReportDrafter] Started Shadow Session: b08878ed-133b-4f27-8abf-5f3e2e209978
+2026-02-09 15:59:53,365 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 94e1bc26-a0c3-4750-b004-1b2950508b89
+2026-02-09 15:59:53,370 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 685c390f-4360-496a-97fd-41fa4dc53572
+2026-02-09 15:59:53,434 - story_sign - INFO - [ReportDrafter] Started Shadow Session: dbddeaad-bf86-4592-9687-6dd823351124
+2026-02-09 15:59:53,442 - story_sign - INFO - [ReportDrafter] Started Shadow Session: d308e4a8-11d4-4ae3-a460-f6cc0b3e6c31
+2026-02-09 15:59:53,446 - story_sign - INFO - [ReportDrafter] Started Shadow Session: a7053488-1320-410d-95d9-48c0e8594187
+2026-02-09 15:59:53,457 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 0d8f5197-3325-49e2-b78b-5f8662cf3da3
+2026-02-09 15:59:53,465 - story_sign - INFO - [ReportDrafter] Started Shadow Session: dd3d72b2-8e9c-4ca3-9f62-6e50cd713e94
+2026-02-09 15:59:53,487 - story_sign - INFO - [ReportDrafter] Started Shadow Session: f2fc0631-7b71-4749-aacf-0bf7a99c82b2
+2026-02-09 15:59:53,521 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 4e0fcea9-d5cc-4dda-ba5c-24f59835907a
+2026-02-09 15:59:53,530 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 425e17f4-ca60-42b7-b99b-c521f1986eee
+2026-02-09 15:59:53,549 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 3894fc52-d1b6-460a-9d62-a19463c74abc
+2026-02-09 15:59:53,578 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 3052c012-8ba6-490e-9140-4a97dd37c8f7
+2026-02-09 16:08:47,621 - story_sign - INFO - Application Startup Complete. Routers Loaded.
+2026-02-09 16:27:10,509 - story_sign - INFO - Application Startup Complete. Routers Loaded.
+2026-02-09 16:28:03,806 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 8c772665-8a58-48a1-b829-6338d11eb4dc
+2026-02-09 16:28:23,175 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 35dd5664-1bf4-4bb4-a716-31c0220d510f
+2026-02-09 16:28:42,260 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #1. Brain said: Ack...
+2026-02-09 16:28:49,813 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #2. Brain said: Ack...
+2026-02-09 16:28:58,744 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #3. Brain said: Ack...
+2026-02-09 16:29:06,021 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #4. Brain said: Ack...
+2026-02-09 16:29:14,831 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #5. Brain said: Ack...
+2026-02-09 16:29:23,516 - story_sign - INFO - [ReportDrafter] Finalizing Report for 35dd5664-1bf4-4bb4-a716-31c0220d510f. Total Chunks Processed: 6
+2026-02-09 16:29:29,642 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #6. Brain said: # Clinical Rehabilit...
+2026-02-09 16:29:32,654 - story_sign - INFO - [ReportDrafter] Report Generated in 9.13s. Usage: cache_tokens_details=None cached_content_token_count=None candidates_token_count=574 candidates_tokens_details=None prompt_token_count=883 prompt_tokens_details=[ModalityTokenCount(
+  modality=<MediaModality.TEXT: 'TEXT'>,
+  token_count=883
+)] thoughts_token_count=899 tool_use_prompt_token_count=None tool_use_prompt_tokens_details=None total_token_count=2356 traffic_type=None
+2026-02-09 16:30:29,674 - story_sign - INFO - [ReportDrafter] Started Shadow Session: d516bc92-b4b6-4008-9939-f363feb96394
+2026-02-09 16:30:39,653 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #1. Brain said: Ack...
+2026-02-09 16:30:49,311 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #2. Brain said: Ack...
+2026-02-09 16:30:57,109 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #3. Brain said: Ack...
+2026-02-09 16:31:05,706 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #4. Brain said: Ack...
+2026-02-09 16:31:16,075 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #5. Brain said: Ack...
+2026-02-09 16:31:19,178 - story_sign - INFO - [ReportDrafter] Finalizing Report for d516bc92-b4b6-4008-9939-f363feb96394. Total Chunks Processed: 7
+2026-02-09 16:31:23,549 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #6. Brain said: Ack...
+2026-02-09 16:31:28,413 - story_sign - INFO - [ReportDrafter] Report Generated in 9.23s. Usage: cache_tokens_details=None cached_content_token_count=None candidates_token_count=513 candidates_tokens_details=None prompt_token_count=605 prompt_tokens_details=[ModalityTokenCount(
+  modality=<MediaModality.TEXT: 'TEXT'>,
+  token_count=605
+)] thoughts_token_count=946 tool_use_prompt_token_count=None tool_use_prompt_tokens_details=None total_token_count=2064 traffic_type=None
+2026-02-09 16:31:31,026 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #7. Brain said: Ack...
+2026-02-09 16:31:38,977 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 38c7df32-0b2e-4a9b-84cd-756804f0e7d5
+2026-02-09 16:50:07,226 - story_sign - INFO - Application Startup Complete. Routers Loaded.
+2026-02-09 16:51:27,740 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 477e7745-f9b9-445d-baa6-34ec0eb6e3d7
+2026-02-09 16:54:25,274 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 8223e254-81ec-4701-8ef3-66084aca28a0
+2026-02-09 17:00:17,337 - story_sign - INFO - Application Startup Complete. Routers Loaded.
+2026-02-09 17:01:47,518 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 3e7d9bbf-03e6-4f6c-8a15-266c9f528604
+2026-02-09 18:11:01,825 - story_sign - INFO - Application Startup Complete. Routers Loaded.
+2026-02-09 18:13:49,806 - story_sign - INFO - [ReportDrafter] Started Shadow Session: f83ea29c-6cc7-4c46-a406-7bfd4af311b2
+2026-02-09 18:21:46,604 - story_sign - INFO - Application Startup Complete. Routers Loaded.
+2026-02-09 18:25:08,131 - story_sign - INFO - [ReportDrafter] Started Shadow Session: c19caa79-4513-461e-b7b4-eef97f34985f
+2026-02-09 18:28:37,988 - story_sign - INFO - Application Startup Complete. Routers Loaded.
+2026-02-09 18:29:00,473 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 65a9b667-6ca0-4964-9919-1a89b77439c0
+2026-02-09 18:33:17,571 - story_sign - INFO - Application Startup Complete. Routers Loaded.
+2026-02-09 18:33:35,683 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 79509318-d174-4916-95bd-3393f6282028
+2026-02-09 18:51:45,740 - story_sign - INFO - Application Startup Complete. Routers Loaded.
+2026-02-09 18:59:57,492 - story_sign - INFO - [ReportDrafter] Started Shadow Session: cf96075a-e8f0-4c43-88b9-50ace54dbb1c
+2026-02-09 19:00:37,290 - story_sign - INFO - Application Startup Complete. Routers Loaded.
+2026-02-09 19:01:01,990 - story_sign - INFO - [ReportDrafter] Started Shadow Session: e26e737e-5b76-4626-8fb3-4b2c1ac4e961
+2026-02-09 19:16:12,423 - story_sign - INFO - Application Startup Complete. Routers Loaded.
+2026-02-09 19:16:27,657 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 92f1b75d-aeb9-4574-ae9e-2d344805cf9c
+2026-02-09 19:22:08,804 - story_sign - INFO - [ReportDrafter] Started Shadow Session: c007bbd8-6212-4b51-9092-60f50715d856
+2026-02-09 19:22:27,733 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #1. Brain said: Ack...
+2026-02-09 19:22:35,433 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #2. Brain said: Ack...
+2026-02-09 19:22:43,471 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #3. Brain said: Ack...
+2026-02-09 19:22:51,798 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #4. Brain said: Ack...
+2026-02-09 19:22:58,719 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #5. Brain said: Ack...
+2026-02-09 19:23:37,326 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 6f09ff59-d9e5-4de6-a283-0744e83bfc11
+2026-02-09 19:25:00,385 - story_sign - INFO - [ReportDrafter] Started Shadow Session: cc7e3144-dcd7-4e7e-b5c3-8bd8044ed3c1
+2026-02-09 19:26:37,609 - story_sign - INFO - [ReportDrafter] Started Shadow Session: efbc9279-1f59-4e52-8b27-312e8dd6af05
+2026-02-09 20:08:19,072 - story_sign - INFO - Application Startup Complete. Routers Loaded.
+2026-02-10 11:54:55,754 - story_sign - INFO - Application Startup Complete. Routers Loaded.
+2026-02-10 11:55:40,791 - story_sign - INFO - [ReportDrafter] Started Shadow Session: ccebca7f-da18-4918-88ab-b8e9b38fa337
+2026-02-10 12:20:44,754 - story_sign - INFO - Application Startup Complete. Routers Loaded.
+2026-02-10 12:20:54,290 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 5a20e59e-4601-4cbc-af76-2be5db87818a
+2026-02-10 12:46:17,238 - story_sign - INFO - Application Startup Complete. Routers Loaded.
+2026-02-10 12:46:21,632 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 49a682e8-026e-4ac9-8e95-a699c8ae6ed3
+2026-02-10 12:50:03,911 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 0f504f1f-f9bd-41ef-a093-c92fabd9b7d6
+2026-02-10 12:50:36,098 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 9180df19-0441-4be1-b77f-7fa245f095c6
+2026-02-10 12:50:42,591 - story_sign - INFO - [ReportDrafter] Started Shadow Session: e8a07e92-0659-4789-9987-d0ce5604745f
+2026-02-10 12:54:30,100 - story_sign - INFO - Application Startup Complete. Routers Loaded.
+2026-02-10 12:54:50,992 - story_sign - INFO - [ReportDrafter] Started Shadow Session: e68c4794-4f9a-40a5-997a-10f36d1518a4
+2026-02-10 12:55:34,618 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 2e7cb2f2-8f42-4df9-8bd0-6c52402e97c3
+2026-02-10 13:14:12,638 - story_sign - INFO - Application Startup Complete. Routers Loaded.
+2026-02-10 13:14:34,567 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 3aa34f93-5203-4952-a266-ca45ac2d69a5
+2026-02-10 13:20:28,010 - story_sign - INFO - Application Startup Complete. Routers Loaded.
+2026-02-10 13:20:42,216 - story_sign - INFO - [ReportDrafter] Started Shadow Session: f221aab5-4348-4b09-b33f-b7d653ed5fda
+2026-02-10 13:21:29,382 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 7f43016e-9e85-45ba-ad7d-f25c58812b78
+2026-02-10 13:44:18,955 - story_sign - INFO - Application Startup Complete. Routers Loaded.
+2026-02-10 13:58:10,001 - story_sign - INFO - Application Startup Complete. Routers Loaded.
+2026-02-10 13:58:58,513 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 684b0cd5-a615-4776-a136-baf27e90e5b3
+2026-02-10 13:59:33,373 - story_sign - INFO - [ReportDrafter] Started Shadow Session: cb1bbcda-104d-4a23-97a7-58c18294ac1a
+2026-02-10 14:06:39,592 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 6ef4415e-a893-4d22-bd8e-45566e6d0402
+2026-02-10 14:07:09,938 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 48f5e23f-e430-440a-964a-0b7eff4b882f
+2026-02-10 14:08:32,404 - story_sign - INFO - Application Startup Complete. Routers Loaded.
+2026-02-10 14:08:59,972 - story_sign - INFO - [ReportDrafter] Started Shadow Session: c443c2c6-5e7e-4d4d-beda-54f533e7195a
+2026-02-10 14:09:33,963 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 548d0c71-6fd7-4089-a074-7dfbeb54f6ab
+2026-02-10 17:55:48,519 - story_sign - INFO - Application Startup Complete. Routers Loaded.
+2026-02-10 17:56:00,872 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 34aced68-08df-44bf-9f4b-cfd912e6c723
+2026-02-10 18:00:54,661 - story_sign - INFO - Application Startup Complete. Routers Loaded.
+2026-02-10 18:01:18,410 - story_sign - INFO - [ReportDrafter] Started Shadow Session: c98f6b76-1e0b-4d2b-9d23-35d2264c6479
+2026-02-10 18:01:28,643 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #1. Brain said: Ack...
+2026-02-10 18:01:36,525 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #2. Brain said: Ack...
+2026-02-10 18:01:44,668 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #3. Brain said: Ack...
+2026-02-10 18:01:52,435 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #4. Brain said: Ack...
+2026-02-10 18:01:59,679 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #5. Brain said: Ack...
+2026-02-10 18:02:01,339 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #6. Brain said: Ack...
+2026-02-10 18:02:09,266 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 9796cb99-f11d-4da9-bf37-f969405047b6
+2026-02-10 18:02:27,429 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #1. Brain said: Ack...
+2026-02-10 18:02:35,908 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #2. Brain said: Ack...
+2026-02-10 18:02:52,050 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #3. Brain said: Ack...
+2026-02-10 18:02:59,358 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #4. Brain said: Ack...
+2026-02-10 18:03:01,747 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #5. Brain said: Ack...
+2026-02-10 18:29:34,933 - story_sign - INFO - Application Startup Complete. Routers Loaded.
+2026-02-10 18:30:00,109 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 7763cb71-d97f-4b06-8e71-9d103470663c
+2026-02-10 18:30:10,715 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #1. Brain said: Ack...
+2026-02-10 18:30:18,656 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #2. Brain said: Ack...
+2026-02-10 18:30:26,434 - story_sign - INFO - [ReportDrafter] Finalizing Report for 7763cb71-d97f-4b06-8e71-9d103470663c. Total Chunks Processed: 2
+2026-02-10 18:30:34,484 - story_sign - INFO - [ReportDrafter] Report Generated in 8.04s. Usage: cache_tokens_details=None cached_content_token_count=None candidates_token_count=574 candidates_tokens_details=None prompt_token_count=335 prompt_tokens_details=[ModalityTokenCount(
+  modality=<MediaModality.TEXT: 'TEXT'>,
+  token_count=335
+)] thoughts_token_count=627 tool_use_prompt_token_count=None tool_use_prompt_tokens_details=None total_token_count=1536 traffic_type=None
+2026-02-10 18:45:22,633 - story_sign - INFO - Application Startup Complete. Routers Loaded.
+2026-02-10 18:46:07,576 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 2178ab28-0aaf-4fc7-9188-164baee8f469
+2026-02-10 18:46:18,431 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #1. Brain said: Ack...
+2026-02-10 18:46:25,431 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #2. Brain said: Ack...
+2026-02-10 18:46:29,395 - story_sign - INFO - [ReportDrafter] Finalizing Report for 2178ab28-0aaf-4fc7-9188-164baee8f469. Total Chunks Processed: 2
+2026-02-10 18:46:35,160 - story_sign - INFO - [ReportDrafter] Finalizing Report for 2178ab28-0aaf-4fc7-9188-164baee8f469. Total Chunks Processed: 2
+2026-02-10 18:46:37,525 - story_sign - INFO - [ReportDrafter] Finalizing Report for 2178ab28-0aaf-4fc7-9188-164baee8f469. Total Chunks Processed: 2
+2026-02-10 18:46:38,172 - story_sign - INFO - [ReportDrafter] Report Generated in 8.77s. Usage: cache_tokens_details=None cached_content_token_count=None candidates_token_count=516 candidates_tokens_details=None prompt_token_count=337 prompt_tokens_details=[ModalityTokenCount(
+  modality=<MediaModality.TEXT: 'TEXT'>,
+  token_count=337
+)] thoughts_token_count=892 tool_use_prompt_token_count=None tool_use_prompt_tokens_details=None total_token_count=1745 traffic_type=None
+2026-02-10 18:46:43,929 - story_sign - INFO - [ReportDrafter] Report Generated in 8.77s. Usage: cache_tokens_details=None cached_content_token_count=None candidates_token_count=547 candidates_tokens_details=None prompt_token_count=337 prompt_tokens_details=[ModalityTokenCount(
+  modality=<MediaModality.TEXT: 'TEXT'>,
+  token_count=337
+)] thoughts_token_count=667 tool_use_prompt_token_count=None tool_use_prompt_tokens_details=None total_token_count=1551 traffic_type=None
+2026-02-10 18:46:43,930 - story_sign - ERROR - [ReportDrafter] Error finalizing: '2178ab28-0aaf-4fc7-9188-164baee8f469'
+2026-02-10 18:46:47,171 - story_sign - INFO - [ReportDrafter] Report Generated in 9.64s. Usage: cache_tokens_details=None cached_content_token_count=None candidates_token_count=485 candidates_tokens_details=None prompt_token_count=337 prompt_tokens_details=[ModalityTokenCount(
+  modality=<MediaModality.TEXT: 'TEXT'>,
+  token_count=337
+)] thoughts_token_count=933 tool_use_prompt_token_count=None tool_use_prompt_tokens_details=None total_token_count=1755 traffic_type=None
+2026-02-10 18:46:47,172 - story_sign - ERROR - [ReportDrafter] Error finalizing: '2178ab28-0aaf-4fc7-9188-164baee8f469'
+2026-02-10 18:47:44,057 - story_sign - INFO - Application Startup Complete. Routers Loaded.
+2026-02-10 18:48:23,724 - story_sign - INFO - [ReportDrafter] Started Shadow Session: db2136bd-0525-47b6-81bb-947c082e07a7
+2026-02-10 18:48:41,825 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #1. Brain said: Ack...
+2026-02-10 18:48:51,462 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #2. Brain said: Ack...
+2026-02-10 18:48:57,978 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #3. Brain said: Ack...
+2026-02-10 18:49:13,983 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #4. Brain said: Ack...
+2026-02-10 18:49:22,271 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #5. Brain said: Ack...
+2026-02-10 18:49:27,073 - story_sign - INFO - [ReportDrafter] Finalizing Report for db2136bd-0525-47b6-81bb-947c082e07a7. Total Chunks Processed: 6
+2026-02-10 18:49:29,792 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #6. Brain said: Ack...
+2026-02-10 18:49:31,995 - story_sign - INFO - [ReportDrafter] Finalizing Report for db2136bd-0525-47b6-81bb-947c082e07a7. Total Chunks Processed: 7
+2026-02-10 18:49:34,133 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #7. Brain said: Ack...
+2026-02-10 18:49:35,092 - story_sign - INFO - [ReportDrafter] Finalizing Report for db2136bd-0525-47b6-81bb-947c082e07a7. Total Chunks Processed: 8
+2026-02-10 18:49:37,509 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #8. Brain said: Ack...
+2026-02-10 18:49:45,198 - story_sign - INFO - [ReportDrafter] Report Generated in 13.20s. Usage: cache_tokens_details=None cached_content_token_count=None candidates_token_count=539 candidates_tokens_details=None prompt_token_count=700 prompt_tokens_details=[ModalityTokenCount(
+  modality=<MediaModality.TEXT: 'TEXT'>,
+  token_count=700
+)] thoughts_token_count=1614 tool_use_prompt_token_count=None tool_use_prompt_tokens_details=None total_token_count=2853 traffic_type=None
+2026-02-10 18:49:48,337 - story_sign - INFO - [ReportDrafter] Report Generated in 13.24s. Usage: cache_tokens_details=None cached_content_token_count=None candidates_token_count=550 candidates_tokens_details=None prompt_token_count=772 prompt_tokens_details=[ModalityTokenCount(
+  modality=<MediaModality.TEXT: 'TEXT'>,
+  token_count=772
+)] thoughts_token_count=1659 tool_use_prompt_token_count=None tool_use_prompt_tokens_details=None total_token_count=2981 traffic_type=None
+2026-02-10 18:49:48,339 - story_sign - ERROR - [ReportDrafter] Error finalizing: 'db2136bd-0525-47b6-81bb-947c082e07a7'
+2026-02-10 18:49:48,357 - story_sign - INFO - [ReportDrafter] Report Generated in 21.28s. Usage: cache_tokens_details=None cached_content_token_count=None candidates_token_count=543 candidates_tokens_details=None prompt_token_count=606 prompt_tokens_details=[ModalityTokenCount(
+  modality=<MediaModality.TEXT: 'TEXT'>,
+  token_count=606
+)] thoughts_token_count=2877 tool_use_prompt_token_count=None tool_use_prompt_tokens_details=None total_token_count=4026 traffic_type=None
+2026-02-10 18:49:48,357 - story_sign - ERROR - [ReportDrafter] Error finalizing: 'db2136bd-0525-47b6-81bb-947c082e07a7'
+2026-02-10 18:55:32,273 - story_sign - INFO - Application Startup Complete. Routers Loaded.
+2026-02-10 18:56:23,067 - story_sign - INFO - [ReportDrafter] Started Shadow Session: ba1dbc29-7b9d-460a-97fc-1b85828b03d3
+2026-02-10 18:56:33,520 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #1. Brain said: Ack...
+2026-02-10 18:56:40,341 - story_sign - INFO - [ReportDrafter] Finalizing Report for ba1dbc29-7b9d-460a-97fc-1b85828b03d3. Total Chunks Processed: 2
+2026-02-10 18:56:41,487 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #2. Brain said: Ack...
+2026-02-10 18:56:47,606 - story_sign - INFO - [ReportDrafter] Finalizing Report for ba1dbc29-7b9d-460a-97fc-1b85828b03d3. Total Chunks Processed: 3
+2026-02-10 18:56:49,127 - story_sign - INFO - [ReportDrafter] Report Generated in 8.78s. Usage: cache_tokens_details=None cached_content_token_count=None candidates_token_count=471 candidates_tokens_details=None prompt_token_count=273 prompt_tokens_details=[ModalityTokenCount(
+  modality=<MediaModality.TEXT: 'TEXT'>,
+  token_count=273
+)] thoughts_token_count=684 tool_use_prompt_token_count=None tool_use_prompt_tokens_details=None total_token_count=1428 traffic_type=None
+2026-02-10 18:56:49,242 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #3. Brain said: Ack...
+2026-02-10 18:56:55,890 - story_sign - INFO - [ReportDrafter] Report Generated in 8.28s. Usage: cache_tokens_details=None cached_content_token_count=None candidates_token_count=516 candidates_tokens_details=None prompt_token_count=342 prompt_tokens_details=[ModalityTokenCount(
+  modality=<MediaModality.TEXT: 'TEXT'>,
+  token_count=342
+)] thoughts_token_count=593 tool_use_prompt_token_count=None tool_use_prompt_tokens_details=None total_token_count=1451 traffic_type=None
+2026-02-10 18:56:55,892 - story_sign - ERROR - [ReportDrafter] Error finalizing: 'ba1dbc29-7b9d-460a-97fc-1b85828b03d3'
+2026-02-10 19:08:34,540 - story_sign - INFO - Application Startup Complete. Routers Loaded.
+2026-02-10 19:08:53,852 - story_sign - INFO - [ReportDrafter] Started Shadow Session: eb2c5999-2334-459c-968e-16c8faa1ad20
+2026-02-10 19:09:03,929 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #1. Brain said: Ack...
+2026-02-10 19:09:11,910 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #2. Brain said: Ack...
+2026-02-10 19:09:20,211 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #3. Brain said: Ack...
+2026-02-10 19:09:28,266 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #4. Brain said: Ack...
+2026-02-10 19:09:35,387 - story_sign - INFO - [ReportDrafter] Finalizing Report for eb2c5999-2334-459c-968e-16c8faa1ad20. Total Chunks Processed: 5
+2026-02-10 19:09:36,023 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #5. Brain said: Ack...
+2026-02-10 19:09:43,797 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #6. Brain said: Ack...
+2026-02-10 19:09:45,548 - story_sign - INFO - [ReportDrafter] Report Generated in 10.16s. Usage: cache_tokens_details=None cached_content_token_count=None candidates_token_count=533 candidates_tokens_details=None prompt_token_count=516 prompt_tokens_details=[ModalityTokenCount(
+  modality=<MediaModality.TEXT: 'TEXT'>,
+  token_count=516
+)] thoughts_token_count=1155 tool_use_prompt_token_count=None tool_use_prompt_tokens_details=None total_token_count=2204 traffic_type=None
+2026-02-10 19:09:46,037 - story_sign - WARNING - [ReportDrafter] Session eb2c5999-2334-459c-968e-16c8faa1ad20 not found. Starting new.
+2026-02-10 19:09:46,041 - story_sign - INFO - [ReportDrafter] Started Shadow Session: eb2c5999-2334-459c-968e-16c8faa1ad20
+2026-02-10 19:09:48,487 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #1. Brain said: Ack...
+2026-02-10 19:09:50,265 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #2. Brain said: Ack...
+2026-02-10 19:15:22,728 - story_sign - INFO - Application Startup Complete. Routers Loaded.
+2026-02-10 19:15:59,828 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 1fe06e41-43eb-4e9d-9511-436c5ec9eaf6
+2026-02-10 19:16:10,073 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #1. Brain said: Ack...
+2026-02-10 19:16:18,434 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #2. Brain said: Ack...
+2026-02-10 19:16:26,702 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #3. Brain said: Ack...
+2026-02-10 19:16:34,121 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #4. Brain said: Ack...
+2026-02-10 19:16:34,807 - story_sign - INFO - [ReportDrafter] Finalizing Report for 1fe06e41-43eb-4e9d-9511-436c5ec9eaf6. Total Chunks Processed: 4
+2026-02-10 19:16:41,863 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #5. Brain said: Ack...
+2026-02-10 19:16:42,816 - story_sign - INFO - [ReportDrafter] Report Generated in 8.01s. Usage: cache_tokens_details=None cached_content_token_count=None candidates_token_count=574 candidates_tokens_details=None prompt_token_count=540 prompt_tokens_details=[ModalityTokenCount(
+  modality=<MediaModality.TEXT: 'TEXT'>,
+  token_count=540
+)] thoughts_token_count=663 tool_use_prompt_token_count=None tool_use_prompt_tokens_details=None total_token_count=1777 traffic_type=None
+2026-02-10 19:16:43,270 - story_sign - WARNING - [ReportDrafter] Session 1fe06e41-43eb-4e9d-9511-436c5ec9eaf6 not found. Starting new.
+2026-02-10 19:16:43,272 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 1fe06e41-43eb-4e9d-9511-436c5ec9eaf6
+2026-02-10 19:16:45,556 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #1. Brain said: Ack...
+2026-02-10 19:16:47,985 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #2. Brain said: Ack...
+2026-02-10 19:17:18,155 - story_sign - INFO - [ReportDrafter] Started Shadow Session: f4c5a9d9-3515-45ba-bb2f-3806e64b5487
+2026-02-10 19:17:28,877 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #1. Brain said: Ack...
+2026-02-10 19:17:35,950 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #2. Brain said: Ack...
+2026-02-10 19:17:44,222 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #3. Brain said: Ack...
+2026-02-10 19:17:52,112 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #4. Brain said: Ack...
+2026-02-10 19:17:59,479 - story_sign - INFO - [ReportDrafter] Finalizing Report for f4c5a9d9-3515-45ba-bb2f-3806e64b5487. Total Chunks Processed: 6
+2026-02-10 19:18:00,455 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #5. Brain said: Ack...
+2026-02-10 19:18:02,117 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #6. Brain said: Ack...
+2026-02-10 19:18:08,415 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #7. Brain said: Ack...
+2026-02-10 19:18:11,679 - story_sign - INFO - [ReportDrafter] Report Generated in 12.20s. Usage: cache_tokens_details=None cached_content_token_count=None candidates_token_count=490 candidates_tokens_details=None prompt_token_count=517 prompt_tokens_details=[ModalityTokenCount(
+  modality=<MediaModality.TEXT: 'TEXT'>,
+  token_count=517
+)] thoughts_token_count=1399 tool_use_prompt_token_count=None tool_use_prompt_tokens_details=None total_token_count=2406 traffic_type=None
+2026-02-10 19:18:11,751 - story_sign - WARNING - [ReportDrafter] Session f4c5a9d9-3515-45ba-bb2f-3806e64b5487 not found. Starting new.
+2026-02-10 19:18:11,755 - story_sign - INFO - [ReportDrafter] Started Shadow Session: f4c5a9d9-3515-45ba-bb2f-3806e64b5487
+2026-02-10 19:18:11,818 - story_sign - INFO - [ReportDrafter] Finalizing Report for f4c5a9d9-3515-45ba-bb2f-3806e64b5487. Total Chunks Processed: 1
+2026-02-10 19:18:14,351 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #1. Brain said: Ack...
+2026-02-10 19:18:18,743 - story_sign - INFO - [ReportDrafter] Report Generated in 6.92s. Usage: cache_tokens_details=None cached_content_token_count=None candidates_token_count=467 candidates_tokens_details=None prompt_token_count=203 prompt_tokens_details=[ModalityTokenCount(
+  modality=<MediaModality.TEXT: 'TEXT'>,
+  token_count=203
+)] thoughts_token_count=491 tool_use_prompt_token_count=None tool_use_prompt_tokens_details=None total_token_count=1161 traffic_type=None
+2026-02-10 19:31:08,874 - story_sign - INFO - Application Startup Complete. Routers Loaded.
+2026-02-10 19:39:39,055 - story_sign - INFO - Application Startup Complete. Routers Loaded.
+2026-02-10 19:39:58,590 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 6791a57d-bbc4-4c04-a9bf-ac00d775b15a
+2026-02-10 19:40:08,765 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #1. Brain said: Ack...
+2026-02-10 19:40:16,962 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #2. Brain said: Ack...
+2026-02-10 19:40:20,132 - story_sign - INFO - [ReportDrafter] Finalizing Report for 6791a57d-bbc4-4c04-a9bf-ac00d775b15a. Total Chunks Processed: 3
+2026-02-10 19:40:22,333 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #3. Brain said: Ack...
+2026-02-10 19:40:28,262 - story_sign - INFO - [ReportDrafter] Report Generated in 8.13s. Usage: cache_tokens_details=None cached_content_token_count=None candidates_token_count=522 candidates_tokens_details=None prompt_token_count=370 prompt_tokens_details=[ModalityTokenCount(
+  modality=<MediaModality.TEXT: 'TEXT'>,
+  token_count=370
+)] thoughts_token_count=725 tool_use_prompt_token_count=None tool_use_prompt_tokens_details=None total_token_count=1617 traffic_type=None
+2026-02-10 19:40:28,687 - story_sign - WARNING - [ReportDrafter] Session 6791a57d-bbc4-4c04-a9bf-ac00d775b15a not found. Starting new.
+2026-02-10 19:40:28,693 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 6791a57d-bbc4-4c04-a9bf-ac00d775b15a
+2026-02-10 19:40:30,753 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #1. Brain said: Ack...
+2026-02-10 19:40:33,226 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #2. Brain said: Ack...
+2026-02-10 19:42:19,377 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 5d4f5a9b-1e11-4974-9016-0de5dcd3c8b2
+2026-02-10 19:42:36,558 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #1. Brain said: Ack...
+2026-02-10 19:42:40,809 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #2. Brain said: Ack...
+2026-02-10 19:42:48,427 - story_sign - INFO - [ReportDrafter] Started Shadow Session: a9f02359-5310-43d6-87f1-3eff69e363db
+2026-02-10 19:42:58,732 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #1. Brain said: Ack...
+2026-02-10 19:43:06,121 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #2. Brain said: Ack...
+2026-02-10 19:43:14,608 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #3. Brain said: Ack...
+2026-02-10 19:43:23,102 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #4. Brain said: Ack...
+2026-02-10 19:43:31,539 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #5. Brain said: Ack...
+2026-02-10 19:43:38,989 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #6. Brain said: Ack...
+2026-02-10 19:43:42,868 - story_sign - INFO - [ReportDrafter] Finalizing Report for a9f02359-5310-43d6-87f1-3eff69e363db. Total Chunks Processed: 7
+2026-02-10 19:43:46,141 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #7. Brain said: Ack...
+2026-02-10 19:43:52,913 - story_sign - INFO - [ReportDrafter] Report Generated in 10.04s. Usage: cache_tokens_details=None cached_content_token_count=None candidates_token_count=547 candidates_tokens_details=None prompt_token_count=801 prompt_tokens_details=[ModalityTokenCount(
+  modality=<MediaModality.TEXT: 'TEXT'>,
+  token_count=801
+)] thoughts_token_count=1041 tool_use_prompt_token_count=None tool_use_prompt_tokens_details=None total_token_count=2389 traffic_type=None
+2026-02-10 20:12:37,056 - story_sign - INFO - Application Startup Complete. Routers Loaded.
+2026-02-10 20:13:25,787 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 9fd087a9-2282-4b2a-9013-fbac9f2de2f0
+2026-02-10 20:13:42,671 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #1. Brain said: Ack...
+2026-02-10 20:13:56,290 - story_sign - INFO - [ReportDrafter] Started Shadow Session: ec215481-7801-4238-b721-e971469a117c
+2026-02-10 20:14:07,060 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #1. Brain said: Ack...
+2026-02-10 20:14:14,948 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #2. Brain said: Ack...
+2026-02-10 20:14:23,272 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #3. Brain said: Ack...
+2026-02-10 20:14:30,942 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #4. Brain said: Ack...
+2026-02-10 20:14:39,516 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #5. Brain said: Ack...
+2026-02-10 20:14:47,769 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #6. Brain said: Ack...
+2026-02-10 20:14:48,985 - story_sign - INFO - [ReportDrafter] Finalizing Report for ec215481-7801-4238-b721-e971469a117c. Total Chunks Processed: 6
+2026-02-10 20:14:58,060 - story_sign - INFO - [ReportDrafter] Report Generated in 9.07s. Usage: cache_tokens_details=None cached_content_token_count=None candidates_token_count=544 candidates_tokens_details=None prompt_token_count=779 prompt_tokens_details=[ModalityTokenCount(
+  modality=<MediaModality.TEXT: 'TEXT'>,
+  token_count=779
+)] thoughts_token_count=830 tool_use_prompt_token_count=None tool_use_prompt_tokens_details=None total_token_count=2153 traffic_type=None
+2026-02-10 20:22:49,412 - story_sign - INFO - Application Startup Complete. Routers Loaded.
+2026-02-10 20:23:34,100 - story_sign - INFO - [ReportDrafter] Started Shadow Session: cccd01fc-a342-4488-9e9d-2f0a82052032
+2026-02-10 20:23:44,422 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #1. Brain said: Ack...
+2026-02-10 20:23:52,371 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #2. Brain said: Ack...
+2026-02-10 20:24:00,377 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #3. Brain said: Ack...
+2026-02-10 20:24:08,898 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #4. Brain said: Ack...
+2026-02-10 20:24:16,372 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #5. Brain said: Ack...
+2026-02-10 20:24:22,445 - story_sign - INFO - [ReportDrafter] Finalizing Report for cccd01fc-a342-4488-9e9d-2f0a82052032. Total Chunks Processed: 5
+2026-02-10 20:24:32,109 - story_sign - INFO - [ReportDrafter] Report Generated in 9.66s. Usage: cache_tokens_details=None cached_content_token_count=None candidates_token_count=514 candidates_tokens_details=None prompt_token_count=682 prompt_tokens_details=[ModalityTokenCount(
+  modality=<MediaModality.TEXT: 'TEXT'>,
+  token_count=682
+)] thoughts_token_count=1098 tool_use_prompt_token_count=None tool_use_prompt_tokens_details=None total_token_count=2294 traffic_type=None
+2026-02-10 20:25:09,107 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 42b3a7aa-98b9-49dc-97de-7009ef0451a0
+2026-02-10 20:25:19,036 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #1. Brain said: Ack...
+2026-02-10 20:25:27,764 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #2. Brain said: Ack...
+2026-02-10 20:25:32,651 - story_sign - INFO - [ReportDrafter] Finalizing Report for 42b3a7aa-98b9-49dc-97de-7009ef0451a0. Total Chunks Processed: 3
+2026-02-10 20:25:34,809 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #3. Brain said: Ack...
+2026-02-10 20:25:41,522 - story_sign - INFO - [ReportDrafter] Report Generated in 8.87s. Usage: cache_tokens_details=None cached_content_token_count=None candidates_token_count=496 candidates_tokens_details=None prompt_token_count=373 prompt_tokens_details=[ModalityTokenCount(
+  modality=<MediaModality.TEXT: 'TEXT'>,
+  token_count=373
+)] thoughts_token_count=866 tool_use_prompt_token_count=None tool_use_prompt_tokens_details=None total_token_count=1735 traffic_type=None
+2026-02-10 20:25:43,234 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #4. Brain said: Ack...
+2026-02-10 20:27:16,054 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 6087ac09-68fb-4436-a34f-a2ac25eb682c
+2026-02-10 20:27:34,558 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #1. Brain said: Ack...
+2026-02-10 20:27:37,435 - story_sign - INFO - [ReportDrafter] Finalizing Report for 6087ac09-68fb-4436-a34f-a2ac25eb682c. Total Chunks Processed: 1
+2026-02-10 20:27:46,262 - story_sign - INFO - [ReportDrafter] Report Generated in 8.83s. Usage: cache_tokens_details=None cached_content_token_count=None candidates_token_count=479 candidates_tokens_details=None prompt_token_count=276 prompt_tokens_details=[ModalityTokenCount(
+  modality=<MediaModality.TEXT: 'TEXT'>,
+  token_count=276
+)] thoughts_token_count=721 tool_use_prompt_token_count=None tool_use_prompt_tokens_details=None total_token_count=1476 traffic_type=None
+2026-02-10 20:49:02,790 - story_sign - INFO - Application Startup Complete. Routers Loaded.
+2026-02-10 20:49:38,497 - story_sign - INFO - [ReportDrafter] Started Shadow Session: bb666048-1e02-40fa-8ae6-099837cc4595
+2026-02-10 20:49:49,825 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #1. Brain said: Ack...
+2026-02-10 20:49:56,763 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #2. Brain said: Ack...
+2026-02-10 20:50:04,573 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #3. Brain said: Ack...
+2026-02-10 20:50:13,866 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #4. Brain said: Ack...
+2026-02-10 20:50:16,612 - story_sign - INFO - [ReportDrafter] Finalizing Report for bb666048-1e02-40fa-8ae6-099837cc4595. Total Chunks Processed: 6
+2026-02-10 20:50:16,805 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #5. Brain said: Ack...
+2026-02-10 20:50:19,456 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #6. Brain said: Ack...
+2026-02-10 20:50:28,926 - story_sign - INFO - [ReportDrafter] Report Generated in 12.31s. Usage: cache_tokens_details=None cached_content_token_count=None candidates_token_count=539 candidates_tokens_details=None prompt_token_count=640 prompt_tokens_details=[ModalityTokenCount(
+  modality=<MediaModality.TEXT: 'TEXT'>,
+  token_count=640
+)] thoughts_token_count=1465 tool_use_prompt_token_count=None tool_use_prompt_tokens_details=None total_token_count=2644 traffic_type=None
+2026-02-10 20:51:19,052 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 44f52312-910e-4b81-9033-8d3e9870c81f
+2026-02-10 20:51:29,778 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #1. Brain said: Ack...
+2026-02-10 20:51:36,949 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #2. Brain said: Ack...
+2026-02-10 20:51:45,361 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #3. Brain said: Ack...
+2026-02-10 20:51:54,189 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #4. Brain said: Ack...
+2026-02-10 20:52:01,396 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #5. Brain said: Ack...
+2026-02-10 20:52:09,407 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #6. Brain said: Ack...
+2026-02-10 20:52:18,319 - story_sign - INFO - [ReportDrafter] Finalizing Report for 44f52312-910e-4b81-9033-8d3e9870c81f. Total Chunks Processed: 6
+2026-02-10 20:52:27,583 - story_sign - INFO - [ReportDrafter] Report Generated in 9.26s. Usage: cache_tokens_details=None cached_content_token_count=None candidates_token_count=510 candidates_tokens_details=None prompt_token_count=748 prompt_tokens_details=[ModalityTokenCount(
+  modality=<MediaModality.TEXT: 'TEXT'>,
+  token_count=748
+)] thoughts_token_count=903 tool_use_prompt_token_count=None tool_use_prompt_tokens_details=None total_token_count=2161 traffic_type=None
+2026-02-10 21:03:07,736 - story_sign - INFO - Application Startup Complete. Routers Loaded.
+2026-02-10 21:04:18,736 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 667dcc85-f63c-4433-b814-415f159ce3ce (Unknown Exercise)
+2026-02-10 21:04:29,435 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #1. Brain said: Ack...
+2026-02-10 21:04:36,774 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #2. Brain said: Ack...
+2026-02-10 21:04:45,388 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #3. Brain said: Ack...
+2026-02-10 21:04:53,232 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #4. Brain said: Ack...
+2026-02-10 22:59:15,800 - story_sign - INFO - Application Startup Complete. Routers Loaded.
+2026-02-10 22:59:40,629 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 511de0d2-a1c5-4740-aa7a-09270eb95200 (Bicep Curl)
+2026-02-10 22:59:53,948 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #1. Brain said: Ack...
+2026-02-10 22:59:58,415 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #2. Brain said: Ack...
+2026-02-10 23:00:05,695 - story_sign - INFO - [ReportDrafter] Started Shadow Session: aa3382dc-6cd9-4588-8bad-e151b7e4dfde (Bicep Curl)
+2026-02-10 23:00:16,668 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #1. Brain said: Ack...
+2026-02-10 23:00:26,029 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #2. Brain said: Ack...
+2026-02-10 23:00:34,883 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #3. Brain said: Ack...
+2026-02-10 23:00:51,095 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #4. Brain said: # Clinical Rehabilit...
+2026-02-10 23:00:54,898 - story_sign - INFO - [ReportDrafter] Finalizing Report for aa3382dc-6cd9-4588-8bad-e151b7e4dfde. Total Chunks Processed: 7
+2026-02-10 23:00:56,731 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #5. Brain said: Ack...
+2026-02-10 23:01:03,511 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #6. Brain said: Ack...
+2026-02-10 23:01:08,197 - story_sign - INFO - [ReportDrafter] Report Generated in 13.30s. Usage: cache_tokens_details=None cached_content_token_count=None candidates_token_count=823 candidates_tokens_details=None prompt_token_count=36734 prompt_tokens_details=[ModalityTokenCount(
+  modality=<MediaModality.TEXT: 'TEXT'>,
+  token_count=36734
+)] thoughts_token_count=1190 tool_use_prompt_token_count=None tool_use_prompt_tokens_details=None total_token_count=38747 traffic_type=None
+2026-02-10 23:01:08,983 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #7. Brain said: Ack...
+2026-02-10 23:13:27,612 - story_sign - INFO - Application Startup Complete. Routers Loaded.
+2026-02-10 23:14:45,731 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 0d71d964-1eb5-4d4a-9063-a4715823744c (Bicep Curl)
+2026-02-10 23:14:59,798 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #1. Brain said: Ack...
+2026-02-10 23:15:06,191 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #2. Brain said: Ack...
+2026-02-10 23:15:15,574 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #3. Brain said: Ack...
+2026-02-10 23:15:22,939 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #4. Brain said: Ack...
+2026-02-10 23:15:31,241 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #5. Brain said: Ack...
+2026-02-10 23:15:39,931 - story_sign - INFO - [ReportDrafter] Finalizing Report for 0d71d964-1eb5-4d4a-9063-a4715823744c. Total Chunks Processed: 8
+2026-02-10 23:15:46,391 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #6. Brain said: # Clinical Rehabilit...
+2026-02-10 23:15:50,482 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #7. Brain said: Ack...
+2026-02-10 23:15:54,776 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #8. Brain said: Ack...
+2026-02-10 23:16:00,230 - story_sign - INFO - [ReportDrafter] Report Generated in 20.30s. Usage: cache_tokens_details=None cached_content_token_count=None candidates_token_count=877 candidates_tokens_details=None prompt_token_count=46064 prompt_tokens_details=[ModalityTokenCount(
+  modality=<MediaModality.TEXT: 'TEXT'>,
+  token_count=46064
+)] thoughts_token_count=2274 tool_use_prompt_token_count=None tool_use_prompt_tokens_details=None total_token_count=49215 traffic_type=None
+2026-02-10 23:25:54,274 - story_sign - INFO - Application Startup Complete. Routers Loaded.
+2026-02-10 23:35:34,796 - story_sign - INFO - Application Startup Complete. Routers Loaded.
+2026-02-10 23:40:53,320 - story_sign - INFO - [ReportDrafter] Started Shadow Session: c562a4c0-85ab-4453-bcca-3b20a7b80c9d (Bicep Curl)
+2026-02-10 23:41:04,711 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #1. Brain said: Ack...
+2026-02-10 23:41:12,758 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #2. Brain said: Ack...
+2026-02-10 23:41:23,630 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #3. Brain said: Ack...
+2026-02-10 23:41:26,229 - story_sign - INFO - [ReportDrafter] Finalizing Report for c562a4c0-85ab-4453-bcca-3b20a7b80c9d. Total Chunks Processed: 5
+2026-02-10 23:41:28,143 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #4. Brain said: Ack...
+2026-02-10 23:41:34,278 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #5. Brain said: Ack...
+2026-02-10 23:41:42,480 - story_sign - INFO - [ReportDrafter] Report Generated in 16.25s. Usage: cache_tokens_details=None cached_content_token_count=None candidates_token_count=719 candidates_tokens_details=None prompt_token_count=24091 prompt_tokens_details=[ModalityTokenCount(
+  modality=<MediaModality.TEXT: 'TEXT'>,
+  token_count=24091
+)] thoughts_token_count=1744 tool_use_prompt_token_count=None tool_use_prompt_tokens_details=None total_token_count=26554 traffic_type=None
+2026-02-10 23:46:10,543 - story_sign - INFO - Application Startup Complete. Routers Loaded.
+2026-02-10 23:48:55,339 - story_sign - INFO - Application Startup Complete. Routers Loaded.
+2026-02-10 23:50:16,734 - story_sign - INFO - [ReportDrafter] Started Shadow Session: abfdad41-6006-4d1a-bed6-85e4581022b8 (HAPPY)
+2026-02-10 23:50:27,334 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #1. Brain said: Ack...
+2026-02-10 23:50:37,695 - story_sign - INFO - [ReportDrafter] Finalizing Report for abfdad41-6006-4d1a-bed6-85e4581022b8. Total Chunks Processed: 1
+2026-02-10 23:50:46,432 - story_sign - INFO - [ReportDrafter] Report Generated in 8.74s. Usage: cache_tokens_details=None cached_content_token_count=None candidates_token_count=518 candidates_tokens_details=None prompt_token_count=374 prompt_tokens_details=[ModalityTokenCount(
+  modality=<MediaModality.TEXT: 'TEXT'>,
+  token_count=374
+)] thoughts_token_count=578 tool_use_prompt_token_count=None tool_use_prompt_tokens_details=None total_token_count=1470 traffic_type=None
+2026-02-10 23:55:14,365 - story_sign - INFO - Application Startup Complete. Routers Loaded.
+2026-02-10 23:55:31,581 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 76cf01b4-5112-46db-8142-96037b3ade41 (HAPPY)
+2026-02-10 23:55:42,271 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #1. Brain said: Ack...
+2026-02-10 23:55:50,263 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #2. Brain said: Ack...
+2026-02-10 23:55:55,702 - story_sign - INFO - [ReportDrafter] Finalizing Report for 76cf01b4-5112-46db-8142-96037b3ade41. Total Chunks Processed: 4
+2026-02-10 23:55:58,250 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #3. Brain said: Ack...
+2026-02-10 23:56:00,205 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #4. Brain said: Ack...
+2026-02-10 23:56:05,717 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #5. Brain said: Ack...
+2026-02-10 23:56:10,016 - story_sign - INFO - [ReportDrafter] Report Generated in 14.31s. Usage: cache_tokens_details=None cached_content_token_count=None candidates_token_count=531 candidates_tokens_details=None prompt_token_count=455 prompt_tokens_details=[ModalityTokenCount(
+  modality=<MediaModality.TEXT: 'TEXT'>,
+  token_count=455
+)] thoughts_token_count=1680 tool_use_prompt_token_count=None tool_use_prompt_tokens_details=None total_token_count=2666 traffic_type=None
+2026-02-10 23:56:10,425 - story_sign - WARNING - [ReportDrafter] Session 76cf01b4-5112-46db-8142-96037b3ade41 not found. Starting new.
+2026-02-10 23:56:10,432 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 76cf01b4-5112-46db-8142-96037b3ade41 (Unknown Exercise)
+2026-02-10 23:56:12,777 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #1. Brain said: Ack...
+2026-02-10 23:56:15,005 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #2. Brain said: Ack...
+2026-02-10 23:56:35,912 - story_sign - INFO - [ReportDrafter] Started Shadow Session: f276fb7e-ee50-4f51-9721-12936ec12824 (SURPRISED)
+2026-02-10 23:56:46,893 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #1. Brain said: Ack...
+2026-02-10 23:56:54,901 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #2. Brain said: Ack...
+2026-02-10 23:57:01,876 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #3. Brain said: Ack...
+2026-02-10 23:57:09,096 - story_sign - INFO - [ReportDrafter] Finalizing Report for f276fb7e-ee50-4f51-9721-12936ec12824. Total Chunks Processed: 4
+2026-02-10 23:57:10,257 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #4. Brain said: Ack...
+2026-02-10 23:57:18,454 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #5. Brain said: Ack...
+2026-02-10 23:57:22,829 - story_sign - INFO - [ReportDrafter] Report Generated in 13.73s. Usage: cache_tokens_details=None cached_content_token_count=None candidates_token_count=524 candidates_tokens_details=None prompt_token_count=564 prompt_tokens_details=[ModalityTokenCount(
+  modality=<MediaModality.TEXT: 'TEXT'>,
+  token_count=564
+)] thoughts_token_count=1589 tool_use_prompt_token_count=None tool_use_prompt_tokens_details=None total_token_count=2677 traffic_type=None
+2026-02-10 23:57:23,209 - story_sign - WARNING - [ReportDrafter] Session f276fb7e-ee50-4f51-9721-12936ec12824 not found. Starting new.
+2026-02-10 23:57:23,211 - story_sign - INFO - [ReportDrafter] Started Shadow Session: f276fb7e-ee50-4f51-9721-12936ec12824 (Unknown Exercise)
+2026-02-10 23:57:25,967 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #1. Brain said: Ack...
+2026-02-10 23:57:28,224 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #2. Brain said: Ack...
+2026-02-10 23:59:00,081 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 05618b5e-1dd2-44bb-8046-79a226838756 (Bicep Curl)
+2026-02-10 23:59:12,526 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #1. Brain said: Ack...
+2026-02-10 23:59:19,842 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #2. Brain said: Ack...
+2026-02-10 23:59:29,816 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #3. Brain said: Ack...
+2026-02-10 23:59:38,494 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #4. Brain said: Ack...
+2026-02-10 23:59:45,168 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #5. Brain said: Ack...
+2026-02-10 23:59:52,418 - story_sign - INFO - [ReportDrafter] Finalizing Report for 05618b5e-1dd2-44bb-8046-79a226838756. Total Chunks Processed: 8
+2026-02-10 23:59:54,991 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #6. Brain said: Ack...
+2026-02-11 00:00:00,437 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #7. Brain said: Ack...
+2026-02-11 00:00:05,367 - story_sign - INFO - [ReportDrafter] Report Generated in 12.95s. Usage: cache_tokens_details=None cached_content_token_count=None candidates_token_count=749 candidates_tokens_details=None prompt_token_count=47965 prompt_tokens_details=[ModalityTokenCount(
+  modality=<MediaModality.TEXT: 'TEXT'>,
+  token_count=47965
+)] thoughts_token_count=917 tool_use_prompt_token_count=None tool_use_prompt_tokens_details=None total_token_count=49631 traffic_type=None
+2026-02-11 00:00:06,349 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #8. Brain said: Ack...
+2026-02-11 00:00:20,919 - story_sign - INFO - [ReportDrafter] Started Shadow Session: 0ebb645c-bcbe-42d4-81b5-057bfbd00482 (Shoulder Abduction)
+2026-02-11 00:00:32,627 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #1. Brain said: Ack...
+2026-02-11 00:00:43,737 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #2. Brain said: Ack...
+2026-02-11 00:00:50,156 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #3. Brain said: Ack...
+2026-02-11 00:00:58,600 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #4. Brain said: Ack...
+2026-02-11 00:01:07,693 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #5. Brain said: Ack...
+2026-02-11 00:01:12,831 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #6. Brain said: Ack...
+2026-02-11 00:01:19,140 - story_sign - INFO - [ReportDrafter] Finalizing Report for 0ebb645c-bcbe-42d4-81b5-057bfbd00482. Total Chunks Processed: 9
+2026-02-11 00:01:31,362 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #7. Brain said: # Clinical Rehabilit...
+2026-02-11 00:01:31,961 - story_sign - INFO - [ReportDrafter] Report Generated in 12.82s. Usage: cache_tokens_details=None cached_content_token_count=None candidates_token_count=794 candidates_tokens_details=None prompt_token_count=63488 prompt_tokens_details=[ModalityTokenCount(
+  modality=<MediaModality.TEXT: 'TEXT'>,
+  token_count=63488
+)] thoughts_token_count=1048 tool_use_prompt_token_count=None tool_use_prompt_tokens_details=None total_token_count=65330 traffic_type=None
+2026-02-11 00:01:35,035 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #8. Brain said: Ack...
+2026-02-11 00:01:38,716 - story_sign - DEBUG - [ReportDrafter] Ingested Chunk #9. Brain said: Ack...
+2026-02-11 00:24:50,230 - story_sign - INFO - Application Startup Complete. Routers Loaded.
+2026-02-11 12:04:07,407 - story_sign - INFO - Application Startup Complete. Routers Loaded.
+2026-02-11 12:17:31,610 - story_sign - INFO - Application Startup Complete. Routers Loaded.
+2026-02-11 12:22:58,846 - story_sign - INFO - Application Startup Complete. Routers Loaded.
+2026-02-11 12:33:55,306 - story_sign - INFO - Application Startup Complete. Routers Loaded.
+2026-02-11 12:56:58,806 - story_sign - INFO - Application Startup Complete. Routers Loaded.
+2026-02-11 14:56:57,489 - story_sign - INFO - Application Startup Complete. Routers Loaded.

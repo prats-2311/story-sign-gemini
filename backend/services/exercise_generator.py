@@ -25,6 +25,9 @@ EXERCISE_SCHEMA = """
       "points": ["string (landmark name, e.g. LEFT_SHOULDER)", "string", "string"]
     }
   },
+  "relevant_landmarks": [
+      1, 2, 3 
+  ],
   "stages": [
     {
       "name": "string (e.g., Start Position)",
@@ -63,6 +66,8 @@ Your goal is to convert a user's natural language description of an exercise int
     - The engine automatically loops back to Stage 1.
 4. **Safety:** Always include a 'secondary_metric' for stability if applicable.
 5. **Naming:** Give the exercise a clear, short name.
+6. **Landmarks:** If domain is FACE, populate 'relevant_landmarks' with integer MediaPipe indices (0-478) relevant to the expression. If BODY, leave empty.
+
 
 ### EXAMPLE
 Input: "A simple bicep curl"
@@ -74,6 +79,7 @@ Output:
     "elbow_angle": {{ "type": "ANGLE", "points": ["LEFT_SHOULDER", "LEFT_ELBOW", "LEFT_WRIST"] }},
     "torso_vertical": {{ "type": "VERTICAL_DIFF", "points": ["LEFT_SHOULDER", "LEFT_HIP"] }}
   }},
+  "relevant_landmarks": [],
   "stages": [
     {{ "name": "Start (Extension)", "conditions": [{{ "metric": "elbow_angle", "op": "GT", "target": 160 }}], "hold_time": 0.5 }},
     {{ "name": "Curl (Flexion)", "conditions": [{{ "metric": "elbow_angle", "op": "LT", "target": 45 }}], "hold_time": 0.5 }}

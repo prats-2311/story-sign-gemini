@@ -92,19 +92,19 @@ export function Dashboard({ onSelectExercise }: DashboardProps) {
     return (
         <div className="w-full h-full relative"> 
             {/* Header Area */}
-            <div className="mb-12 flex justify-between items-end animate-fade-in-up">
+            <div className="mb-12 flex flex-col md:flex-row justify-between items-end animate-fade-in-up gap-6">
                 <div>
-                    <h1 className="text-5xl font-bold text-white tracking-tighter mb-4 text-glow">
+                    <h1 className="text-3xl md:text-5xl font-bold text-white tracking-tighter mb-4 text-glow">
                         RECONNECT <span className="text-cyber-cyan">V2</span>
                     </h1>
-                    <p className="text-xl text-gray-400 max-w-2xl">
+                    <p className="text-lg md:text-xl text-gray-400 max-w-2xl">
                         Your digital recovery clinic. Select a module to begin your monitored session.
                     </p>
                 </div>
-                <div className="flex gap-4">
+                <div className="flex flex-col md:flex-row gap-4 w-full md:w-auto">
                     <button 
                       onClick={() => setShowCreator(true)}
-                      className="px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white rounded-lg transition-all font-mono uppercase tracking-wider text-sm shadow-lg hover:shadow-pink-500/20 flex items-center gap-2"
+                      className="px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white rounded-lg transition-all font-mono uppercase tracking-wider text-sm shadow-lg hover:shadow-pink-500/20 flex items-center justify-center gap-2"
                     >
                         <span>+</span> New Exercise
                     </button>
@@ -112,14 +112,14 @@ export function Dashboard({ onSelectExercise }: DashboardProps) {
                     <button 
                       id="btn-generate-plan"
                       onClick={() => navigate('/reconnect/plan')}
-                      className="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white rounded-lg transition-all font-mono uppercase tracking-wider text-sm shadow-lg hover:shadow-purple-500/20"
+                      className="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white rounded-lg transition-all font-mono uppercase tracking-wider text-sm shadow-lg hover:shadow-purple-500/20 text-center"
                     >
                         ✨ Generate AI Plan
                     </button>
                     <button 
                       id="btn-view-history"
                       onClick={() => navigate('/reconnect/history')}
-                      className="px-6 py-3 bg-neural-800/80 backdrop-blur border border-neural-600 hover:border-cyber-cyan text-white rounded-lg transition-colors font-mono uppercase tracking-wider text-sm"
+                      className="px-6 py-3 bg-neural-800/80 backdrop-blur border border-neural-600 hover:border-cyber-cyan text-white rounded-lg transition-colors font-mono uppercase tracking-wider text-sm text-center"
                     >
                         View History
                     </button>
