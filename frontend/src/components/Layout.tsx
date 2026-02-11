@@ -26,7 +26,7 @@ export function Layout() {
                 <div className="max-w-7xl mx-auto px-6 h-24 flex items-center justify-between">
                     <Link to="/" className="flex items-center gap-4 group cursor-pointer">
                          {/* NEW LOGO */}
-                         <img src="/logo.svg" alt="StorySign Logo" className="w-12 h-12 drop-shadow-[0_0_15px_rgba(168,85,247,0.4)] group-hover:scale-110 transition-transform duration-300" />
+                         <img src="/story-sign.jpg" alt="StorySign Logo" className="w-12 h-12 drop-shadow-[0_0_15px_rgba(168,85,247,0.4)] group-hover:scale-110 transition-transform duration-300 rounded-lg" />
                         <span className="text-3xl font-bold tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400">StorySign</span>
                     </Link>
 
@@ -119,7 +119,7 @@ export function Layout() {
                         {/* 1. BRAND */}
                         <div className="space-y-4">
                             <div className="flex items-center gap-4">
-                                <img src="/logo.svg" alt="StorySign Footer Logo" className="w-8 h-8 opacity-80" />
+                                <img src="/story-sign.jpg" alt="StorySign Footer Logo" className="w-8 h-8 opacity-80 rounded" />
                                 <span className="text-xl font-bold tracking-tighter text-white">StorySign</span>
                             </div>
                             <p className="text-gray-500 text-sm leading-relaxed">

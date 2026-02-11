@@ -8,7 +8,7 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['logo.svg'],
+      includeAssets: ['story-sign.jpg'],
       manifest: {
         name: 'StorySign',
         short_name: 'StorySign',
@@ -21,9 +21,9 @@ export default defineConfig({
         orientation: 'portrait',
         icons: [
           {
-            src: 'logo.svg', // Fallback to SVG for now
-            sizes: 'any',
-            type: 'image/svg+xml',
+            src: 'story-sign.jpg',
+            sizes: '512x512', // Assuming it's large enough, or use 'any'
+            type: 'image/jpeg',
             purpose: 'any maskable'
           }
         ]
