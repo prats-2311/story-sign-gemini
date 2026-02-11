@@ -4,7 +4,7 @@
 
 ## 1. Executive Summary
 
-**StorySign** is a real-time, multimodal therapeutic agent designed to bridge the gap between clinical therapy and daily life. Unlike traditional accessibility tools that rely on static computer vision rules, StorySign uses **Gemini 2.0 Flash (Multimodal Live API)** to "see," "hear," and "reason" about user behavior in real-time.
+**StorySign** is a real-time, multimodal therapeutic agent designed to bridge the gap between clinical therapy and daily life. Unlike traditional accessibility tools that rely on static computer vision rules, StorySign uses **Gemini 2.5-audio Flash (Multimodal Live API)** to "see," "hear," and "reason" about user behavior in real-time.
 
 The platform serves three distinct user needs through a single, unified "Neural Pipeline":
 
@@ -31,12 +31,12 @@ graph LR
     end
 
     subgraph "Google Cloud AI"
-        Gemini["Gemini 2.0 Flash\n(Multimodal Live)"]
+        Gemini["Gemini 2.5-audio Flash\n(Multimodal Live)"]
         DeepThink["Gemini 3 Pro\n(Reasoning Model)"]
     end
 
     subgraph "Persistence"
-        TiDB[(TiDB Serverless)]
+        Postgres[(Postgres Serverless)]
     end
 
     %% Data Flow
@@ -47,16 +47,16 @@ graph LR
     
     %% Long Term Memory
     Gemini --"Session Summary"--> DeepThink
-    DeepThink --"Progress Report"--> TiDB
+    DeepThink --"Progress Report"--> Postgres
 
 ```
 
 ### Key Technical Decisions
 
-* **Vision Engine:** **Gemini 2.0 Flash**. Replaces MediaPipe/OpenCV. Why? It understands *intent* and *micro-expressions*, not just landmarks.
+* **Vision Engine:** **Gemini 2.5-audio Flash**. Replaces MediaPipe/OpenCV. Why? It understands *intent* and *micro-expressions*, not just landmarks.
 * **Protocol:** **Bidirectional WebSockets** over HTTP/2. Ensures <500ms latency for "conversational" feel.
 * **Backend Logic:** **Zero-Logic Proxy**. The backend strictly authenticates the user and forwards bytes. It does not look at the video frames.
-* **Database:** **TiDB Serverless**. Used for storing structured "Deep Think" reports and user progress (e.g., "Range of motion improved by 12%").
+* **Database:** **Postgres Serverless**. Used for storing structured "Deep Think" reports and user progress (e.g., "Range of motion improved by 12%").
 
 ---
 
@@ -82,7 +82,7 @@ async def stream(websocket: WebSocket, mode: str):
     system_instruction = LOAD_PROMPT(mode)
     
     # 2. Open Bidi Stream to Google
-    async with client.aio.live.connect(model="gemini-2.0-flash-exp", config=config) as session:
+    async with client.aio.live.connect(model="gemini-2.5-audio-flash-exp", config=config) as session:
         # 3. Pipe Data Loop
         await asyncio.gather(
             receive_from_client_and_send_to_gemini(websocket, session),
@@ -155,11 +155,11 @@ We do not write code for features; we write **System Instructions**.
 
 ---
 
-## 5. Persistence & Deep Think (TiDB Integration)
+## 5. Persistence & Deep Think (Postgres Integration)
 
 While Gemini Flash handles the "Live" interaction, **Gemini 3 Pro** handles the "Reasoning."
 
-### Database Schema (TiDB)
+### Database Schema (Postgres)
 
 ```sql
 CREATE TABLE session_logs (
@@ -178,7 +178,7 @@ CREATE TABLE session_logs (
 1. **Session End:** User clicks "Finish Exercise."
 2. **Upload:** Backend sends the session transcript to Gemini 3 Pro.
 3. **Prompt:** *"Analyze this physical therapy session. Calculate the average fatigue rate and suggest 3 adjustments for next week."*
-4. **Save:** Result stored in TiDB for the user's dashboard.
+4. **Save:** Result stored in Postgres for the user's dashboard.
 
 ---
 
@@ -205,7 +205,7 @@ CREATE TABLE session_logs (
 ## 7. Security & Privacy
 
 * **Ephemeral Processing:** Video frames are processed in RAM and discarded. They are never saved to disk.
-* **TiDB Security:** All persistent data is encrypted at rest.
+* **Postgres Security:** All persistent data is encrypted at rest.
 * **Safety Filters:** Gemini Safety Settings enabled to prevent inappropriate responses during story mode.
 
 ## 8. Development Setup & Run Instructions
@@ -262,7 +262,7 @@ docker-compose up --build
 ### Core Loop: The "Shadow Brain"
 StorySign uses a unique **"Two-Brain" Architecture** to handle real-time interaction and deep analysis simultaneously.
 
-1.  **Fast Brain (Gemini 2.0 Flash)**: Handles the WebSocket stream (`/ws/stream/{mode}`). It sees the user, counts reps, and gives instant audio feedback. It generates a "transcript" of events.
+1.  **Fast Brain (Gemini 2.5-audio Flash)**: Handles the WebSocket stream (`/ws/stream/{mode}`). It sees the user, counts reps, and gives instant audio feedback. It generates a "transcript" of events.
 2.  **Slow Brain (Shadow Drafter)**: The backend collects these events in the background. When the session ends, it sends the full transcript to **Gemini 3 Pro** (or Flash Thinking) to generate a structured JSON report (`SessionReport`), which is then saved to the database.
 
 ### API Endpoints
