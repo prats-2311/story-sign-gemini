@@ -114,16 +114,63 @@ export function Layout() {
 
             {/* BRANDED FOOTER */}
             <footer className="relative z-10 border-t border-white/5 bg-black/20 backdrop-blur-md mt-20">
-                <div className="max-w-7xl mx-auto px-6 py-12 flex flex-col md:flex-row justify-between items-center gap-8">
-                    <div className="flex items-center gap-4 grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all duration-500">
-                        <img src="/logo.svg" alt="StorySign Footer Logo" className="w-8 h-8" />
-                        <span className="text-sm font-mono tracking-widest text-gray-400">STORYSIGN © 2024</span>
+                <div className="max-w-7xl mx-auto px-6 py-12">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+                        {/* 1. BRAND */}
+                        <div className="space-y-4">
+                            <div className="flex items-center gap-4">
+                                <img src="/logo.svg" alt="StorySign Footer Logo" className="w-8 h-8 opacity-80" />
+                                <span className="text-xl font-bold tracking-tighter text-white">StorySign</span>
+                            </div>
+                            <p className="text-gray-500 text-sm leading-relaxed">
+                                Empowering communication through AI-driven sign language interpretation and rehabilitation.
+                            </p>
+                        </div>
+
+                        {/* 2. MODULES */}
+                        <div>
+                            <h4 className="text-white font-bold uppercase tracking-widest text-xs mb-4">Modules</h4>
+                            <ul className="space-y-2 text-sm text-gray-400">
+                                <li><Link to="/reconnect" className="hover:text-cyber-cyan transition-colors">Reconnect</Link></li>
+                                <li><Link to="/asl" className="hover:text-yellow-400 transition-colors">ASL World</Link></li>
+                                <li><Link to="/harmony" className="hover:text-pink-400 transition-colors">Harmony</Link></li>
+                            </ul>
+                        </div>
+
+                        {/* 3. LEGAL */}
+                        <div>
+                            <h4 className="text-white font-bold uppercase tracking-widest text-xs mb-4">Legal</h4>
+                            <ul className="space-y-2 text-sm text-gray-400">
+                                <li><a href="#" className="hover:text-white transition-colors">Privacy Policy</a></li>
+                                <li><a href="#" className="hover:text-white transition-colors">Content Policy</a></li>
+                                <li><a href="#" className="hover:text-white transition-colors">Terms of Service</a></li>
+                            </ul>
+                        </div>
+
+                        {/* 4. SOCIAL / CREDIT */}
+                        <div>
+                            <h4 className="text-white font-bold uppercase tracking-widest text-xs mb-4">Connect</h4>
+                             <div className="flex gap-4">
+                                {/* Placeholders for social icons if needed */}
+                             </div>
+                        </div>
                     </div>
-                    
-                    <div className="flex gap-8 text-xs font-bold text-gray-500 uppercase tracking-widest">
-                        <a href="#" className="hover:text-cyber-cyan transition-colors">Privacy</a>
-                        <a href="#" className="hover:text-cyber-cyan transition-colors">Safety</a>
-                        <a href="#" className="hover:text-cyber-cyan transition-colors">Contact</a>
+
+                    <div className="border-t border-white/5 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-gray-500 font-mono">
+                        <div>
+                            STORYSIGN © 2026. All rights reserved.
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <span>Designed, Developed & Managed by</span>
+                            <a 
+                                href="https://prats2311.tech/" 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="text-cyber-cyan hover:text-white transition-colors border-b border-cyber-cyan/30 hover:border-cyber-cyan pb-0.5"
+                            >
+                                Prateek Srivastava
+                            </a>
+                        </div>
                     </div>
                 </div>
             </footer>
