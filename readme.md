@@ -31,8 +31,8 @@ graph LR
     end
 
     subgraph "Google Cloud AI"
-        Gemini[Gemini 2.0 Flash\n(Multimodal Live)]
-        DeepThink[Gemini 3 Pro\n(Reasoning Model)]
+        Gemini["Gemini 2.0 Flash\n(Multimodal Live)"]
+        DeepThink["Gemini 3 Pro\n(Reasoning Model)"]
     end
 
     subgraph "Persistence"
