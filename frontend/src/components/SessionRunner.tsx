@@ -423,6 +423,7 @@ export function SessionRunner({ config, onExit, mode = 'BODY' }: SessionRunnerPr
               isOpen={!!report} 
               onClose={() => { setReport(null); setThoughts(null); setChartConfig(null); onExit(); }}
               className="max-w-4xl"
+              hideCloseButton={true}
           >
               <div className="flex flex-col h-full bg-[#050510] relative">
                   

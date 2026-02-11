@@ -7,9 +7,10 @@ interface PortalModalProps {
     onClose: () => void;
     children: React.ReactNode;
     className?: string;
+    hideCloseButton?: boolean; // [NEW] Output control
 }
 
-export function PortalModal({ isOpen, onClose, children, className = "" }: PortalModalProps) {
+export function PortalModal({ isOpen, onClose, children, className = "", hideCloseButton = false }: PortalModalProps) {
     if (typeof document === 'undefined') return null;
 
     return createPortal(
@@ -33,12 +34,14 @@ export function PortalModal({ isOpen, onClose, children, className = "" }: Porta
                         className={`relative bg-gray-900 border border-white/10 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] w-full ${className}`}
                     >
                          {/* Close Button (Optional/Shared) */}
-                         <button 
-                            onClick={onClose}
-                            className="absolute top-4 right-4 p-2 bg-black/20 hover:bg-white/10 rounded-full text-white/50 hover:text-white transition-colors z-50"
-                         >
-                             <X size={20} />
-                         </button>
+                         {!hideCloseButton && (
+                             <button
+                                onClick={onClose}
+                                className="absolute top-4 right-4 p-2 bg-black/20 hover:bg-white/10 rounded-full text-white/50 hover:text-white transition-colors z-50"
+                             >
+                                 <X size={20} />
+                             </button>
+                         )}
 
                          {children}
                     </motion.div>

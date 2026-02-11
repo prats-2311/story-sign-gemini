@@ -160,6 +160,7 @@ export function HarmonyDashboard() {
                 isOpen={isCreating} 
                 onClose={() => setIsCreating(false)}
                 className="max-w-md h-auto"
+                hideCloseButton={true}
              >
                   <div className="p-8">
                       <div className="flex justify-between items-center mb-6">

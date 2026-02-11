@@ -13,7 +13,6 @@ export function HistoryView({ onBack, initialDomain }: HistoryViewProps) {
     const [sessions, setSessions] = useState<SessionLog[]>([]);
     const [loading, setLoading] = useState(true);
     const [selectedSession, setSelectedSession] = useState<SessionLog | null>(null);
-    const [selectedReport, setSelectedReport] = useState<any | null>(null); // [RESTORED]
     
     // [NEW] Search & Filter State
     const [searchTerm, setSearchTerm] = useState("");
@@ -47,6 +46,7 @@ export function HistoryView({ onBack, initialDomain }: HistoryViewProps) {
 
     return (
         <div className="w-full max-w-6xl mx-auto p-4 pt-24 md:p-8 md:pt-20">
+             {/* ... Header and Search code remains same ... */}
              <div className="mb-8 flex items-center gap-4">
                 <button 
                     onClick={onBack}
@@ -159,11 +159,12 @@ export function HistoryView({ onBack, initialDomain }: HistoryViewProps) {
 
             {/* REPORT MODAL */}
             <PortalModal
-                isOpen={!!selectedReport}
-                onClose={() => setSelectedReport(null)}
+                isOpen={!!selectedSession}
+                onClose={() => setSelectedSession(null)}
                 className="max-w-5xl h-[90vh]"
+                hideCloseButton={true}
             >
-                {selectedReport && selectedSession && ( 
+                {selectedSession && ( 
                     <div className="w-full h-full bg-black border border-gray-800 rounded-3xl overflow-hidden flex flex-col shadow-[0_0_50px_rgba(6,182,212,0.1)]">
                         <div className="p-8 border-b border-gray-800 flex justify-between items-center bg-gray-900/50">
                             <div>
@@ -174,7 +175,7 @@ export function HistoryView({ onBack, initialDomain }: HistoryViewProps) {
                                     {new Date(selectedSession.timestamp).toLocaleString()}
                                 </div>
                             </div>
-                            <button onClick={() => setSelectedReport(null)} className="text-gray-400 hover:text-white">✕ CLOSE</button>
+                            <button onClick={() => setSelectedSession(null)} className="text-gray-400 hover:text-white">✕ CLOSE</button>
                         </div>
                         
                         <div className="flex-1 overflow-y-auto p-8 space-y-8">
