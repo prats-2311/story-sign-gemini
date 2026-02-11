@@ -5,16 +5,34 @@ import type { SessionLog } from '../types/SessionLog';
 
 interface HistoryViewProps {
     onBack: () => void;
+    initialDomain?: string; // [NEW] Optional prop to lock domain (e.g. 'FACE')
 }
 
-export function HistoryView({ onBack }: HistoryViewProps) {
+export function HistoryView({ onBack, initialDomain }: HistoryViewProps) {
     const [sessions, setSessions] = useState<SessionLog[]>([]);
     const [loading, setLoading] = useState(true);
     const [selectedSession, setSelectedSession] = useState<SessionLog | null>(null);
+    
+    // [NEW] Search & Filter State
+    const [searchTerm, setSearchTerm] = useState("");
+    const [domainFilter, setDomainFilter] = useState(initialDomain || "ALL");
+    const [startDate, setStartDate] = useState("");
+    const [endDate, setEndDate] = useState("");
 
     useEffect(() => {
-        // [MODULE-FIRST] Fetch Reconnect (BODY) History
-        apiClient('/reconnect/history')
+        setLoading(true);
+        // [FIX] Use aggregated history endpoint with filters
+        const query = new URLSearchParams();
+        if (searchTerm) query.append("search", searchTerm);
+        
+        // If initialDomain is set, force it. Otherwise use filter state.
+        const activeDomain = initialDomain || domainFilter;
+        if (activeDomain !== "ALL") query.append("domain", activeDomain);
+
+        if (startDate) query.append("start_date", startDate);
+        if (endDate) query.append("end_date", endDate);
+
+        apiClient(`/session/history?${query.toString()}`)
             .then(data => {
                 setSessions(data as SessionLog[]);
                 setLoading(false);
@@ -23,7 +41,7 @@ export function HistoryView({ onBack }: HistoryViewProps) {
                 console.error("Failed to load history", err);
                 setLoading(false);
             });
-    }, []);
+    }, [searchTerm, domainFilter, startDate, endDate, initialDomain]); // Re-fetch on change
 
     return (
         <div className="w-full max-w-6xl mx-auto p-8 pt-20">
@@ -35,8 +53,49 @@ export function HistoryView({ onBack }: HistoryViewProps) {
                     ← Back to Dashboard
                 </button>
                 <h1 className="text-3xl font-bold text-white tracking-tighter text-glow">
-                    Patient History
+                    {initialDomain === 'FACE' ? 'Harmony History' : 'Patient History'}
                 </h1>
+            </div>
+
+            {/* [NEW] Search & Filter Controls */}
+            <div className="mb-6 flex flex-col lg:flex-row gap-4">
+                <input 
+                    type="text" 
+                    placeholder="Search by exercise or notes..." 
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="flex-1 bg-neural-900 border border-neural-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-cyber-cyan transition-colors"
+                />
+                
+                {/* Date Filters */}
+                <div className="flex gap-2">
+                    <input 
+                        type="date" 
+                        value={startDate}
+                        onChange={(e) => setStartDate(e.target.value)}
+                        className="bg-neural-900 border border-neural-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-cyber-cyan transition-colors"
+                    />
+                    <input 
+                        type="date" 
+                        value={endDate}
+                        onChange={(e) => setEndDate(e.target.value)}
+                        className="bg-neural-900 border border-neural-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-cyber-cyan transition-colors"
+                    />
+                </div>
+
+                {/* Domain Filter (Only show if NOT fixed) */}
+                {!initialDomain && (
+                    <select 
+                        value={domainFilter}
+                        onChange={(e) => setDomainFilter(e.target.value)}
+                        className="bg-neural-900 border border-neural-700 rounded-lg px-6 py-3 text-white focus:outline-none focus:border-cyber-cyan transition-colors appearance-none"
+                    >
+                        <option value="ALL">All Categories</option>
+                        <option value="BODY">Reconnect (Body)</option>
+                        <option value="FACE">Harmony (Face)</option>
+                        <option value="HAND">Hands</option>
+                    </select>
+                )}
             </div>
 
             {loading ? (

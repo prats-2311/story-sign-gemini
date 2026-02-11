@@ -37,6 +37,7 @@ class ExerciseSession(Base):
     id = Column(Integer, primary_key=True, index=True)
     session_uuid = Column(String, unique=True, index=True)
     exercise_id = Column(String, index=True)
+    exercise_name = Column(String, default="Unknown Exercise") # [FIX] Add name for history
     domain = Column(String, default="BODY", index=True) # BODY, FACE, HAND
     start_time = Column(DateTime, default=datetime.datetime.utcnow)
     end_time = Column(DateTime, nullable=True)

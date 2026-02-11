@@ -133,7 +133,7 @@ async def get_reconnect_history(db: Session = Depends(get_db)):
                  "id": session.session_uuid,
                  "domain": "BODY",
                  "timestamp": report.timestamp.isoformat() if report.timestamp else None,
-                 "title": session.exercise_id, 
+                 "title": session.exercise_name or session.exercise_id, # [FIX] Use Name
                  "status": session.status,
                  "report_summary": report.report_json,
                  "metrics": session.metrics

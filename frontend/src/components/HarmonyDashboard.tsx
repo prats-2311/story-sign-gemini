@@ -30,9 +30,9 @@ export function HarmonyDashboard() {
     const [isCreating, setIsCreating] = useState(false);
     const [newEmotionName, setNewEmotionName] = useState("");
     
-    // History State
-    const [isHistoryOpen, setIsHistoryOpen] = useState(false);
-    const [historyItems, setHistoryItems] = useState<any[]>([]);
+    // History State - [REMOVED] Now using full screen view
+    // const [isHistoryOpen, setIsHistoryOpen] = useState(false);
+    // const [historyItems, setHistoryItems] = useState<any[]>([]);
     const [selectedReport, setSelectedReport] = useState<any | null>(null);
 
     // Fetch Custom Exercises
@@ -53,13 +53,7 @@ export function HarmonyDashboard() {
         setActiveSession(null);
     };
 
-    const handleHistoryOpen = () => {
-        setIsHistoryOpen(true);
-        // [MODULE-FIRST] Fetch only Harmony history
-        apiClient('/harmony/history').then((data: any) => {
-             setHistoryItems(data);
-        }).catch(err => console.error("Failed to load history", err));
-    };
+    // [REMOVED] handleHistoryOpen replaced by navigation
 
     const handleCreateDynamic = async () => {
         if (!newEmotionName.trim()) return;
@@ -102,7 +96,7 @@ export function HarmonyDashboard() {
                      <p className="text-white/50 text-sm uppercase tracking-widest">Emotion Intelligence Service v2.0</p>
                  </div>
                  <div className="flex gap-4">
-                     <button onClick={handleHistoryOpen} className="bg-white/5 hover:bg-white/10 px-6 py-2 rounded-full text-sm font-mono border border-white/10 transition-colors">
+                     <button onClick={() => navigate('/harmony/history')} className="bg-white/5 hover:bg-white/10 px-6 py-2 rounded-full text-sm font-mono border border-white/10 transition-colors">
                         HISTORY
                      </button>
                      <button onClick={() => navigate('/')} className="bg-white/5 hover:bg-white/10 px-6 py-2 rounded-full text-sm font-mono border border-white/10">
@@ -196,88 +190,7 @@ export function HarmonyDashboard() {
                  )}
              </AnimatePresence>
 
-             {/* HISTORY MODAL PORTAL */}
-             {/* HISTORY SIDEBAR PORTAL */}
-             {createPortal(
-                 <AnimatePresence>
-                     {isHistoryOpen && (
-                         <div className="fixed inset-0 z-[9999] flex justify-end pointer-events-none">
-                             {/* Backdrop */}
-                             <motion.div 
-                                 initial={{ opacity: 0 }}
-                                 animate={{ opacity: 1 }}
-                                 exit={{ opacity: 0 }}
-                                 onClick={() => setIsHistoryOpen(false)}
-                                 className="absolute inset-0 bg-black/60 backdrop-blur-sm pointer-events-auto"
-                             />
-                             
-                             {/* Sidebar */}
-                             <motion.div 
-                                initial={{ x: "100%" }}
-                                animate={{ x: 0 }}
-                                exit={{ x: "100%" }}
-                                transition={{ type: "spring", damping: 25, stiffness: 200 }}
-                                className="relative w-full max-w-md h-full bg-gray-950 border-l border-white/10 shadow-2xl flex flex-col pointer-events-auto"
-                             >
-                                 <div className="p-6 border-b border-white/10 flex justify-between items-center bg-black/20">
-                                     <h2 className="text-xl font-bold tracking-tight text-white flex items-center gap-2">
-                                         <Heart className="text-purple-500 fill-purple-500/20" size={20} />
-                                         Session History
-                                     </h2>
-                                     <button onClick={() => setIsHistoryOpen(false)} className="hover:bg-white/10 p-2 rounded-full transition-colors text-white/60 hover:text-white"><X size={20} /></button>
-                                 </div>
 
-                                 <div className="flex-1 overflow-y-auto p-4 space-y-3">
-                                     {historyItems.length === 0 ? (
-                                         <div className="flex flex-col items-center justify-center h-64 text-center px-8">
-                                             <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mb-4">
-                                                 <Smile className="text-white/20" size={32} />
-                                             </div>
-                                             <p className="text-white/50 text-sm">No sessions recorded.</p>
-                                             <p className="text-white/30 text-xs mt-2">Practice an emotion to see your progress.</p>
-                                         </div>
-                                     ) : (
-                                         historyItems.map((item, i) => (
-                                             <motion.div 
-                                                key={item.id} 
-                                                initial={{ opacity: 0, y: 10 }}
-                                                animate={{ opacity: 1, y: 0 }}
-                                                transition={{ delay: i * 0.05 }}
-                                                onClick={() => setSelectedReport(item)} // [NEW] Open Report
-                                                className="bg-white/5 border border-white/5 p-4 rounded-xl hover:border-purple-500/30 hover:bg-white/10 transition-all group cursor-pointer"
-                                             >
-                                                 <div className="flex justify-between items-start mb-2">
-                                                     <div className="flex items-center gap-3">
-                                                         <div className={`w-10 h-10 rounded-lg flex items-center justify-center bg-gradient-to-br from-purple-500/20 to-blue-500/20 text-purple-400 font-bold text-lg`}>
-                                                             {item.title?.charAt(0)}
-                                                         </div>
-                                                         <div>
-                                                             <h3 className="font-bold text-white text-sm">{item.title}</h3>
-                                                             <div className="text-xs text-white/40 font-mono">{new Date(item.timestamp).toLocaleDateString()} • {new Date(item.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
-                                                         </div>
-                                                     </div>
-                                                     <div className="text-[10px] bg-white/5 px-2 py-0.5 rounded text-white/40 uppercase tracking-widest border border-white/5">
-                                                         {item.status}
-                                                     </div>
-                                                 </div>
-
-                                                 {/* Report Summary */}
-                                                 {item.report_summary?.clinical_notes && (
-                                                     <div className="mt-3 bg-black/20 rounded-lg p-3 text-xs text-gray-400 leading-relaxed border border-white/5 relative overflow-hidden">
-                                                         <div className="absolute left-0 top-0 bottom-0 w-1 bg-purple-500/30" />
-                                                         {item.report_summary.clinical_notes[0] || "Session completed successfully."}
-                                                     </div>
-                                                 )}
-                                             </motion.div>
-                                         ))
-                                     )}
-                                 </div>
-                             </motion.div>
-                         </div>
-                     )}
-                 </AnimatePresence>,
-                 document.body
-             )}
 
              {/* ACTIVE SESSION RUNNER (MODAL) PORTAL */}
              {createPortal(

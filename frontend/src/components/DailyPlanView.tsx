@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import type { DailyPlan, RoutineItem } from '../types/Plan';
+import { apiClient } from '../api/client'; // [FIX] Import apiClient
 
 interface DailyPlanViewProps {
     onSelectExercise: (item: RoutineItem, index: number) => void;
@@ -13,11 +14,8 @@ export function DailyPlanView({ onSelectExercise }: DailyPlanViewProps) {
     // Refresh plan on mount to get latest completion status
     const fetchPlan = () => {
         setLoading(true);
-        fetch('/plan/daily')
-            .then(res => {
-                if (!res.ok) throw new Error("Failed to fetch plan");
-                return res.json();
-            })
+        // [FIX] Use apiClient to handle /api prefix automatically
+        apiClient<DailyPlan>('/plan/daily')
             .then(data => {
                 setPlan(data);
                 setLoading(false);

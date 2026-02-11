@@ -65,7 +65,7 @@ export function useGeminiLive({ mode, exerciseConfig, detectPose, onLandmarks, v
       repState: 'DOWN' as 'DOWN' | 'UP',
       lastWristPos: null as any, // [FIX] Added for Velocity Check
       lastShoulderY: null as number | null, // [FIX] For Stability
-      telemetry: [] as { t: number, val: number, vel: number }[], // [STRATEGY C]
+      telemetry: [] as { t: number, val: number, vel: number, coords?: any }[], // [STRATEGY C] Updated for coordinate tracking
       universalVariables: {} as Record<string, number>, // [NEW] For Debugging
       startTime: Date.now() 
   });
@@ -382,8 +382,8 @@ export function useGeminiLive({ mode, exerciseConfig, detectPose, onLandmarks, v
                        
                        const now = Date.now();
                        const timeSinceLast = now - lastSentTimeRef.current;
-                       const MIN_INTERVAL = 300; // [TUNING] Faster updates (previously 500) 
-                       const MAX_INTERVAL = 3000;
+                       const MIN_INTERVAL = 1000; // [TUNING] Slower updates (1 FPS) to prevent 1011 errors
+                       const MAX_INTERVAL = 4000;
                        
                        const isForcedTrigger = forceTriggerRef.current; // User Request (e.g. Button)
                        
@@ -420,7 +420,7 @@ export function useGeminiLive({ mode, exerciseConfig, detectPose, onLandmarks, v
                            // KeepAlive
                            // console.log("[GeminiLive] KeepAlive Trigger");
                            shouldSend = true;
-                       } else if (delta > 0.02) { // [TUNING] More sensitive (previously 0.05)
+                       } else if (delta > 0.05) { // [TUNING] Less sensitive (5% movement) to ignore noise
                            // Significant Motion
                            shouldSend = true;
                        }
@@ -533,6 +533,30 @@ export function useGeminiLive({ mode, exerciseConfig, detectPose, onLandmarks, v
                                 trigger: false
                             }));
                         }
+
+                        // [TELEMETRY UPDATE] Capture Coordinates for Graphing & Gauge
+                        if (sessionStatsRef.current.telemetry) {
+                            const nowT = (Date.now() - sessionStatsRef.current.startTime) / 1000;
+                            
+                            // Extract Key Points: Shoulders(11,12), Elbows(13,14), Wrists(15,16)
+                            const keyPoints: Record<string, {x:number, y:number}> = {};
+                            [11, 12, 13, 14, 15, 16].forEach(idx => {
+                                if (landmarks[idx]) {
+                                    keyPoints[idx] = { x: Number(landmarks[idx].x.toFixed(3)), y: Number(landmarks[idx].y.toFixed(3)) };
+                                }
+                            });
+
+                            // [FIX] Live Gauge Value
+                            const activeMetricKey = Object.keys(sessionStatsRef.current).find(k => k.toLowerCase().includes('angle')) || 'val';
+                            const metricVal = (sessionStatsRef.current as any)[activeMetricKey] || 0;
+
+                            sessionStatsRef.current.telemetry.push({
+                                t: Number(nowT.toFixed(2)),
+                                val: typeof metricVal === 'number' ? metricVal : 0, 
+                                vel: Number(velocity.toFixed(3)),
+                                coords: keyPoints
+                            });
+                        }
                        
                        setDataSentCount(c => c + 1);
 
@@ -636,7 +660,8 @@ export function useGeminiLive({ mode, exerciseConfig, detectPose, onLandmarks, v
         // [FIX] Prioritize 'targetEmotion' (e.g. HAPPY) over generic config ID for Harmony
         exercise_id: (mode === 'HARMONY' && targetEmotion) 
             ? targetEmotion 
-            : ((exerciseConfig as any)?.id || 'unknown')
+            : ((exerciseConfig as any)?.id || 'unknown'),
+        exercise_name: (mode === 'HARMONY') ? targetEmotion : (exerciseConfig?.name || 'Unknown Exercise')
     };
     
     apiClient('/session/start', {

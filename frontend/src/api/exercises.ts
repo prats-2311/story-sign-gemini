@@ -28,6 +28,10 @@ export const exercisesApi = {
         return apiClient<CustomExercise[]>('/exercises/custom');
     },
 
+    get: (id: string) => {
+        return apiClient<CustomExercise>(`/exercises/custom/${id}`);
+    },
+
     delete: (id: string) => {
         return apiClient<{ status: string; id: string }>(`/exercises/custom/${id}`, {
             method: 'DELETE',

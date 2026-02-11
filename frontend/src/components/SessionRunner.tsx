@@ -60,11 +60,12 @@ export function SessionRunner({ config, onExit, mode = 'BODY' }: SessionRunnerPr
                           
                           // Draw Stage Name
                           ctx.fillStyle = "rgba(0, 255, 255, 0.8)";
-                          ctx.fillText(`TARGET: ${stage.name.toUpperCase()}`, 50, 100);
+                          // [FIX] Move text down to avoid intersecting with HUD
+                          ctx.fillText(`TARGET: ${stage.name.toUpperCase()}`, 50, 160);
                           
                           // Draw Metric Target
                           ctx.fillStyle = "white";
-                          ctx.fillText(`${cond.metric}: ${cond.op} ${cond.target}`, 50, 130);
+                          ctx.fillText(`${cond.metric}: ${cond.op} ${cond.target}`, 50, 220);
                           
                           // DRAW A SIMPLE SKELETON FOR THE ACTIVE METRIC
                           // Only if we can map point names to indices safely. 
